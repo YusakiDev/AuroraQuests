@@ -1,0 +1,112 @@
+name: "Example"
+difficulty: "easy"
+
+menu-item:
+  material: "DIAMOND_SWORD"
+  name: "&f{name}"
+  lore:
+    - "&7This is an example quest."
+    - "&7You can edit this file to create your own quests."
+    - ""
+    - "&7Tasks:"
+    - "  {task_mine_block}"
+    - "  {task_kill_mob}"
+    -
+    - "&7Rewards:"
+    - "  {reward_money}"
+    - "  {reward_backpack}"
+    - ""
+    - "&7Difficulty: &f{difficulty}"
+
+locked-lore:
+  - ""
+  - "&cYou can't start this quest yet."
+
+completed-lore:
+  - ""
+  - "&aYou have completed this quest."
+
+tasks:
+  # Task 1
+  mine_block:
+    task: BLOCK_BREAK
+    display: "{status} Mine {required} stone {current}/{required}"
+    args:
+      amount: 10
+      types:
+        - "STONE"
+    # These filters can be used for every task
+    filters:
+      worlds:
+        type: whitelist
+        value: [ "world" ]
+      # Requires WorldGuard
+      regions:
+        type: blacklist
+        value: [ "spawn" ]
+      biomes:
+        type: whitelist
+        value: [ "minecraft:plains", "minecraft:forest" ]
+      min-y-level: 0
+      max-y-level: 64
+      locations:
+        # "world,x,y,z,radius"
+        - "world,0,0,0,10"
+        - "world,10,10,10,50"
+      hand:
+        # Items that the player must be holding when the action happens
+        # Only one of these needs to match
+        items:
+          - "minecraft:diamond_pickaxe"
+          - "oraxen:mythril_pickaxe"
+        # Enchantments that must be present
+        enchants-every:
+          - "minecraft:efficiency"
+          - "minecraft:fortune"
+        # At least one of these must be present
+        enchants-any:
+          - "minecraft:unbreaking"
+          - "minecraft:silk_touch"
+  # Task 2
+  kill_mob:
+    task: MOB_KILL
+    display: "{status} Kill {required} zombies {current}/{required}"
+    args:
+      amount: 10
+      types:
+        - "ZOMBIE"
+
+# Rewards to give when player completes the quest
+rewards:
+  money:
+    type: money
+    amount: 10000
+    display: "&8+&a{value_formatted}$"
+  backpack:
+    type: command
+    command: "[console] backpack unlocknext %player_name%"
+    display: "&8+&f1 Backpack"
+
+# If this is a timed random quest, it won't pick it if the requirements are not met
+start-requirements:
+  # Should the quest be shown in the menu even if the player doesn't meet the requirements
+  # Only works for global quests
+  always-show-in-menu: true
+  # Required quests to be completed before this quest can be started
+  quests:
+    - "quest_name"
+  # Required permissions to start the quest
+  permissions:
+    - "example.permission"
+  # Required placeholder conditions to start the quest
+  placeholders:
+    aura-skills:
+      placeholder: "%auraskills_powerlevel%"
+      # Pick one of the following
+      equals: "10"
+      higher-than: "10"
+      lower-than: "10"
+    some-other-placeholder:
+      placeholder: "%some_other_placeholder%"
+      equals: "10"
+  # And everything else that can be used in the task filters

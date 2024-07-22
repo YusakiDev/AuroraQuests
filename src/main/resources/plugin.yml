@@ -1,0 +1,16 @@
+name: AuroraQuests
+version: '${version}'
+main: gg.auroramc.levels.AuroraQuests
+api-version: 1.19
+authors: [ "erik_sz" ]
+folia-supported: true
+depend:
+  - "Aurora"
+softdepend:
+  - "LuckPerms"
+  - "AuraSkills"
+  - "MythicMobs"
+  - "PlaceholderAPI"
+
+libraries:
+  - org.quartz-scheduler:quartz:2.3.2

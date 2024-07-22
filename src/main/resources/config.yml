@@ -1,0 +1,62 @@
+# Don't touch this
+config-version: 0
+
+debug: false
+language: en
+prevent-creative-mode: true
+
+command-aliases:
+  quests: ["quests", "quest"]
+
+# Specify the possible quest difficulties with their names
+difficulties:
+  easy: "Easy"
+  medium: "Medium"
+  hard: "Hard"
+
+leaderboards:
+  # How many players should be cached for each quest pool?
+  # Only for these players you will have top placeholders
+  cache-size: 10
+  # How many quest should be completed in the pool before adding the player to the leaderboard?
+  min-completed: 3
+  # Should we create leaderboards for global (not infinite) quest pools as well?
+  # Only makes sense to enable this if you have a lot of quests, and they are not easy to complete fast
+  include-global: false
+
+display-components:
+  rewards:
+    title: "  &7Rewards:&r"
+    line: "    {reward}"
+
+# These can be overridden by the quest itself
+quest-complete-message:
+  enabled: true
+  message:
+    - "  &f&l{quest_name} completed&r"
+    - ' '
+    - "component:rewards"
+
+quest-complete-sound:
+  enabled: true
+  sound: "ENTITY_PLAYER_LEVELUP"
+  volume: 1
+  pitch: 1
+
+# These will only be used if the quest pool has leveling enabled
+level-up-message:
+  enabled: true
+  message:
+    - "&3&m----------------------------------------&r"
+    - ' '
+    - "  &f&l{pool_name} levelled up &6&l{level}&r"
+    - ' '
+    - "component:rewards"
+    - ' '
+    - "&3&m----------------------------------------"
+
+level-up-sound:
+  enabled: true
+  sound: "ENTITY_PLAYER_LEVELUP"
+  volume: 1
+  pitch: 1

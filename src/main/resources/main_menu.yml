@@ -1,0 +1,99 @@
+# Don't touch this
+config-version: 0
+
+title: "Quests"
+
+filler:
+  enabled: true
+  item:
+    material: black_stained_glass_pane
+    name: " "
+
+display-components:
+  rewards:
+    title: "&7Rewards:&r"
+    line: "  {reward}"
+
+# These items will be used en every menu where it makes sense, not just here
+items:
+  previous-page:
+    material: arrow
+    name: "&f« &7Previous Page"
+    slot: 48
+    lore:
+      - "&7Click to go to the previous page."
+  next-page:
+    material: arrow
+    name: "&fNext Page &7»"
+    slot: 50
+    lore:
+      - "&7Click to go to the next page."
+  current-page:
+    material: paper
+    name: "&fCurrent Page &7(&f{current}&7/&f{total}&7)"
+    slot: 49
+    lore:
+      - "&7You are currently on this page."
+  close:
+    material: barrier
+    name: "&cClose"
+    slot: 53
+    lore:
+      - "&7Click to close the menu."
+  back:
+    material: arrow
+    display_name: "&fBack"
+    slot: 45
+    lore:
+      - "&7Click to go back."
+  # These are for global quest pools (these pools contains non repeatable quests)
+  switch-to-completed:
+    material: emerald
+    name: "&aCompleted Quests"
+    slot: 8
+    lore:
+      - "&7Click to switch to completed quests."
+  switch-to-active:
+    material: emerald
+    name: "&bActive Quests"
+    slot: 8
+    lore:
+      - "&7Click to switch to active quests."
+  switch-to-levels:
+    material: emerald
+    name: "&6Levels"
+    slot: 4
+    lore:
+      - "&7Click to switch to levels."
+  completed-level:
+    name: "&fLevel &7{level}"
+    lore:
+      - "&8You have reached this level"
+      - ""
+      - "component:rewards"
+      - ""
+      - "&a&lᴄᴏᴍᴘʟᴇᴛᴇᴅ"
+    material: LIME_STAINED_GLASS_PANE
+  locked-level:
+    name: "&cLevel &7{level}"
+    lore:
+      - "&8Complete the previous levels"
+      - ""
+      - "component:rewards"
+      - ""
+      - "&c&lɴᴏᴛ ᴄᴏᴍᴘʟᴇᴛᴇᴅ"
+    material: RED_STAINED_GLASS_PANE
+  next-level:
+    name: "&fLevel &7{level}"
+    lore:
+      - "&8Next level"
+      - ""
+      - "component:rewards"
+      - ""
+      - "&7ᴘʀᴏɢʀᴇѕѕ:"
+      - "{progressbar} &7{current}&8/&7{required} XP"
+    material: YELLOW_STAINED_GLASS_PANE
+
+
+# Define your custom menu items here
+custom-items: {}
