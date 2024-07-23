@@ -1,6 +1,6 @@
 name: AuroraQuests
 version: '${version}'
-main: gg.auroramc.levels.AuroraQuests
+main: gg.auroramc.quests.AuroraQuests
 api-version: 1.19
 authors: [ "erik_sz" ]
 folia-supported: true
@@ -11,6 +11,18 @@ softdepend:
   - "AuraSkills"
   - "MythicMobs"
   - "PlaceholderAPI"
+
+website: https://auroramc.gg
+
+permissions:
+  aurora.quests.use:
+    description: Allows the player to use the /quests command
+    default: true
+  aurora.quests.admin.*:
+    default: op
+    children:
+      - aurora.quests.admin.reload
+      - aurora.quests.admin.open
 
 libraries:
   - org.quartz-scheduler:quartz:2.3.2

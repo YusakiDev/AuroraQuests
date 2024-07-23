@@ -21,6 +21,7 @@ public class MessageConfig extends AuroraConfig {
     private String mustBeNumber = "&cArgument must be a number!";
     private String playerNotFound = "&cPlayer not found!";
     private String commandError = "&cAn error occurred while executing this command!";
+    private String menuOpened = "&aOpened collection menu for {player}";
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));

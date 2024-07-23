@@ -7,5 +7,6 @@ invalid-syntax: "&cInvalid command syntax!"
 must-be-number: "&cArgument must be a number!"
 player-not-found: "&cPlayer not found!"
 command-error: "&cAn error occurred while executing this command!"
+menu-opened: "&aOpened quest menu for {player}"
 
 config-version: 0

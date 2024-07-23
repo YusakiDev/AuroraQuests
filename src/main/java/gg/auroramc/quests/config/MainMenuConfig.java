@@ -29,12 +29,12 @@ public class MainMenuConfig extends AuroraConfig {
     }
 
     public static File getFile(AuroraQuests plugin) {
-        return new File(plugin.getDataFolder(), "config.yml");
+        return new File(plugin.getDataFolder(), "main_menu.yml");
     }
 
     public static void saveDefault(AuroraQuests plugin) {
         if (!getFile(plugin).exists()) {
-            plugin.saveResource("config.yml", false);
+            plugin.saveResource("main_menu.yml", false);
         }
     }
 }

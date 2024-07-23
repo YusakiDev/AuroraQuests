@@ -1,13 +1,16 @@
 package gg.auroramc.quests.config.quest;
 
 import gg.auroramc.aurora.api.config.AuroraConfig;
+import gg.auroramc.aurora.api.config.decorators.IgnoreField;
 import gg.auroramc.aurora.api.config.premade.ConcreteMatcherConfig;
 import gg.auroramc.aurora.api.config.premade.IntervalMatcherConfig;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.quests.config.MainMenuConfig;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +23,14 @@ public class PoolConfig extends AuroraConfig {
     private PoolMenuItem menuItem;
     private PoolMenu menu;
     private Leveling leveling;
+
+    @Setter
+    @IgnoreField
+    private Map<String, QuestConfig> quests = new HashMap<>();
+
+    @Setter
+    @IgnoreField
+    private String id;
 
     @Getter
     public static class PoolMenuItem {
