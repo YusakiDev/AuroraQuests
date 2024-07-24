@@ -15,6 +15,7 @@ public class QuestData extends UserDataHolder {
     private final Map<String, Map<String, Map<String, Integer>>> progression = Maps.newConcurrentMap();
     private final Map<String, Integer> poolLevels = Maps.newConcurrentMap();
     private final Map<String, Set<String>> completedQuests = Maps.newConcurrentMap();
+    private final Map<String, Long> completedCount = Maps.newConcurrentMap();
 
     public PoolRollData getPoolRollData(String poolId) {
         return rolledQuests.get(poolId);
@@ -56,6 +57,14 @@ public class QuestData extends UserDataHolder {
         poolLevels.put(poolId, level);
     }
 
+    public void incrementCompletedCount(String poolId) {
+        completedCount.merge(poolId, 1L, Long::sum);
+    }
+
+    public long getCompletedCount(String poolId) {
+        return completedCount.getOrDefault(poolId, 0L);
+    }
+
     @Override
     public NamespacedId getId() {
         return NamespacedId.fromDefault("quests");
@@ -95,6 +104,12 @@ public class QuestData extends UserDataHolder {
         for (var entry : poolLevels.entrySet()) {
             poolLevelsSection.set(entry.getKey(), entry.getValue());
         }
+
+        // Completed count
+        var completedCountSection = data.createSection("completed_count");
+        for (var entry : completedCount.entrySet()) {
+            completedCountSection.set(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
@@ -133,6 +148,13 @@ public class QuestData extends UserDataHolder {
         if (poolLevelsSection != null) {
             for (var key : poolLevelsSection.getKeys(false)) {
                 poolLevels.put(key, poolLevelsSection.getInt(key));
+            }
+        }
+
+        var completedCountSection = data.getConfigurationSection("completed_count");
+        if (completedCountSection != null) {
+            for (var key : completedCountSection.getKeys(false)) {
+                completedCount.put(key, completedCountSection.getLong(key));
             }
         }
     }
