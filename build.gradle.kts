@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:1.3.0")
+    compileOnly("gg.auroramc:Aurora:1.5.3")
     compileOnly("gg.auroramc:AuroraLevels:1.3.0")
     compileOnly("gg.auroramc:AuroraCollections:1.0.0-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")

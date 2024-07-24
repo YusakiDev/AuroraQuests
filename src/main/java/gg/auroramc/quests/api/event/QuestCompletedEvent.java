@@ -1,5 +1,7 @@
 package gg.auroramc.quests.api.event;
 
+import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.api.quest.QuestPool;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,9 +24,13 @@ public class QuestCompletedEvent extends Event {
     }
 
     private final Player player;
+    private final QuestPool pool;
+    private final Quest quest;
 
-    public QuestCompletedEvent(Player player) {
+    public QuestCompletedEvent(Player player, QuestPool pool, Quest quest) {
         super(!Bukkit.isPrimaryThread());
         this.player = player;
+        this.pool = pool;
+        this.quest = quest;
     }
 }
