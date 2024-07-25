@@ -92,21 +92,21 @@ public class Quest {
                 (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty());
     }
 
+    public boolean isUnlocked(Player player) {
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        return data.isQuestStartUnlocked(holder.getId(), getId());
+    }
+
     public void tryStart(Player player) {
         if (!holder.isGlobal()) return;
         if (!hasStartRequirements()) return;
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        if (data.isQuestStartUnlocked(holder.getId(), getId())) return;
 
         if (canStart(player)) {
-            if (!data.hasStartNotification(holder.getId(), getId())) {
-                data.setStartNotification(holder.getId(), getId());
-                var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
-                Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
-            }
-        } else {
-            if (data.hasStartNotification(holder.getId(), getId())) {
-                data.removeStartNotification(holder.getId(), getId());
-            }
+            data.setQuestStartUnlock(holder.getId(), getId());
+            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
+            Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
         }
     }
 

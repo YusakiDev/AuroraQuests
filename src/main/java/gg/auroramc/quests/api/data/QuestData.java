@@ -18,7 +18,7 @@ public class QuestData extends UserDataHolder {
     private final Map<String, Integer> poolLevels = Maps.newConcurrentMap();
     private final Map<String, Set<String>> completedQuests = Maps.newConcurrentMap();
     private final Map<String, Long> completedCount = Maps.newConcurrentMap();
-    private final Map<String, Set<String>> startNotifications = Maps.newConcurrentMap();
+    private final Map<String, Set<String>> questUnlocks = Maps.newConcurrentMap();
 
     public PoolRollData getPoolRollData(String poolId) {
         return rolledQuests.get(poolId);
@@ -29,17 +29,17 @@ public class QuestData extends UserDataHolder {
         dirty.set(true);
     }
 
-    public void setStartNotification(String poolId, String questId) {
-        startNotifications.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).add(questId);
+    public void setQuestStartUnlock(String poolId, String questId) {
+        questUnlocks.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).add(questId);
         dirty.set(true);
     }
 
-    public boolean hasStartNotification(String poolId, String questId) {
-        return hasCompletedQuest(poolId, questId) || startNotifications.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).contains(questId);
+    public boolean isQuestStartUnlocked(String poolId, String questId) {
+        return hasCompletedQuest(poolId, questId) || questUnlocks.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).contains(questId);
     }
 
-    public void removeStartNotification(String poolId, String questId) {
-        startNotifications.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).remove(questId);
+    public void removeQuestStartUnlock(String poolId, String questId) {
+        questUnlocks.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).remove(questId);
         dirty.set(true);
     }
 
@@ -117,10 +117,10 @@ public class QuestData extends UserDataHolder {
             }
         }
 
-        // Start notifications
-        for(var poolEntry : startNotifications.entrySet()) {
+        // Quest unlocks
+        for(var poolEntry : questUnlocks.entrySet()) {
             for(var questEntry : poolEntry.getValue()) {
-                data.set("progression." + poolEntry.getKey() + "." + questEntry + ".start-notified", true);
+                data.set("progression." + poolEntry.getKey() + "." + questEntry + ".unlocked", true);
             }
         }
 
@@ -167,8 +167,8 @@ public class QuestData extends UserDataHolder {
                     }
                     var questSection = poolSection.getConfigurationSection(questKey);
                     for (var taskKey : questSection.getKeys(false)) {
-                        if(taskKey.equals("start-notified")) {
-                            startNotifications.computeIfAbsent(poolKey, k -> Sets.newConcurrentHashSet()).add(questKey);
+                        if(taskKey.equals("unlocked")) {
+                            questUnlocks.computeIfAbsent(poolKey, k -> Sets.newConcurrentHashSet()).add(questKey);
                             continue;
                         }
                         var count = questSection.getInt(taskKey, 0);
