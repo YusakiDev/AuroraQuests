@@ -5,6 +5,7 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
+import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.reward.Reward;
 import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.reward.RewardExecutor;
@@ -14,7 +15,9 @@ import gg.auroramc.quests.api.event.QuestCompletedEvent;
 import gg.auroramc.quests.config.quest.QuestConfig;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -128,7 +131,51 @@ public class Quest {
     }
 
     private void reward(Player player) {
-        // TODO: send messages and stuff
-        RewardExecutor.execute(rewards, player, 1, List.of());
+        var gConfig = AuroraQuests.getInstance().getConfigManager().getConfig();
+
+        List<Placeholder<?>> placeholders = List.of(
+                Placeholder.of("{quest}", config.getName()),
+                Placeholder.of("{quest_id}", config.getId()),
+                Placeholder.of("{pool}", holder.getConfig().getName()),
+                Placeholder.of("{pool_id}", holder.getConfig().getId()),
+                Placeholder.of("{player}", player.getName()),
+                Placeholder.of("{difficulty_id}", config.getDifficulty())
+        );
+
+        if (gConfig.getQuestCompleteMessage().getEnabled()) {
+
+            var text = Component.text();
+
+            var messageLines = gConfig.getQuestCompleteMessage().getMessage();
+
+            for (var line : messageLines) {
+                if (line.equals("component:rewards")) {
+                    if (!rewards.isEmpty()) {
+                        text.append(Text.component(player, gConfig.getDisplayComponents().get("rewards").getTitle(), placeholders));
+                    }
+                    for (var reward : rewards) {
+                        text.append(Component.newline());
+                        var display = gConfig.getDisplayComponents().get("rewards").getLine().replace("{reward}", reward.getDisplay(player, placeholders));
+                        text.append(Text.component(player, display, placeholders));
+                    }
+                } else {
+                    text.append(Text.component(player, line, placeholders));
+                }
+
+                if (!line.equals(messageLines.getLast())) text.append(Component.newline());
+            }
+
+            Chat.sendMessage(player, "", Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
+        }
+
+        if (gConfig.getQuestCompleteSound().getEnabled()) {
+            var sound = gConfig.getQuestCompleteSound();
+            player.playSound(player.getLocation(),
+                    Sound.valueOf(sound.getSound().toUpperCase()),
+                    sound.getVolume(),
+                    sound.getPitch());
+        }
+
+        RewardExecutor.execute(rewards, player, 1, placeholders);
     }
 }
