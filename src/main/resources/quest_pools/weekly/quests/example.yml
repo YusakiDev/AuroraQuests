@@ -98,15 +98,3 @@ start-requirements:
   # Required permissions to start the quest
   permissions:
     - "example.permission"
-  # Required placeholder conditions to start the quest
-  placeholders:
-    aura-skills:
-      placeholder: "%auraskills_powerlevel%"
-      # Pick one of the following
-      equals: "10"
-      higher-than: "10"
-      lower-than: "10"
-    some-other-placeholder:
-      placeholder: "%some_other_placeholder%"
-      equals: "10"
-  # And everything else that can be used in the task filters

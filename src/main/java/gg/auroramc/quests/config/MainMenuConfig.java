@@ -16,7 +16,7 @@ public class MainMenuConfig extends AuroraConfig {
     private Map<String, Config.DisplayComponent> displayComponents;
     private Map<String, ItemConfig> items;
     private Map<String, ItemConfig> customItems;
-
+    private TaskStatuses taskStatuses;
 
     public MainMenuConfig(AuroraQuests plugin) {
         super(getFile(plugin));
@@ -26,6 +26,12 @@ public class MainMenuConfig extends AuroraConfig {
     public static class FillerConfig {
         private Boolean enabled = false;
         private ItemConfig item;
+    }
+
+    @Getter
+    public static class TaskStatuses {
+        private String completed = "";
+        private String notCompleted = "";
     }
 
     public static File getFile(AuroraQuests plugin) {

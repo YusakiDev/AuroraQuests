@@ -9,6 +9,10 @@ filler:
     material: black_stained_glass_pane
     name: " "
 
+task-statuses:
+  completed: "&a&l✔&r"
+  not-completed: "&c&l✖&r"
+
 display-components:
   rewards:
     title: "&7Rewards:&r"
