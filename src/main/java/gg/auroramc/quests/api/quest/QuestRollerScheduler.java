@@ -1,13 +1,24 @@
 package gg.auroramc.quests.api.quest;
 
+import com.cronutils.model.Cron;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
 import gg.auroramc.quests.AuroraQuests;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class QuestRollerScheduler {
@@ -15,8 +26,9 @@ public class QuestRollerScheduler {
     private Scheduler scheduler;
     private JobDetail job;
     private Trigger trigger;
+    private ExecutionTime executionTime;
     @Getter
-    private boolean valid = false;
+    private volatile boolean valid = false;
 
     public QuestRollerScheduler(QuestPool pool) {
         this.pool = pool;
@@ -34,8 +46,15 @@ public class QuestRollerScheduler {
                     .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
                     .build();
 
+            CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+            CronParser parser = new CronParser(definition);
+            Cron cron = parser.parse(cronExpression);
+            this.executionTime = ExecutionTime.forCron(cron);
+
             scheduler.scheduleJob(job, trigger);
+
             valid = true;
+            AuroraQuests.logger().info("Scheduled quest reroll job for pool " + pool.getId() + " with next time: " + new SimpleDateFormat().format(getNextRollDate()));
         } catch (SchedulerException e) {
             AuroraQuests.logger().severe("Failed to start scheduler: " + e.getMessage());
         }
@@ -45,9 +64,26 @@ public class QuestRollerScheduler {
         return trigger.getNextFireTime();
     }
 
-    public Date getPreviousRollDate() {
-        return trigger.getPreviousFireTime();
+    public boolean shouldReroll(Long timestamp) {
+        if (timestamp == null) return true;
+
+        ZonedDateTime lastRerollTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+        ZonedDateTime now = ZonedDateTime.now();
+
+        // Get the last execution time before now
+        Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(now);
+
+        if (lastExecution.isPresent()) {
+            ZonedDateTime previousExecutionTime = lastExecution.get();
+
+            // Check if the last reroll time is before the previous execution time
+            return lastRerollTime.isBefore(previousExecutionTime);
+        } else {
+            // If there are no previous executions, assume reroll is needed
+            return true;
+        }
     }
+
 
     public class QuestRollJob implements Job {
         @Override

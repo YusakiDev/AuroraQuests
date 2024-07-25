@@ -1,14 +1,11 @@
-type: timed-random
-name: "Daily quests"
+type: global
+name: "Global quests"
 
 # You can define the difficulties you want to pick from and how many of each to pick
 difficulties:
   easy: 1
   medium: 1
   hard: 1
-
-# At what time to roll new quests (cron syntax) help: https://crontab.guru/
-reset-frequency: 0 0 * * *
 
 # How should this pool be displayed in the main menu and where?
 menu-item:

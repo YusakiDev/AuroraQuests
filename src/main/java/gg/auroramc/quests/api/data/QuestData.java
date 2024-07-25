@@ -23,16 +23,19 @@ public class QuestData extends UserDataHolder {
 
     public void setRolledQuests(String poolId, List<String> quests) {
         rolledQuests.put(poolId, new PoolRollData(System.currentTimeMillis(), quests));
+        dirty.set(true);
     }
 
     public void progress(String poolId, String questId, String taskId, int count) {
         progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap())
                 .computeIfAbsent(questId, k -> Maps.newConcurrentMap())
                 .merge(taskId, count, Integer::sum);
+        dirty.set(true);
     }
 
     public void completeQuest(String poolId, String questId) {
         completedQuests.computeIfAbsent(poolId, k -> Set.of()).add(questId);
+        dirty.set(true);
     }
 
     public boolean hasCompletedQuest(String poolId, String questId) {
@@ -55,10 +58,12 @@ public class QuestData extends UserDataHolder {
 
     public void setPoolLevel(String poolId, int level) {
         poolLevels.put(poolId, level);
+        dirty.set(true);
     }
 
     public void incrementCompletedCount(String poolId) {
         completedCount.merge(poolId, 1L, Long::sum);
+        dirty.set(true);
     }
 
     public long getCompletedCount(String poolId) {

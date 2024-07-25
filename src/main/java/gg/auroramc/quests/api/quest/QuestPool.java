@@ -34,8 +34,18 @@ public class QuestPool {
         }
 
         if (isTimedRandom()) {
-            questRoller = new QuestRollerScheduler(this);
+            if (isResetFrequencyValid()) {
+                questRoller = new QuestRollerScheduler(this);
+            } else {
+                AuroraQuests.logger().warning("Invalid reset frequency: " + config.getResetFrequency() + " for pool " + config.getId());
+            }
         }
+
+        AuroraQuests.logger().debug("Loaded difficulties for pool " + config.getId() + ": " + String.join(", ", config.getDifficulties().keySet()));
+    }
+
+    private boolean isResetFrequencyValid() {
+        return config.getResetFrequency() != null && config.getResetFrequency().split("\\s").length == 6;
     }
 
     public String getId() {
@@ -43,7 +53,7 @@ public class QuestPool {
     }
 
     public boolean isGlobal() {
-        return config.getType().equals("global");
+        return !isTimedRandom();
     }
 
     public boolean isTimedRandom() {
@@ -77,17 +87,24 @@ public class QuestPool {
     }
 
     public boolean rollIfNecessary(Player player, boolean sendNotification) {
+        AuroraQuests.logger().debug("Checking if player " + player.getName() + " needs to reroll quests for pool " + config.getId());
         if (!isTimedRandom()) return false;
         if (!questRoller.isValid()) return false;
-        var data = getQuestData(player);
+        AuroraQuests.logger().debug("Pool is timed random and quest roller is valid");
 
-        boolean hasInvalidQuests = data.getPoolRollData(getId()).quests().stream().anyMatch(q -> !quests.containsKey(q));
-        var prevRollTime = questRoller.getPreviousRollDate().getTime();
-        var userPrevRoll = data.getPoolRollData(getId()).timestamp();
+        try {
+            var data = getQuestData(player);
 
-        if (userPrevRoll == null || userPrevRoll < prevRollTime || hasInvalidQuests) {
-            reRollQuests(player, sendNotification);
-            return true;
+            var rollData = data.getPoolRollData(getId());
+            boolean hasInvalidQuests = rollData != null && rollData.quests().stream().anyMatch(q -> !quests.containsKey(q));
+
+
+            if (rollData == null || questRoller.shouldReroll(rollData.timestamp()) || hasInvalidQuests) {
+                reRollQuests(player, sendNotification);
+                return true;
+            }
+        } catch (Exception e) {
+            AuroraQuests.logger().severe("Failed to reroll quests for player " + player.getName() + " in pool " + config.getId() + ": " + e.getMessage());
         }
 
         return false;
@@ -101,6 +118,8 @@ public class QuestPool {
         var questsToSelectFrom = quests.values().stream()
                 .filter(q -> difficulties.containsKey(q.getDifficulty()) && q.canStart(player))
                 .toList();
+
+        AuroraQuests.logger().debug("Picking quests from pool " + config.getId() + " for player " + player.getName() + " with " + questsToSelectFrom.size() + " quests");
 
         var pickableQuests = new HashMap<String, List<Quest>>();
 
@@ -124,9 +143,12 @@ public class QuestPool {
         }
 
         var data = getQuestData(player);
-        data.setRolledQuests(getId(), pickedQuests.values().stream().flatMap(List::stream).map(Quest::getId).toList());
+        var questIds = pickedQuests.values().stream().flatMap(List::stream).map(Quest::getId).toList();
+        data.setRolledQuests(getId(), questIds);
 
-        if(sendNotification) {
+        AuroraQuests.logger().debug("Rolled quests for player " + player.getName() + " in pool " + config.getId() + ": " + String.join(", ", questIds));
+
+        if (sendNotification) {
             var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getReRolledTarget();
             Chat.sendMessage(player, msg, Placeholder.of("{pool}", config.getName()));
         }

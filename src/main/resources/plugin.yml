@@ -27,3 +27,4 @@ permissions:
 
 libraries:
   - org.quartz-scheduler:quartz:2.3.2
+  - com.cronutils:cron-utils:9.2.0

@@ -41,6 +41,7 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
     compileOnly("org.quartz-scheduler:quartz:2.3.2")
+    compileOnly("com.cronutils:cron-utils:9.2.0")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
