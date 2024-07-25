@@ -37,7 +37,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerQuit(QuestCompletedEvent event) {
+    public void onQuestComplete(QuestCompletedEvent event) {
         plugin.getQuestManager().tryStartGlobalQuests(event.getPlayer());
     }
 }
