@@ -67,11 +67,19 @@ public class QuestManager {
         var rolledPools = new ArrayList<QuestPool>();
 
         for (var pool : pools.values()) {
-            if(pool.rollIfNecessary(player, false)) {
+            if (pool.rollIfNecessary(player, false)) {
                 rolledPools.add(pool);
             }
         }
 
         return rolledPools;
+    }
+
+    public void tryStartGlobalQuests(Player player) {
+        for (var pool : pools.values()) {
+            if (pool.isGlobal()) {
+                pool.tryStartGlobalQuests(player);
+            }
+        }
     }
 }

@@ -87,8 +87,14 @@ public class Quest {
         return true;
     }
 
+    private boolean hasStartRequirements() {
+        return (config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
+                (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty());
+    }
+
     public void tryStart(Player player) {
         if (!holder.isGlobal()) return;
+        if (!hasStartRequirements()) return;
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
 
         if (canStart(player)) {

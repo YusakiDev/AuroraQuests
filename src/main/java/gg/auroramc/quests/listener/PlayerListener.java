@@ -4,6 +4,7 @@ import gg.auroramc.aurora.api.events.user.AuroraUserLoadedEvent;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.event.QuestCompletedEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,5 +34,10 @@ public class PlayerListener implements Listener {
 
         var msg = plugin.getConfigManager().getMessageConfig().getReRolledTarget();
         Chat.sendMessage(player, msg, Placeholder.of("{pool}", String.join(", ", pools.stream().map(p -> p.getConfig().getName()).toList())));
+    }
+
+    @EventHandler
+    public void onPlayerQuit(QuestCompletedEvent event) {
+        plugin.getQuestManager().tryStartGlobalQuests(event.getPlayer());
     }
 }

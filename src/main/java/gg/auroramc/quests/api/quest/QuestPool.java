@@ -86,6 +86,13 @@ public class QuestPool {
         return quests.values();
     }
 
+    public void tryStartGlobalQuests(Player player) {
+        if (!isGlobal()) return;
+        for (var quest : quests.values()) {
+            quest.tryStart(player);
+        }
+    }
+
     public boolean rollIfNecessary(Player player, boolean sendNotification) {
         AuroraQuests.logger().debug("Checking if player " + player.getName() + " needs to reroll quests for pool " + config.getId());
         if (!isTimedRandom()) return false;
