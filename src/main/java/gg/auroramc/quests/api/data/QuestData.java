@@ -16,6 +16,7 @@ public class QuestData extends UserDataHolder {
     private final Map<String, Integer> poolLevels = Maps.newConcurrentMap();
     private final Map<String, Set<String>> completedQuests = Maps.newConcurrentMap();
     private final Map<String, Long> completedCount = Maps.newConcurrentMap();
+    private final Map<String, Set<String>> startNotifications = Maps.newConcurrentMap();
 
     public PoolRollData getPoolRollData(String poolId) {
         return rolledQuests.get(poolId);
@@ -23,6 +24,20 @@ public class QuestData extends UserDataHolder {
 
     public void setRolledQuests(String poolId, List<String> quests) {
         rolledQuests.put(poolId, new PoolRollData(System.currentTimeMillis(), quests));
+        dirty.set(true);
+    }
+
+    public void setStartNotification(String poolId, String questId) {
+        startNotifications.computeIfAbsent(poolId, k -> Set.of()).add(questId);
+        dirty.set(true);
+    }
+
+    public boolean hasStartNotification(String poolId, String questId) {
+        return hasCompletedQuest(poolId, questId) || startNotifications.computeIfAbsent(poolId, k -> Set.of()).contains(questId);
+    }
+
+    public void removeStartNotification(String poolId, String questId) {
+        startNotifications.computeIfAbsent(poolId, k -> Set.of()).remove(questId);
         dirty.set(true);
     }
 
@@ -93,14 +108,24 @@ public class QuestData extends UserDataHolder {
         for (var poolEntry : progression.entrySet()) {
             var poolSection = progressionSection.createSection(poolEntry.getKey());
             for (var questEntry : poolEntry.getValue().entrySet()) {
-                if(completedQuests.get(poolEntry.getKey()).contains(questEntry.getKey())) {
-                    poolSection.set(questEntry.getKey(), true);
-                    continue;
-                }
                 var questSection = poolSection.createSection(questEntry.getKey());
                 for (var taskEntry : questEntry.getValue().entrySet()) {
                     questSection.set(taskEntry.getKey(), taskEntry.getValue());
                 }
+            }
+        }
+
+        // Start notifications
+        for(var poolEntry : startNotifications.entrySet()) {
+            for(var questEntry : poolEntry.getValue()) {
+                data.set("progression." + poolEntry.getKey() + "." + questEntry + ".start-notified", true);
+            }
+        }
+
+        // Completed quests
+        for(var poolEntry : completedQuests.entrySet()) {
+            for(var questEntry : poolEntry.getValue()) {
+                data.set("progression." + poolEntry.getKey() + "." + questEntry, true);
             }
         }
 
@@ -140,6 +165,10 @@ public class QuestData extends UserDataHolder {
                     }
                     var questSection = poolSection.getConfigurationSection(questKey);
                     for (var taskKey : questSection.getKeys(false)) {
+                        if(taskKey.equals("start-notified")) {
+                            startNotifications.computeIfAbsent(poolKey, k -> Set.of()).add(questKey);
+                            continue;
+                        }
                         var count = questSection.getInt(taskKey, 0);
                         progression.computeIfAbsent(poolKey, k -> Maps.newConcurrentMap())
                                 .computeIfAbsent(questKey, k -> Maps.newConcurrentMap())

@@ -2,9 +2,13 @@ package gg.auroramc.quests.api.quest;
 
 import com.google.common.collect.Maps;
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.item.TypeId;
+import gg.auroramc.aurora.api.message.Chat;
+import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.reward.Reward;
 import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.reward.RewardExecutor;
+import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.event.QuestCompletedEvent;
 import gg.auroramc.quests.config.quest.QuestConfig;
@@ -47,6 +51,7 @@ public class Quest {
     public void progress(Player player, String taskType, int count, Map<String, Object> params) {
         if (!taskTypes.contains(taskType)) return;
         if (isCompleted(player)) return;
+        if (!canStart(player)) return;
         for (var task : tasks.values()) {
             if (task.getTaskType().equals(taskType)) {
                 task.progress(player, count, params);
@@ -59,8 +64,44 @@ public class Quest {
     }
 
     public boolean canStart(Player player) {
-        // TODO: check if player can start the quest
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+
+        if (config.getStartRequirements().getQuests() != null) {
+            for (var questId : config.getStartRequirements().getQuests()) {
+                var typeId = TypeId.fromString(questId);
+                var pool = typeId.namespace().equals("minecraft") ? holder.getId() : typeId.namespace();
+                if (!data.hasCompletedQuest(pool, typeId.id())) {
+                    return false;
+                }
+            }
+        }
+
+        if (config.getStartRequirements().getPermissions() != null) {
+            for (var perm : config.getStartRequirements().getPermissions()) {
+                if (!player.hasPermission(perm)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
+    }
+
+    public void tryStart(Player player) {
+        if (!holder.isGlobal()) return;
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+
+        if (canStart(player)) {
+            if (!data.hasStartNotification(holder.getId(), getId())) {
+                data.setStartNotification(holder.getId(), getId());
+                var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
+                Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
+            }
+        } else {
+            if (data.hasStartNotification(holder.getId(), getId())) {
+                data.removeStartNotification(holder.getId(), getId());
+            }
+        }
     }
 
     public boolean isCompleted(Player player) {

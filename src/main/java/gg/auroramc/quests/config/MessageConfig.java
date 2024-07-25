@@ -24,6 +24,7 @@ public class MessageConfig extends AuroraConfig {
     private String menuOpened = "&aOpened collection menu for {player}";
     private String reRolledTarget = "&aYour quests for {pool} have been re-rolled!";
     private String reRolledSource = "&aQuests for {player} for pool {pool} have been re-rolled!";
+    private String globalQuestUnlocked = "&aYou have unlocked the {quest} quest in {pool}!";
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));
