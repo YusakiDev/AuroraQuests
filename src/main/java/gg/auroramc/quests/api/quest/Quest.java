@@ -54,6 +54,10 @@ public class Quest {
         }
     }
 
+    public String getDifficulty() {
+        return config.getDifficulty();
+    }
+
     public boolean canStart(Player player) {
         // TODO: check if player can start the quest
         return false;

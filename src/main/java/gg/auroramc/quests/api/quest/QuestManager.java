@@ -8,6 +8,8 @@ import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Collection;
 import java.util.Map;
@@ -23,9 +25,17 @@ public class QuestManager {
         this.plugin = plugin;
         rewardFactory.registerRewardType(NamespacedId.fromDefault("command"), CommandReward.class);
         rewardFactory.registerRewardType(NamespacedId.fromDefault("money"), MoneyReward.class);
+        try {
+            StdSchedulerFactory.getDefaultScheduler().start();
+        } catch (SchedulerException e) {
+            AuroraQuests.logger().severe("Failed to start scheduler: " + e.getMessage());
+        }
     }
 
     public void reload() {
+        if (!pools.isEmpty()) {
+            pools.values().forEach(QuestPool::dispose);
+        }
         pools.clear();
         for (var poolEntry : plugin.getConfigManager().getQuestPools().entrySet()) {
             pools.put(poolEntry.getKey(), new QuestPool(poolEntry.getValue(), rewardFactory));

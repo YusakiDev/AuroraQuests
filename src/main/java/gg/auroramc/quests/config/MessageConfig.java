@@ -22,6 +22,8 @@ public class MessageConfig extends AuroraConfig {
     private String playerNotFound = "&cPlayer not found!";
     private String commandError = "&cAn error occurred while executing this command!";
     private String menuOpened = "&aOpened collection menu for {player}";
+    private String reRolledTarget = "&aYour quests for {pool} have been re-rolled!";
+    private String reRolledSource = "&aQuests for {player} for pool {pool} have been re-rolled!";
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));

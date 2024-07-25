@@ -8,5 +8,7 @@ must-be-number: "&cArgument must be a number!"
 player-not-found: "&cPlayer not found!"
 command-error: "&cAn error occurred while executing this command!"
 menu-opened: "&aOpened quest menu for {player}"
+re-rolled-target: "&aYour quests for {pool} have been re-rolled!"
+re-rolled-source: "&aQuests for {player} for pool {pool} have been re-rolled!"
 
 config-version: 0
