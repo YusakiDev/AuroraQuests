@@ -1,11 +1,13 @@
 package gg.auroramc.quests.api.data;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import gg.auroramc.aurora.api.user.UserDataHolder;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,16 +30,16 @@ public class QuestData extends UserDataHolder {
     }
 
     public void setStartNotification(String poolId, String questId) {
-        startNotifications.computeIfAbsent(poolId, k -> Set.of()).add(questId);
+        startNotifications.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).add(questId);
         dirty.set(true);
     }
 
     public boolean hasStartNotification(String poolId, String questId) {
-        return hasCompletedQuest(poolId, questId) || startNotifications.computeIfAbsent(poolId, k -> Set.of()).contains(questId);
+        return hasCompletedQuest(poolId, questId) || startNotifications.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).contains(questId);
     }
 
     public void removeStartNotification(String poolId, String questId) {
-        startNotifications.computeIfAbsent(poolId, k -> Set.of()).remove(questId);
+        startNotifications.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).remove(questId);
         dirty.set(true);
     }
 
@@ -49,12 +51,12 @@ public class QuestData extends UserDataHolder {
     }
 
     public void completeQuest(String poolId, String questId) {
-        completedQuests.computeIfAbsent(poolId, k -> Set.of()).add(questId);
+        completedQuests.computeIfAbsent(poolId, k -> new HashSet<>()).add(questId);
         dirty.set(true);
     }
 
     public boolean hasCompletedQuest(String poolId, String questId) {
-        return completedQuests.computeIfAbsent(poolId, k -> Set.of()).contains(questId);
+        return completedQuests.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).contains(questId);
     }
 
     public int getProgression(String poolId, String questId, String taskId) {
@@ -160,13 +162,13 @@ public class QuestData extends UserDataHolder {
                 var poolSection = progressionSection.getConfigurationSection(poolKey);
                 for (var questKey : poolSection.getKeys(false)) {
                     if (poolSection.isBoolean(questKey)) {
-                        completedQuests.computeIfAbsent(poolKey, k -> Set.of()).add(questKey);
+                        completedQuests.computeIfAbsent(poolKey, k -> Sets.newConcurrentHashSet()).add(questKey);
                         continue;
                     }
                     var questSection = poolSection.getConfigurationSection(questKey);
                     for (var taskKey : questSection.getKeys(false)) {
                         if(taskKey.equals("start-notified")) {
-                            startNotifications.computeIfAbsent(poolKey, k -> Set.of()).add(questKey);
+                            startNotifications.computeIfAbsent(poolKey, k -> Sets.newConcurrentHashSet()).add(questKey);
                             continue;
                         }
                         var count = questSection.getInt(taskKey, 0);
