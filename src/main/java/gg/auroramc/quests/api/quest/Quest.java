@@ -47,7 +47,7 @@ public class Quest {
     public void progress(Player player, String taskType, int count, Map<String, Object> params) {
         if (!taskTypes.contains(taskType)) return;
         if (isCompleted(player)) return;
-        for(var task : tasks.values()) {
+        for (var task : tasks.values()) {
             if (task.getTaskType().equals(taskType)) {
                 task.progress(player, count, params);
             }
@@ -60,7 +60,7 @@ public class Quest {
 
     public boolean canStart(Player player) {
         // TODO: check if player can start the quest
-        return false;
+        return true;
     }
 
     public boolean isCompleted(Player player) {

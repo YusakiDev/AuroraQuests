@@ -11,7 +11,9 @@ import org.bukkit.entity.Player;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class QuestManager {
@@ -61,9 +63,15 @@ public class QuestManager {
         return pools.get(id);
     }
 
-    public void rollQuestsIfNecessary(Player player) {
+    public List<QuestPool> rollQuestsIfNecessary(Player player) {
+        var rolledPools = new ArrayList<QuestPool>();
+
         for (var pool : pools.values()) {
-            pool.rollIfNecessary(player);
+            if(pool.rollIfNecessary(player, false)) {
+                rolledPools.add(pool);
+            }
         }
+
+        return rolledPools;
     }
 }
