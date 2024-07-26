@@ -1,16 +1,16 @@
 package gg.auroramc.quests.menu;
 
 import gg.auroramc.aurora.api.menu.AuroraMenu;
-import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.api.quest.QuestPool;
 import org.bukkit.entity.Player;
 
 public class LevelMenu {
     private final Player player;
-    private final Quest quest;
+    private final QuestPool pool;
 
-    public LevelMenu(Player player, Quest quest) {
+    public LevelMenu(Player player, QuestPool pool) {
         this.player = player;
-        this.quest = quest;
+        this.pool = pool;
     }
 
     public void open() {

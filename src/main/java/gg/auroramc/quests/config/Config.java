@@ -1,10 +1,12 @@
 package gg.auroramc.quests.config;
 
 import gg.auroramc.aurora.api.config.AuroraConfig;
+import gg.auroramc.aurora.api.config.decorators.IgnoreField;
 import gg.auroramc.quests.AuroraQuests;
 import lombok.Getter;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,20 @@ public class Config extends AuroraConfig {
     private LevelUpSound questCompleteSound;
     private LevelUpMessage questCompleteMessage;
     private CommandAliasConfig commandAliases;
+    private List<String> sortOrder;
+
+    @IgnoreField
+    private Map<String, Integer> sortOderMap;
+
+    @Override
+    public void load() {
+        super.load();
+        Map<String, Integer> difficultyOrder = new HashMap<>();
+        for (int i = 0; i < sortOrder.size(); i++) {
+            difficultyOrder.put(sortOrder.get(i), i);
+        }
+        sortOderMap = difficultyOrder;
+    }
 
     public Config(AuroraQuests plugin) {
         super(getFile(plugin));

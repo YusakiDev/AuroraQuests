@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Getter
 public class Quest {
     private final QuestConfig config;
-    private final List<Reward> rewards = new ArrayList<>();
+    private final Map<String, Reward> rewards = Maps.newHashMap();
     private final Set<String> taskTypes;
     private final Map<String, Task> tasks = Maps.newHashMap();
     private final QuestPool holder;
@@ -39,7 +39,7 @@ public class Quest {
         this.config = config;
         for (var key : config.getRewards().getKeys(false)) {
             var reward = rewardFactory.createReward(config.getRewards().getConfigurationSection(key));
-            reward.ifPresent(rewards::add);
+            reward.ifPresent(r -> rewards.put(key, r));
         }
         taskTypes = config.getTasks().values().stream().map(TaskConfig::getTask).collect(Collectors.toSet());
         for (var task : config.getTasks().entrySet()) {
@@ -130,6 +130,27 @@ public class Quest {
         reward(player);
     }
 
+    public List<Placeholder<?>> getPlaceholders(Player player) {
+        var gc = AuroraQuests.getInstance().getConfigManager().getConfig();
+        List<Placeholder<?>> placeholders = new ArrayList<>();
+
+        placeholders.add(Placeholder.of("{name}", config.getName()));
+        placeholders.add(Placeholder.of("{difficulty}", gc.getDifficulties().get(config.getDifficulty())));
+        placeholders.add(Placeholder.of("{quest_id}", config.getId()));
+        placeholders.add(Placeholder.of("{pool_id}", holder.getId()));
+        placeholders.add(Placeholder.of("{pool_name}", holder.getConfig().getName()));
+
+        for(var task : tasks.values()) {
+            placeholders.add(Placeholder.of("{task_" + task.id() + "}", task.getDisplay(player)));
+        }
+
+        for(var reward : rewards.entrySet()) {
+            placeholders.add(Placeholder.of("{reward_" + reward.getKey() + "}", reward.getValue().getDisplay(player, placeholders)));
+        }
+
+        return placeholders;
+    }
+
     private void reward(Player player) {
         var gConfig = AuroraQuests.getInstance().getConfigManager().getConfig();
 
@@ -153,7 +174,7 @@ public class Quest {
                     if (!rewards.isEmpty()) {
                         text.append(Text.component(player, gConfig.getDisplayComponents().get("rewards").getTitle(), placeholders));
                     }
-                    for (var reward : rewards) {
+                    for (var reward : rewards.values()) {
                         text.append(Component.newline());
                         var display = gConfig.getDisplayComponents().get("rewards").getLine().replace("{reward}", reward.getDisplay(player, placeholders));
                         text.append(Text.component(player, display, placeholders));
@@ -176,6 +197,6 @@ public class Quest {
                     sound.getPitch());
         }
 
-        RewardExecutor.execute(rewards, player, 1, placeholders);
+        RewardExecutor.execute(rewards.values().stream().toList(), player, 1, placeholders);
     }
 }

@@ -6,13 +6,15 @@ language: en
 prevent-creative-mode: true
 
 command-aliases:
-  quests: ["quests", "quest"]
+  quests: [ "quests", "quest" ]
 
 # Specify the possible quest difficulties with their names
 difficulties:
   easy: "Easy"
   medium: "Medium"
   hard: "Hard"
+
+sort-order: [ "easy", "medium", "hard" ]
 
 leaderboards:
   # How many players should be cached for each quest pool?
