@@ -5,11 +5,16 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.levels.MatcherManager;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
+import gg.auroramc.aurora.api.message.Text;
+import gg.auroramc.aurora.api.reward.RewardExecutor;
 import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.config.quest.PoolConfig;
+import gg.auroramc.quests.util.RomanNumber;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -92,6 +97,60 @@ public class QuestPool {
         }
 
         return 0;
+    }
+
+    public void reward(Player player, int level) {
+        if (!hasLeveling()) return;
+
+        var mc = AuroraQuests.getInstance().getConfigManager().getConfig();
+        var prevLevel = Math.max(0, level - 1);
+        var rewards = matcherManager.getBestMatcher(level).computeRewards(level);
+
+        List<Placeholder<?>> placeholders = List.of(
+                Placeholder.of("{player}", player.getName()),
+                Placeholder.of("{level_raw}", level),
+                Placeholder.of("{level}", AuroraAPI.formatNumber(level)),
+                Placeholder.of("{level_roman}", RomanNumber.toRoman(level)),
+                Placeholder.of("{prev_level_raw}", prevLevel),
+                Placeholder.of("{prev_level}", AuroraAPI.formatNumber(prevLevel)),
+                Placeholder.of("{prev_level_roman}", RomanNumber.toRoman(prevLevel)),
+                Placeholder.of("{pool_name}", config.getName()),
+                Placeholder.of("{pool_id}", getId())
+        );
+
+        if (mc.getLevelUpMessage().getEnabled()) {
+            var text = Component.text();
+            var messageLines = mc.getLevelUpMessage().getMessage();
+
+            for (var line : messageLines) {
+                if (line.equals("component:rewards")) {
+                    if (!rewards.isEmpty()) {
+                        text.append(Text.component(player, mc.getDisplayComponents().get("rewards").getTitle(), placeholders));
+                    }
+                    for (var reward : rewards) {
+                        text.append(Component.newline());
+                        var display = mc.getDisplayComponents().get("rewards").getLine().replace("{reward}", reward.getDisplay(player, placeholders));
+                        text.append(Text.component(player, display, placeholders));
+                    }
+                } else {
+                    text.append(Text.component(player, line, placeholders));
+                }
+
+                if (!line.equals(messageLines.getLast())) text.append(Component.newline());
+            }
+
+            player.sendMessage(text);
+        }
+
+        if (mc.getLevelUpSound().getEnabled()) {
+            var sound = mc.getQuestCompleteSound();
+            player.playSound(player.getLocation(),
+                    Sound.valueOf(sound.getSound().toUpperCase()),
+                    sound.getVolume(),
+                    sound.getPitch());
+        }
+
+        RewardExecutor.execute(rewards, player, level, placeholders);
     }
 
     public Collection<Quest> getQuests() {

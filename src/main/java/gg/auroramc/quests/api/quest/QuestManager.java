@@ -60,9 +60,6 @@ public class QuestManager {
         for (var pool : pools.values()) {
             for (var quest : pool.getPlayerQuests(player)) {
                 quest.progress(player, taskType, amount, params);
-                if (quest.canComplete(player)) {
-                    quest.complete(player);
-                }
             }
         }
     }

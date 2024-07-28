@@ -12,6 +12,7 @@ import gg.auroramc.aurora.api.reward.RewardExecutor;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.event.QuestCompletedEvent;
+import gg.auroramc.quests.api.event.QuestPoolLevelUpEvent;
 import gg.auroramc.quests.config.quest.QuestConfig;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import lombok.Getter;
@@ -61,6 +62,15 @@ public class Quest {
             if (task.getTaskType().equals(taskType)) {
                 task.progress(player, count, params);
             }
+        }
+        var level = holder.getPlayerLevel(player);
+        if (canComplete(player)) {
+            complete(player);
+        }
+        var newLevel = holder.getPlayerLevel(player);
+        if (holder.hasLeveling() && newLevel > level) {
+            holder.reward(player, newLevel);
+            Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(player, holder));
         }
     }
 
@@ -190,7 +200,7 @@ public class Quest {
                 if (!line.equals(messageLines.getLast())) text.append(Component.newline());
             }
 
-            Chat.sendMessage(player, "", Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
+            player.sendMessage(text);
         }
 
         if (gConfig.getQuestCompleteSound().getEnabled()) {
