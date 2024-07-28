@@ -2,6 +2,7 @@ package gg.auroramc.quests.api.quest;
 
 import com.google.common.collect.Maps;
 import gg.auroramc.aurora.api.reward.CommandReward;
+import gg.auroramc.aurora.api.reward.ItemReward;
 import gg.auroramc.aurora.api.reward.MoneyReward;
 import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.util.NamespacedId;
@@ -27,6 +28,7 @@ public class QuestManager {
         this.plugin = plugin;
         rewardFactory.registerRewardType(NamespacedId.fromDefault("command"), CommandReward.class);
         rewardFactory.registerRewardType(NamespacedId.fromDefault("money"), MoneyReward.class);
+        rewardFactory.registerRewardType(NamespacedId.fromDefault("item"), ItemReward.class);
         try {
             StdSchedulerFactory.getDefaultScheduler().start();
         } catch (SchedulerException e) {
