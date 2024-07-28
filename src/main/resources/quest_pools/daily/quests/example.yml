@@ -34,7 +34,7 @@ tasks:
     args:
       amount: 10
       types:
-        - "STONE"
+        - "minecraft:stone"
     # These filters can be used for every task
     filters:
       worlds:
@@ -70,7 +70,7 @@ tasks:
     args:
       amount: 10
       types:
-        - "ZOMBIE"
+        - "minecraft:zombie"
 
 # Rewards to give when player completes the quest
 rewards:
