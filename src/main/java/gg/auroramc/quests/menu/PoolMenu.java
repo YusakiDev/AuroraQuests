@@ -1,11 +1,13 @@
 package gg.auroramc.quests.menu;
 
+import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.api.quest.QuestPool;
+import gg.auroramc.quests.util.RomanNumber;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +36,7 @@ public class PoolMenu {
         var mc = config.getMenu();
         var mmc = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
 
+
         var menu = new AuroraMenu(player, mc.getTitle(), 54, false, Placeholder.of("{name}", config.getName()));
 
         if (config.getMenu().getFiller().getEnabled()) {
@@ -43,8 +46,19 @@ public class PoolMenu {
         }
 
         // Custom items
+        var totalCompletedPlaceholder = Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount(player)));
+        var levelPlaceholder = Placeholder.of("{level}", AuroraAPI.formatNumber(pool.getPlayerLevel(player)));
+        var levelRawPlaceholder = Placeholder.of("{level_raw}", pool.getPlayerLevel(player));
+        var levelRomanPlaceholder = Placeholder.of("{level_roman}", RomanNumber.toRoman(pool.getPlayerLevel(player)));
+
         for (var customItem : config.getMenu().getCustomItems().values()) {
-            menu.addItem(ItemBuilder.of(customItem).build(player));
+            menu.addItem(ItemBuilder.of(customItem)
+                    .placeholder(totalCompletedPlaceholder)
+                    .placeholder(Placeholder.of("{name}", config.getName()))
+                    .placeholder(levelPlaceholder)
+                    .placeholder(levelRawPlaceholder)
+                    .placeholder(levelRomanPlaceholder)
+                    .build(player));
         }
 
         // Close and back buttons
@@ -79,7 +93,7 @@ public class PoolMenu {
 
             if (quest.isCompleted(player)) {
                 lore.addAll(quest.getConfig().getCompletedLore());
-            } else if (!quest.isUnlocked(player)) {
+            } else if (!quest.isUnlocked(player) && pool.isGlobal()) {
                 lore.addAll(quest.getConfig().getLockedLore());
             }
 
@@ -127,7 +141,9 @@ public class PoolMenu {
                 });
             } else {
                 var item = ItemBuilder.of(mmc.getItems().get("switch-to-completed").merge(mc.getItems().get("switch-to-completed")))
-                        .placeholder(Placeholder.of("{name}", config.getName())).build(player);
+                        .placeholder(Placeholder.of("{name}", config.getName()))
+                        .placeholder(totalCompletedPlaceholder)
+                        .build(player);
 
                 menu.addItem(item, (e) -> {
                     isCompletedQuests = true;
@@ -141,7 +157,12 @@ public class PoolMenu {
         // Leveling button
         if (pool.hasLeveling()) {
             var item = ItemBuilder.of(mmc.getItems().get("switch-to-levels").merge(mc.getItems().get("switch-to-levels")))
-                    .placeholder(Placeholder.of("{name}", config.getName())).build(player);
+                    .placeholder(Placeholder.of("{name}", config.getName()))
+                    .placeholder(totalCompletedPlaceholder)
+                    .placeholder(levelPlaceholder)
+                    .placeholder(levelRawPlaceholder)
+                    .placeholder(levelRomanPlaceholder)
+                    .build(player);
 
             menu.addItem(item, (e) -> {
                 new LevelMenu(player, pool).open();

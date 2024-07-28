@@ -2,7 +2,7 @@ name: "Example"
 difficulty: "easy"
 
 menu-item:
-  material: "DIAMOND_SWORD"
+  material: paper
   name: "&f{name}"
   lore:
     - "&7This is an example quest."
@@ -11,7 +11,7 @@ menu-item:
     - "&7Tasks:"
     - "  {task_mine_block}"
     - "  {task_kill_mob}"
-    -
+    - ""
     - "&7Rewards:"
     - "  {reward_money}"
     - "  {reward_backpack}"
@@ -30,7 +30,7 @@ tasks:
   # Task 1
   mine_block:
     task: BLOCK_BREAK
-    display: "{status} Mine {required} stone {current}/{required}"
+    display: "{status} &fMine {required} stone &b{current}&f/&b{required}"
     args:
       amount: 10
       types:
@@ -70,7 +70,7 @@ tasks:
   # Task 2
   kill_mob:
     task: MOB_KILL
-    display: "{status} Kill {required} zombies {current}/{required}"
+    display: "{status} &fKill {required} zombies &b{current}&f/&b{required}"
     args:
       amount: 10
       types:
@@ -88,13 +88,10 @@ rewards:
     display: "&8+&f1 Backpack"
 
 # If this is a timed random quest, it won't pick it if the requirements are not met
-start-requirements:
-  # Should the quest be shown in the menu even if the player doesn't meet the requirements
-  # Only works for global quests
-  always-show-in-menu: true
-  # Required quests to be completed before this quest can be started
-  quests:
-    - "quest_name"
-  # Required permissions to start the quest
-  permissions:
-    - "example.permission"
+#start-requirements:
+#  # Required quests to be completed before this quest can be started
+#  quests:
+#    - "quest_name"
+#  # Required permissions to start the quest
+#  permissions:
+#    - "example.permission"

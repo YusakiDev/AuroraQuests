@@ -17,6 +17,7 @@ import java.util.*;
 public class QuestPool {
     @Getter
     private final PoolConfig config;
+    @Getter
     private MatcherManager matcherManager;
     private QuestRollerScheduler questRoller;
     private final Map<String, Quest> quests = Maps.newHashMap();
@@ -79,7 +80,18 @@ public class QuestPool {
     }
 
     public int getPlayerLevel(Player player) {
-        return getQuestData(player).getPoolLevel(config.getId());
+        if (!hasLeveling()) return 0;
+
+        var completed = getQuestData(player).getCompletedCount(getId());
+        var requirements = config.getLeveling().getRequirements();
+
+        for (int i = requirements.size() - 1; i >= 0; i--) {
+            if (completed >= requirements.get(i)) {
+                return i + 1;
+            }
+        }
+
+        return 0;
     }
 
     public Collection<Quest> getQuests() {
@@ -159,6 +171,10 @@ public class QuestPool {
             var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getReRolledTarget();
             Chat.sendMessage(player, msg, Placeholder.of("{pool}", config.getName()));
         }
+    }
+
+    public long getCompletedQuestCount(Player player) {
+        return getQuestData(player).getCompletedCount(getId());
     }
 
     public void dispose() {

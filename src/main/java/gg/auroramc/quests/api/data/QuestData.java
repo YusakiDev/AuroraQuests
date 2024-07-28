@@ -15,7 +15,6 @@ import java.util.Set;
 public class QuestData extends UserDataHolder {
     private final Map<String, PoolRollData> rolledQuests = Maps.newConcurrentMap();
     private final Map<String, Map<String, Map<String, Integer>>> progression = Maps.newConcurrentMap();
-    private final Map<String, Integer> poolLevels = Maps.newConcurrentMap();
     private final Map<String, Set<String>> completedQuests = Maps.newConcurrentMap();
     private final Map<String, Long> completedCount = Maps.newConcurrentMap();
     private final Map<String, Set<String>> questUnlocks = Maps.newConcurrentMap();
@@ -69,15 +68,6 @@ public class QuestData extends UserDataHolder {
         progression.remove(poolId);
     }
 
-    public int getPoolLevel(String poolId) {
-        return poolLevels.getOrDefault(poolId, 0);
-    }
-
-    public void setPoolLevel(String poolId, int level) {
-        poolLevels.put(poolId, level);
-        dirty.set(true);
-    }
-
     public void incrementCompletedCount(String poolId) {
         completedCount.merge(poolId, 1L, Long::sum);
         dirty.set(true);
@@ -118,23 +108,17 @@ public class QuestData extends UserDataHolder {
         }
 
         // Quest unlocks
-        for(var poolEntry : questUnlocks.entrySet()) {
-            for(var questEntry : poolEntry.getValue()) {
+        for (var poolEntry : questUnlocks.entrySet()) {
+            for (var questEntry : poolEntry.getValue()) {
                 data.set("progression." + poolEntry.getKey() + "." + questEntry + ".unlocked", true);
             }
         }
 
         // Completed quests
-        for(var poolEntry : completedQuests.entrySet()) {
-            for(var questEntry : poolEntry.getValue()) {
+        for (var poolEntry : completedQuests.entrySet()) {
+            for (var questEntry : poolEntry.getValue()) {
                 data.set("progression." + poolEntry.getKey() + "." + questEntry, true);
             }
-        }
-
-        // Pool levels
-        var poolLevelsSection = data.createSection("levels");
-        for (var entry : poolLevels.entrySet()) {
-            poolLevelsSection.set(entry.getKey(), entry.getValue());
         }
 
         // Completed count
@@ -167,7 +151,7 @@ public class QuestData extends UserDataHolder {
                     }
                     var questSection = poolSection.getConfigurationSection(questKey);
                     for (var taskKey : questSection.getKeys(false)) {
-                        if(taskKey.equals("unlocked")) {
+                        if (taskKey.equals("unlocked")) {
                             questUnlocks.computeIfAbsent(poolKey, k -> Sets.newConcurrentHashSet()).add(questKey);
                             continue;
                         }
@@ -177,13 +161,6 @@ public class QuestData extends UserDataHolder {
                                 .put(taskKey, count);
                     }
                 }
-            }
-        }
-
-        var poolLevelsSection = data.getConfigurationSection("levels");
-        if (poolLevelsSection != null) {
-            for (var key : poolLevelsSection.getKeys(false)) {
-                poolLevels.put(key, poolLevelsSection.getInt(key));
             }
         }
 

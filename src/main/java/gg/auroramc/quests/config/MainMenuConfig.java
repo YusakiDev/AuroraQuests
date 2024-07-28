@@ -16,6 +16,14 @@ public class MainMenuConfig extends AuroraConfig {
     private Map<String, ItemConfig> items;
     private Map<String, ItemConfig> customItems;
     private TaskStatuses taskStatuses;
+    private ProgressBar progressBar;
+
+    @Getter
+    public static final class ProgressBar {
+        private Integer length = 20;
+        private String filledCharacter;
+        private String unfilledCharacter;
+    }
 
     public MainMenuConfig(AuroraQuests plugin) {
         super(getFile(plugin));

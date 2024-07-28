@@ -18,6 +18,11 @@ display-components:
     title: "&7Rewards:&r"
     line: "  {reward}"
 
+progress-bar:
+  length: 10
+  filled-character: "&a&l■"
+  unfilled-character: "&7&l■"
+
 # These items will be used en every menu where it makes sense, not just here
 items:
   previous-page:
@@ -33,7 +38,7 @@ items:
     lore:
       - "&7Click to go to the next page."
   current-page:
-    material: paper
+    material: nether_star
     name: "&fCurrent Page &7(&f{current}&7/&f{total}&7)"
     slot: 49
     lore:
@@ -46,58 +51,67 @@ items:
       - "&7Click to close the menu."
   back:
     material: arrow
-    display_name: "&fBack"
+    name: "&fBack"
     slot: 45
     lore:
       - "&7Click to go back."
   # These are for global quest pools (these pools contains non repeatable quests)
   switch-to-completed:
-    material: emerald
+    material: book
     name: "&aCompleted Quests"
     slot: 8
     lore:
-      - "&7Click to switch to completed quests."
+      - "&7Click to see the quests"
+      - "&7you have already completed."
+      - ""
+      - "&7Total completed: &f{total_completed}"
+      - ""
+      - "&eClick to view!"
   switch-to-active:
-    material: emerald
-    name: "&bActive Quests"
+    material: book
+    name: "&bOngoing Quests"
     slot: 8
     lore:
-      - "&7Click to switch to active quests."
+      - "&7View quests you are currently"
+      - "&7working on."
+      - ""
+      - "&eClick to view!"
   switch-to-levels:
     material: emerald
     name: "&6Levels"
     slot: 4
     lore:
-      - "&7Click to switch to levels."
+      - "&8View your levels"
+      - ""
+      - "&7Total completed: &f{total_completed}"
+      - "&7Your level: &f{level_roman}"
+      - ""
+      - "&eClick to view!"
   completed-level:
-    name: "&fLevel &7{level}"
+    name: "&fLevel &7{level_roman}"
     lore:
       - "&8You have reached this level"
+      - ""
+      - "&7Progress: &a{progress_percent}%"
+      - "&r{progressbar} &e{current}&6/&e{required}"
       - ""
       - "component:rewards"
       - ""
       - "&a&lᴄᴏᴍᴘʟᴇᴛᴇᴅ"
     material: LIME_STAINED_GLASS_PANE
   locked-level:
-    name: "&cLevel &7{level}"
+    name: "&cLevel &7{level_roman}"
     lore:
       - "&8Complete the previous levels"
+      - ""
+      - "&7Progress: &e{progress_percent}&6%"
+      - "&r{progressbar} &e{current}&6/&e{required}"
       - ""
       - "component:rewards"
       - ""
       - "&c&lɴᴏᴛ ᴄᴏᴍᴘʟᴇᴛᴇᴅ"
     material: RED_STAINED_GLASS_PANE
-  next-level:
-    name: "&fLevel &7{level}"
-    lore:
-      - "&8Next level"
-      - ""
-      - "component:rewards"
-      - ""
-      - "&7ᴘʀᴏɢʀᴇѕѕ:"
-      - "{progressbar} &7{current}&8/&7{required} XP"
-    material: YELLOW_STAINED_GLASS_PANE
 
 
 # Define your custom menu items here
-custom-items: {}
+custom-items: { }

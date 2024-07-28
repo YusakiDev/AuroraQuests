@@ -14,16 +14,19 @@ reset-frequency: 0 0 0 * * ?
 menu-item:
   page: 1
   item:
-    material: book
+    material: WRITABLE_BOOK
     slot: 10
-    name: "&aDaily Quests"
+    name: "&a{name}"
     lore:
-      - "&7Click to view the daily quests."
+      - "&8View your quests"
+      - "&7Total completed: &f{total_completed}"
+      - ""
+      - "&eClick to view!"
 
 menu:
-  title: "Daily quests"
+  title: "{name}"
   # Where should be put the quests in the menu?
-  display-area: [ 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43 ]
+  display-area: [ 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43 ]
   # Should the menu have a back/close buttons?
   has-back-button: true
   has-close-button: true
@@ -33,27 +36,20 @@ menu:
       material: black_stained_glass_pane
       name: " "
   # You can define custom items here
-  custom-items:
-    info:
-      material: painting
-      display_name: "&fDaily quests"
-      slot: 4
-      lore:
-        - "&8Come back every day for new quests."
-        - ""
-        - "&7Total completed: &f{total_completed}"
-      on-click:
-        - "[close]"
+  custom-items: {}
   # You could override the default items here
-#  items: {}
+  items: {}
 
 
 # Should we create a leveling system based on the amount of quests completed in this pool?
 leveling:
   enabled: true
   menu:
-    title: "Daily Quests levels"
+    title: "{name} levels"
     display-area: [ 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43 ]
+    # If your quest poll have less than 64 levels, then you can set this to true
+    # This will set item amounts to the level in the menu
+    allow-item-amounts: true
     # You can override the default items here
     items: {}
     # You can define custom items here for the leveling menu

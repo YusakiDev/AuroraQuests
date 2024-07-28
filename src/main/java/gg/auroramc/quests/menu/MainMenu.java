@@ -1,5 +1,6 @@
 package gg.auroramc.quests.menu;
 
+import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.message.Placeholder;
@@ -47,7 +48,11 @@ public class MainMenu {
             var mi = pool.getConfig().getMenuItem();
             if (mi.getPage() != page) continue;
 
-            menu.addItem(ItemBuilder.of(mi.getItem()).build(player), (e) -> {
+            // TODO: add leaderboard placeholders
+            menu.addItem(ItemBuilder.of(mi.getItem())
+                    .placeholder(Placeholder.of("{name}", pool.getConfig().getName()))
+                    .placeholder(Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount(player))))
+                    .build(player), (e) -> {
                 new PoolMenu(player, pool).open();
             });
         }

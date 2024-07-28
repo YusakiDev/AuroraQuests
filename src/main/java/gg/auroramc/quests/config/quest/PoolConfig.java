@@ -67,6 +67,7 @@ public class PoolConfig extends AuroraConfig {
         private List<Integer> displayArea;
         private Boolean hasBackButton = true;
         private Boolean hasCloseButton = true;
+        private Boolean allowItemAmounts = false;
     }
 
     public PoolConfig(File file) {
