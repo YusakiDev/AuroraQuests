@@ -49,10 +49,6 @@ tasks:
         value: [ "minecraft:plains", "minecraft:forest" ]
       min-y-level: 0
       max-y-level: 64
-      locations:
-        # "world,x,y,z,radius"
-        - "world,0,0,0,10"
-        - "world,10,10,10,50"
       hand:
         # Items that the player must be holding when the action happens
         # Only one of these needs to match

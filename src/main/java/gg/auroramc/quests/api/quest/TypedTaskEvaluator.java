@@ -1,17 +1,23 @@
 package gg.auroramc.quests.api.quest;
 
 import gg.auroramc.quests.config.quest.TaskConfig;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class TypedTaskEvaluator implements TaskEvaluator {
+public class TypedTaskEvaluator extends FilteredTaskEvaluator {
     @Override
-    public boolean evaluate(TaskConfig config, Map<String, Object> params) {
+    public boolean evaluate(Player player, TaskConfig config, Map<String, Object> params) {
+        var passesFilters = super.evaluate(player, config, params);
+        if (!passesFilters) return false;
+
         var list = config.getArgs().getStringList("types");
+
         if (list.isEmpty()) return true;
-        if (params.containsKey("type")) {
-            return list.contains(params.get("type"));
+        if (params.containsKey("type") && params.get("type") instanceof String type) {
+            return list.contains(type);
         }
-        return false;
+        return true;
     }
 }

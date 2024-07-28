@@ -11,7 +11,7 @@ import java.util.Map;
 
 public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
     public void progress(Player player, int count, Map<String, Object> params) {
-        if (!TaskManager.getEvaluator(config.getTask()).evaluate(config, params)) return;
+        if (!TaskManager.getEvaluator(config.getTask()).evaluate(player, config, params)) return;
 
         AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class)
                 .progress(pool.getId(), holder.getId(), id, count);

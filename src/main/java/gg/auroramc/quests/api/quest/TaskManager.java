@@ -1,6 +1,7 @@
 package gg.auroramc.quests.api.quest;
 
 import gg.auroramc.quests.config.quest.TaskConfig;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class TaskManager {
         return evaluatorMap.getOrDefault(taskType, DEFAULT_EVALUATOR);
     }
 
-    public static boolean evaluate(TaskConfig config, Map<String, Object> params) {
-        return getEvaluator(config.getTask()).evaluate(config, params);
+    public static boolean evaluate(Player player, TaskConfig config, Map<String, Object> params) {
+        return getEvaluator(config.getTask()).evaluate(player, config, params);
     }
 }

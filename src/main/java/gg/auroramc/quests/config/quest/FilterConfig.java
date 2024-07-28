@@ -2,7 +2,7 @@ package gg.auroramc.quests.config.quest;
 
 import lombok.Getter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 public class FilterConfig {
@@ -11,19 +11,18 @@ public class FilterConfig {
     private SmartList biomes;
     private Integer minYLevel;
     private Integer maxYLevel;
-    private List<String> locations;
     private HandConfig hand;
 
     @Getter
     public static class SmartList {
         private String type;
-        private List<String> value;
+        private Set<String> value;
     }
 
     @Getter
     public static class HandConfig {
-        private List<String> items;
-        private List<String> enchantsEvery;
-        private List<String> enchantsAny;
+        private Set<String> items;
+        private Set<String> enchantsEvery;
+        private Set<String> enchantsAny;
     }
 }

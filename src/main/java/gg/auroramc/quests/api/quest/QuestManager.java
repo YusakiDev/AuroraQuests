@@ -7,7 +7,10 @@ import gg.auroramc.aurora.api.reward.MoneyReward;
 import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.hooks.HookManager;
+import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import lombok.Getter;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -47,6 +50,13 @@ public class QuestManager {
     }
 
     public void progress(Player player, String taskType, int amount, Map<String, Object> params) {
+        if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
+            return;
+
+        if (HookManager.isEnabled(WorldGuardHook.class)) {
+            if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return;
+        }
+
         for (var pool : pools.values()) {
             for (var quest : pool.getPlayerQuests(player)) {
                 quest.progress(player, taskType, amount, params);

@@ -33,7 +33,7 @@ public class HookManager {
         }
     }
 
-    public static <T extends gg.auroramc.collections.hooks.Hook> T getHook(Class<T> clazz) {
+    public static <T extends Hook> T getHook(Class<T> clazz) {
         return clazz.cast(hooks.get(clazz));
     }
 
