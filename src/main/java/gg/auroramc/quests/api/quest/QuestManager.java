@@ -15,10 +15,7 @@ import org.bukkit.entity.Player;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class QuestManager {
     @Getter
@@ -49,7 +46,7 @@ public class QuestManager {
         }
     }
 
-    public void progress(Player player, String taskType, int amount, Map<String, Object> params) {
+    public void progress(Player player, String taskType, double amount, Map<String, Object> params) {
         if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
             return;
 
@@ -60,6 +57,23 @@ public class QuestManager {
         for (var pool : pools.values()) {
             for (var quest : pool.getPlayerQuests(player)) {
                 quest.progress(player, taskType, amount, params);
+            }
+        }
+    }
+
+    public void progress(Player player, Set<String> taskTypes, double amount, Map<String, Object> params) {
+        if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
+            return;
+
+        if (HookManager.isEnabled(WorldGuardHook.class)) {
+            if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return;
+        }
+
+        for (var pool : pools.values()) {
+            for (var quest : pool.getPlayerQuests(player)) {
+                for (var taskType : taskTypes) {
+                    quest.progress(player, taskType, amount, params);
+                }
             }
         }
     }

@@ -54,7 +54,7 @@ public class Quest {
         return config.getId();
     }
 
-    public void progress(Player player, String taskType, int count, Map<String, Object> params) {
+    public void progress(Player player, String taskType, double count, Map<String, Object> params) {
         if (!taskTypes.contains(taskType)) return;
         if (isCompleted(player)) return;
         if (!canStart(player)) return;

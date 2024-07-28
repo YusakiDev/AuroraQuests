@@ -22,13 +22,13 @@ public class HookManager {
     public static void loadHooks(AuroraQuests plugin) {
         for (var hook : Hooks.values()) {
             try {
-                if (Bukkit.getPluginManager().getPlugin(hook.getPlugin()) != null) {
+                if (hook.canHook()) {
                     var instance = hook.getClazz().getDeclaredConstructor().newInstance();
                     instance.hookAtStartUp(plugin);
                     hooks.put(hook.getClazz(), instance);
                 }
             } catch (Exception e) {
-                AuroraQuests.logger().warning("Failed to hook " + hook.getPlugin() + ": " + e.getMessage());
+                AuroraQuests.logger().warning("Failed to hook " + String.join(", ", hook.getPlugins()) + ": " + e.getMessage());
             }
         }
     }

@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.hooks.Hook;
 import gg.auroramc.quests.util.FlagManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -17,7 +18,8 @@ import java.util.Set;
 public class WorldGuardHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
-        AuroraQuests.logger().info("Hooked into WorldGuard for flags and region filters");
+        Bukkit.getPluginManager().registerEvents(new WorldGuardListener(), plugin);
+        AuroraQuests.logger().info("Hooked into WorldGuard for flags, region filters and ENTER_REGION task type");
     }
 
     @Override

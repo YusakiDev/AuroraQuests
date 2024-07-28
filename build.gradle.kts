@@ -28,6 +28,9 @@ repositories {
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://maven.citizensnpcs.co/repo")
+    maven("https://jitpack.io/")
+    maven("https://repo.projectshard.dev/repository/releases/")
 }
 
 dependencies {
@@ -40,6 +43,12 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT") {
+        exclude(group = "*", module = "*")
+    }
+    compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.2.1")
+    compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.22.3")
+    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.1")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 

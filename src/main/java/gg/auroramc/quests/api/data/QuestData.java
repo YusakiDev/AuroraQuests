@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class QuestData extends UserDataHolder {
     private final Map<String, PoolRollData> rolledQuests = Maps.newConcurrentMap();
-    private final Map<String, Map<String, Map<String, Integer>>> progression = Maps.newConcurrentMap();
+    private final Map<String, Map<String, Map<String, Double>>> progression = Maps.newConcurrentMap();
     private final Map<String, Set<String>> completedQuests = Maps.newConcurrentMap();
     private final Map<String, Long> completedCount = Maps.newConcurrentMap();
     private final Map<String, Set<String>> questUnlocks = Maps.newConcurrentMap();
@@ -42,10 +42,10 @@ public class QuestData extends UserDataHolder {
         dirty.set(true);
     }
 
-    public void progress(String poolId, String questId, String taskId, int count) {
+    public void progress(String poolId, String questId, String taskId, double count) {
         progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap())
                 .computeIfAbsent(questId, k -> Maps.newConcurrentMap())
-                .merge(taskId, count, Integer::sum);
+                .merge(taskId, count, Double::sum);
         dirty.set(true);
     }
 
@@ -58,10 +58,10 @@ public class QuestData extends UserDataHolder {
         return completedQuests.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).contains(questId);
     }
 
-    public int getProgression(String poolId, String questId, String taskId) {
+    public double getProgression(String poolId, String questId, String taskId) {
         return progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap())
                 .computeIfAbsent(questId, k -> Maps.newConcurrentMap())
-                .computeIfAbsent(taskId, k -> 0);
+                .computeIfAbsent(taskId, k -> 0D);
     }
 
     public void clearPoolProgression(String poolId) {
@@ -155,7 +155,7 @@ public class QuestData extends UserDataHolder {
                             questUnlocks.computeIfAbsent(poolKey, k -> Sets.newConcurrentHashSet()).add(questKey);
                             continue;
                         }
-                        var count = questSection.getInt(taskKey, 0);
+                        var count = questSection.getDouble(taskKey, 0);
                         progression.computeIfAbsent(poolKey, k -> Maps.newConcurrentMap())
                                 .computeIfAbsent(questKey, k -> Maps.newConcurrentMap())
                                 .put(taskKey, count);

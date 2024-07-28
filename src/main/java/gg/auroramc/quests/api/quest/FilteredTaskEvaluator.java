@@ -18,7 +18,7 @@ public class FilteredTaskEvaluator implements TaskEvaluator {
 
 
         Location location;
-        if (params.containsKey("location") && params.get("location") instanceof Location l) {
+        if (params != null && params.containsKey("location") && params.get("location") instanceof Location l) {
             location = l;
         } else {
             location = player.getLocation();

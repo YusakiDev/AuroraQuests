@@ -19,5 +19,7 @@ public class LuckPermsHook implements Hook {
             var player = Bukkit.getPlayer(event.getUser().getUniqueId());
             if (player != null) plugin.getQuestManager().tryStartGlobalQuests(player);
         });
+
+        AuroraQuests.logger().info("Hooked into LuckPerms for permission rewards and for permission start requirements");
     }
 }

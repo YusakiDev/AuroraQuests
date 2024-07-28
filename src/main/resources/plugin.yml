@@ -11,6 +11,12 @@ softdepend:
   - "AuraSkills"
   - "MythicMobs"
   - "PlaceholderAPI"
+  - "Citizens"
+  - "Shopkeepers"
+  - "CustomFishing"
+  - "EconomyShopGUI"
+  - "EconomyShopGUI-Premium"
+  - "AuroraLevels"
 
 website: https://auroramc.gg
 

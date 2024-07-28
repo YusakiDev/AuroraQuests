@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 
 public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
-    public void progress(Player player, int count, Map<String, Object> params) {
+    public void progress(Player player, double count, Map<String, Object> params) {
         if (!TaskManager.getEvaluator(config.getTask()).evaluate(player, config, params)) return;
 
         AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class)

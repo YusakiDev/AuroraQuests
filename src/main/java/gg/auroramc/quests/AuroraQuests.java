@@ -7,7 +7,7 @@ import gg.auroramc.quests.api.quest.QuestManager;
 import gg.auroramc.quests.command.CommandManager;
 import gg.auroramc.quests.config.ConfigManager;
 import gg.auroramc.quests.hooks.HookManager;
-import gg.auroramc.quests.listener.PlayerListener;
+import gg.auroramc.quests.listener.*;
 import gg.auroramc.quests.placeholder.QuestPlaceholderHandler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -48,6 +48,8 @@ public class AuroraQuests extends JavaPlugin {
         commandManager = new CommandManager(this);
         commandManager.reload();
 
+        registerListeners();
+
         questManager = new QuestManager(this);
 
         HookManager.enableHooks(this);
@@ -72,5 +74,27 @@ public class AuroraQuests extends JavaPlugin {
         } catch (SchedulerException e) {
             l.severe("Failed to shutdown scheduler: " + e.getMessage());
         }
+    }
+
+    private void registerListeners() {
+        var pm = Bukkit.getPluginManager();
+        pm.registerEvents(new BlockShearingListener(), this);
+        pm.registerEvents(new BreedingEggListener(), this);
+        pm.registerEvents(new BrewingListener(), this);
+        pm.registerEvents(new BuildingListener(), this);
+        pm.registerEvents(new CommandListener(), this);
+        pm.registerEvents(new ConsumeListener(), this);
+        pm.registerEvents(new CraftListener(), this);
+        pm.registerEvents(new EnchantListener(), this);
+        pm.registerEvents(new ExpEarnListener(), this);
+        pm.registerEvents(new FarmingListener(), this);
+        pm.registerEvents(new FishingListener(), this);
+        pm.registerEvents(new MilkingListener(), this);
+        pm.registerEvents(new MiningListener(), this);
+        pm.registerEvents(new MobKillingListener(), this);
+        pm.registerEvents(new PlayerKillingListener(), this);
+        pm.registerEvents(new ShearingListener(), this);
+        pm.registerEvents(new SmeltingListener(), this);
+        pm.registerEvents(new TamingListener(), this);
     }
 }
