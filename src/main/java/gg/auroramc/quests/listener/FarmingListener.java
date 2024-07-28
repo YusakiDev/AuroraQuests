@@ -2,8 +2,6 @@ package gg.auroramc.quests.listener;
 
 import gg.auroramc.aurora.api.events.region.RegionBlockBreakEvent;
 import gg.auroramc.aurora.api.item.TypeId;
-import gg.auroramc.auroracore.quests.task.TaskType;
-import gg.auroramc.auroracore.quests.task.impl.TypedCounterTask;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
 import org.bukkit.Material;
