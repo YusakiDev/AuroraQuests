@@ -55,17 +55,9 @@ tasks:
         items:
           - "minecraft:diamond_pickaxe"
           - "oraxen:mythril_pickaxe"
-        # Enchantments that must be present
-        enchants-every:
-          - "minecraft:efficiency"
-          - "minecraft:fortune"
-        # At least one of these must be present
-        enchants-any:
-          - "minecraft:unbreaking"
-          - "minecraft:silk_touch"
   # Task 2
   kill_mob:
-    task: MOB_KILL
+    task: KILL_MOB
     display: "{status} &fKill {required} zombies &b{current}&f/&b{required}"
     args:
       amount: 10

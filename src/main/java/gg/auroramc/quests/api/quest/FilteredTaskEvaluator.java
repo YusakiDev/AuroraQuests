@@ -54,7 +54,9 @@ public class FilteredTaskEvaluator implements TaskEvaluator {
 
         if (filters.getHand() != null) {
             var itemId = AuroraAPI.getItemManager().resolveId(player.getInventory().getItemInMainHand());
-            valid = valid && filters.getHand().getItems().contains(itemId.toString());
+            if(filters.getHand().getItems() != null && !filters.getHand().getItems().isEmpty()) {
+                valid = valid && filters.getHand().getItems().contains(itemId.toString());
+            }
         }
 
         if (filters.getRegions() != null && HookManager.isEnabled(WorldGuardHook.class)) {

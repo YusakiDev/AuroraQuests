@@ -22,6 +22,7 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
     }
 
     public boolean isCompleted(Player player) {
+        if (holder.isCompleted(player)) return true;
         var data = AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class);
         var count = data.getProgression(pool.getId(), holder.getId(), id);
         return count >= config.getArgs().getInt("amount", 1);
@@ -30,12 +31,12 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
     public String getDisplay(Player player) {
         var gc = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig().getTaskStatuses();
         var data = AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class);
-        var current = data.getProgression(pool.getId(), holder.getId(), id);
         var required = config.getArgs().getInt("amount", 1);
+        var current = isCompleted(player) ? required : data.getProgression(pool.getId(), holder.getId(), id);
 
         return Placeholder.execute(config.getDisplay(),
                 Placeholder.of("{status}", isCompleted(player) ? gc.getCompleted() : gc.getNotCompleted()),
-                Placeholder.of("{current}", AuroraAPI.formatNumber(current)),
+                Placeholder.of("{current}", AuroraAPI.formatNumber(Math.min(current, required))),
                 Placeholder.of("{required}", AuroraAPI.formatNumber(required))
         );
     }

@@ -105,8 +105,8 @@ public class Quest {
     }
 
     private boolean hasStartRequirements() {
-        return (config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
-                (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty());
+        return config.getStartRequirements() != null && ((config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
+                (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty()));
     }
 
     public boolean isUnlocked(Player player) {

@@ -102,7 +102,9 @@ public class QuestData extends UserDataHolder {
             for (var questEntry : poolEntry.getValue().entrySet()) {
                 var questSection = poolSection.createSection(questEntry.getKey());
                 for (var taskEntry : questEntry.getValue().entrySet()) {
-                    questSection.set(taskEntry.getKey(), taskEntry.getValue());
+                    if(taskEntry.getValue() > 0) {
+                        questSection.set(taskEntry.getKey(), taskEntry.getValue());
+                    }
                 }
             }
         }

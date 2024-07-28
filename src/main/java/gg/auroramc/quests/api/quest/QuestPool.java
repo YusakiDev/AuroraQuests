@@ -79,6 +79,7 @@ public class QuestPool {
     }
 
     public List<Quest> getPlayerQuests(Player player) {
+        if (isGlobal()) return quests.values().stream().toList();
         var data = getQuestData(player);
         var rolledQuests = data.getPoolRollData(config.getId());
         return rolledQuests.quests().stream().map(this::getQuest).toList();
@@ -114,7 +115,7 @@ public class QuestPool {
                 Placeholder.of("{prev_level_raw}", prevLevel),
                 Placeholder.of("{prev_level}", AuroraAPI.formatNumber(prevLevel)),
                 Placeholder.of("{prev_level_roman}", RomanNumber.toRoman(prevLevel)),
-                Placeholder.of("{pool_name}", config.getName()),
+                Placeholder.of("{pool}", config.getName()),
                 Placeholder.of("{pool_id}", getId())
         );
 

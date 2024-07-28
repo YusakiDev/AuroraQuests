@@ -35,9 +35,10 @@ display-components:
 quest-complete-message:
   enabled: true
   message:
-    - "  &f&l{quest_name} completed&r"
-    - ' '
+    - "  &f&l{quest} completed&r"
+    - " "
     - "component:rewards"
+    - " "
 
 quest-complete-sound:
   enabled: true
@@ -51,7 +52,7 @@ level-up-message:
   message:
     - "&3&m----------------------------------------&r"
     - ' '
-    - "  &f&l{pool_name} levelled up &6&l{level}&r"
+    - "  &f&l{pool} levelled up &6&l{level}&r"
     - ' '
     - "component:rewards"
     - ' '

@@ -22,7 +22,5 @@ public class FilterConfig {
     @Getter
     public static class HandConfig {
         private Set<String> items;
-        private Set<String> enchantsEvery;
-        private Set<String> enchantsAny;
     }
 }

@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -89,7 +90,7 @@ public class PoolMenu {
             }
 
             var quest = quests.get(i);
-            var lore = quest.getConfig().getMenuItem().getLore();
+            var lore = new ArrayList<>(quest.getConfig().getMenuItem().getLore());
 
             if (quest.isCompleted(player)) {
                 lore.addAll(quest.getConfig().getCompletedLore());
@@ -183,6 +184,7 @@ public class PoolMenu {
                         .sorted(Comparator.comparing(Quest::getId)).toList();
             } else {
                 quests = pool.getQuests().stream()
+                        .filter(q -> !q.isCompleted(player))
                         .filter(q -> q.isUnlocked(player) || q.getConfig().getStartRequirements().isAlwaysShowInMenu())
                         .sorted(Comparator.comparing(Quest::getId)).toList();
             }
