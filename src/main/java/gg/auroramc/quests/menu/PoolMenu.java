@@ -8,6 +8,7 @@ import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.api.quest.QuestPool;
 import gg.auroramc.quests.util.RomanNumber;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -52,6 +53,28 @@ public class PoolMenu {
         var levelRawPlaceholder = Placeholder.of("{level_raw}", pool.getPlayerLevel(player));
         var levelRomanPlaceholder = Placeholder.of("{level_roman}", RomanNumber.toRoman(pool.getPlayerLevel(player)));
 
+        var lbm = AuroraAPI.getLeaderboards();
+        var boardName = "quests_" + pool.getId();
+
+        var user = AuroraAPI.getUser(player.getUniqueId());
+        List<Placeholder<?>> lbPlaceholders = new ArrayList<>();
+        var lb = user.getLeaderboardEntries().get(boardName);
+
+        if (lb != null && lb.getPosition() != 0) {
+            lbPlaceholders.add(Placeholder.of("{lb_position}", AuroraAPI.formatNumber(lb.getPosition())));
+            lbPlaceholders.add(Placeholder.of("{lb_position_percent}", AuroraAPI.formatNumber(
+                    Math.min(((double) lb.getPosition() / Math.max(1, AuroraAPI.getLeaderboards().getBoardSize(boardName))) * 100, 100)
+            )));
+            lbPlaceholders.add(Placeholder.of("{lb_size}",
+                    AuroraAPI.formatNumber(
+                            Math.max(Math.max(lb.getPosition(), Bukkit.getOnlinePlayers().size()), AuroraAPI.getLeaderboards().getBoardSize(boardName)))));
+        } else {
+            lbPlaceholders.add(Placeholder.of("{lb_position}", lbm.getEmptyPlaceholder()));
+            lbPlaceholders.add(Placeholder.of("{lb_position_percent}", lbm.getEmptyPlaceholder()));
+            lbPlaceholders.add(Placeholder.of("{lb_size}",
+                    AuroraAPI.formatNumber(Math.max(Bukkit.getOnlinePlayers().size(), AuroraAPI.getLeaderboards().getBoardSize(boardName)))));
+        }
+
         for (var customItem : config.getMenu().getCustomItems().values()) {
             menu.addItem(ItemBuilder.of(customItem)
                     .placeholder(totalCompletedPlaceholder)
@@ -59,6 +82,7 @@ public class PoolMenu {
                     .placeholder(levelPlaceholder)
                     .placeholder(levelRawPlaceholder)
                     .placeholder(levelRomanPlaceholder)
+                    .placeholder(lbPlaceholders)
                     .build(player));
         }
 
@@ -163,6 +187,7 @@ public class PoolMenu {
                     .placeholder(levelPlaceholder)
                     .placeholder(levelRawPlaceholder)
                     .placeholder(levelRomanPlaceholder)
+                    .placeholder(lbPlaceholders)
                     .build(player);
 
             menu.addItem(item, (e) -> {
