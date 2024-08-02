@@ -5,9 +5,11 @@ import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenu {
@@ -39,20 +41,46 @@ public class MainMenu {
         });
 
         var pools = AuroraQuests.getInstance().getQuestManager().getQuestPools();
-        var maybeInt = pools.stream().filter(pool -> pool.getConfig().getMenuItem().getShowInMainMenu()).mapToInt(pool -> pool.getConfig().getMenuItem().getPage()).max();
+        var maybeInt = pools.stream().filter(pool -> pool.getConfig().getMenuItem().getShowInMainMenu())
+                .mapToInt(pool -> pool.getConfig().getMenuItem().getPage()).max();
+
         if (maybeInt.isPresent()) {
             maxPage = maybeInt.getAsInt();
         }
+
+        var user = AuroraAPI.getUser(player.getUniqueId());
+        var lbm = AuroraAPI.getLeaderboards();
+
 
         for (var pool : pools) {
             var mi = pool.getConfig().getMenuItem();
             if (!mi.getShowInMainMenu()) continue;
             if (mi.getPage() != page) continue;
 
-            // TODO: add leaderboard placeholders
+            var boardName = "quests_" + pool.getId();
+
+            List<Placeholder<?>> placeholders = new ArrayList<>();
+            var lb = user.getLeaderboardEntries().get(boardName);
+
+            if (lb != null && lb.getPosition() != 0) {
+                placeholders.add(Placeholder.of("{lb_position}", AuroraAPI.formatNumber(lb.getPosition())));
+                placeholders.add(Placeholder.of("{lb_position_percent}", AuroraAPI.formatNumber(
+                        Math.min(((double) lb.getPosition() / Math.max(1, AuroraAPI.getLeaderboards().getBoardSize(boardName))) * 100, 100)
+                )));
+                placeholders.add(Placeholder.of("{lb_size}",
+                        AuroraAPI.formatNumber(
+                                Math.max(Math.max(lb.getPosition(), Bukkit.getOnlinePlayers().size()), AuroraAPI.getLeaderboards().getBoardSize(boardName)))));
+            } else {
+                placeholders.add(Placeholder.of("{lb_position}", lbm.getEmptyPlaceholder()));
+                placeholders.add(Placeholder.of("{lb_position_percent}", lbm.getEmptyPlaceholder()));
+                placeholders.add(Placeholder.of("{lb_size}",
+                        AuroraAPI.formatNumber(Math.max(Bukkit.getOnlinePlayers().size(), AuroraAPI.getLeaderboards().getBoardSize(boardName)))));
+            }
+
             menu.addItem(ItemBuilder.of(mi.getItem())
                     .placeholder(Placeholder.of("{name}", pool.getConfig().getName()))
                     .placeholder(Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount(player))))
+                    .placeholder(placeholders)
                     .build(player), (e) -> {
                 new PoolMenu(player, pool).open();
             });

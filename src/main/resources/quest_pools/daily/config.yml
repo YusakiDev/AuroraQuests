@@ -22,6 +22,10 @@ menu-item:
       - "&8View your quests"
       - "&7Total completed: &f{total_completed}"
       - ""
+      - "&8Global ranking: &8#&a{lb_position}"
+      - "&8You are in the top &a{lb_position_percent}%&8 of &7{lb_size}"
+      - "&8players!"
+      - ""
       - "&eClick to view!"
 
 menu:
