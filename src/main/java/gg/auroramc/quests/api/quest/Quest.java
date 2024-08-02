@@ -137,9 +137,11 @@ public class Quest {
     }
 
     public void complete(Player player) {
-        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        var user = AuroraAPI.getUserManager().getUser(player);
+        var data = user.getData(QuestData.class);
         data.completeQuest(holder.getId(), getId());
         data.incrementCompletedCount(holder.getId());
+        AuroraAPI.getLeaderboards().updateUser(user, "quests_" + holder.getId());
         Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(player, holder, this));
         reward(player);
     }

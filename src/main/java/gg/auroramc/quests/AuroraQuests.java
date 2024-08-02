@@ -37,6 +37,16 @@ public class AuroraQuests extends JavaPlugin {
 
         configManager.reload();
 
+        for (var pool : configManager.getQuestPools().values()) {
+            AuroraAPI.getLeaderboards().registerBoard(
+                    "quests_" + pool.getId(),
+                    (user) -> (double) user.getData(QuestData.class).getCompletedCount(pool.getId()),
+                    (lb) -> AuroraAPI.formatNumber(((Double) lb.getValue()).longValue()),
+                    configManager.getConfig().getLeaderboards().getCacheSize(),
+                    configManager.getConfig().getLeaderboards().getMinCompleted()
+            );
+        }
+
         HookManager.loadHooks(this);
     }
 
