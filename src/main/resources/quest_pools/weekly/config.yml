@@ -12,6 +12,7 @@ reset-frequency: 0 0 0 ? * MON
 
 # How should this pool be displayed in the main menu and where?
 menu-item:
+  show-in-main-menu: true
   page: 1
   item:
     material: WRITABLE_BOOK

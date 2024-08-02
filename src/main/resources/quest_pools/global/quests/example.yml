@@ -1,4 +1,4 @@
-name: "Example"
+name: "Global Example"
 difficulty: "easy"
 
 menu-item:
@@ -70,10 +70,10 @@ rewards:
     type: money
     amount: 10000
     display: "&8+&a{value_formatted}$"
-  backpack:
+  cmsg:
     type: command
-    command: "[console] backpack unlocknext %player_name%"
-    display: "&8+&f1 Backpack"
+    command: "[console] say Hi %player_name%"
+    display: "&8+&f1 Console message"
 
 # If this is a timed random quest, it won't pick it if the requirements are not met
 #start-requirements:

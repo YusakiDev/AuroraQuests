@@ -39,13 +39,14 @@ public class MainMenu {
         });
 
         var pools = AuroraQuests.getInstance().getQuestManager().getQuestPools();
-        var maybeInt = pools.stream().mapToInt(pool -> pool.getConfig().getMenuItem().getPage()).max();
+        var maybeInt = pools.stream().filter(pool -> pool.getConfig().getMenuItem().getShowInMainMenu()).mapToInt(pool -> pool.getConfig().getMenuItem().getPage()).max();
         if (maybeInt.isPresent()) {
             maxPage = maybeInt.getAsInt();
         }
 
         for (var pool : pools) {
             var mi = pool.getConfig().getMenuItem();
+            if (!mi.getShowInMainMenu()) continue;
             if (mi.getPage() != page) continue;
 
             // TODO: add leaderboard placeholders

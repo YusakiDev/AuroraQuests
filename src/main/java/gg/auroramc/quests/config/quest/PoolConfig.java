@@ -34,6 +34,7 @@ public class PoolConfig extends AuroraConfig {
 
     @Getter
     public static class PoolMenuItem {
+        private Boolean showInMainMenu;
         private Integer page;
         private ItemConfig item;
     }
