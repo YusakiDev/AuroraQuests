@@ -14,7 +14,7 @@ menu-item:
     - ""
     - "&7Rewards:"
     - "  {reward_money}"
-    - "  {reward_backpack}"
+    - "  {reward_cmsg}"
     - ""
     - "&7Difficulty: &f{difficulty}"
 
