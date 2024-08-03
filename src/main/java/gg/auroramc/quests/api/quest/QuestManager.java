@@ -1,6 +1,7 @@
 package gg.auroramc.quests.api.quest;
 
 import com.google.common.collect.Maps;
+import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.reward.CommandReward;
 import gg.auroramc.aurora.api.reward.ItemReward;
 import gg.auroramc.aurora.api.reward.MoneyReward;
@@ -50,6 +51,8 @@ public class QuestManager {
         if (!player.hasPermission("aurora.quests.use")) return;
         if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
             return;
+        var user = AuroraAPI.getUserManager().getUser(player);
+        if (!user.isLoaded()) return;
 
         if (HookManager.isEnabled(WorldGuardHook.class)) {
             if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return;
@@ -66,6 +69,8 @@ public class QuestManager {
         if (!player.hasPermission("aurora.quests.use")) return;
         if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
             return;
+        var user = AuroraAPI.getUserManager().getUser(player);
+        if (!user.isLoaded()) return;
 
         if (HookManager.isEnabled(WorldGuardHook.class)) {
             if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return;
