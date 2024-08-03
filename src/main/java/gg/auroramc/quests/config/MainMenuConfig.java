@@ -11,6 +11,7 @@ import java.util.Map;
 @Getter
 public class MainMenuConfig extends AuroraConfig {
     private String title;
+    private Integer menuRows = 6;
     private FillerConfig filler;
     private Map<String, Config.DisplayComponent> displayComponents;
     private Map<String, ItemConfig> items;

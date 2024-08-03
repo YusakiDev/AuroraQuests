@@ -42,6 +42,7 @@ public class PoolConfig extends AuroraConfig {
     @Getter
     public static class PoolMenu {
         private String title;
+        private Integer rows = 6;
         private Map<String, ItemConfig> items;
         private Map<String, ItemConfig> customItems;
         private MainMenuConfig.FillerConfig filler;
@@ -62,6 +63,7 @@ public class PoolConfig extends AuroraConfig {
     @Getter
     public static class LevelingMenu {
         private String title;
+        private Integer rows = 6;
         private Map<String, ItemConfig> items;
         private Map<String, ItemConfig> customItems;
         private MainMenuConfig.FillerConfig filler;

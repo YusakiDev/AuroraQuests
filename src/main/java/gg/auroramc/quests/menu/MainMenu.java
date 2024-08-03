@@ -28,7 +28,7 @@ public class MainMenu {
     private AuroraMenu createMenu() {
         var config = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
 
-        var menu = new AuroraMenu(player, config.getTitle(), 54, false);
+        var menu = new AuroraMenu(player, config.getTitle(), config.getMenuRows() * 9, false);
 
         if (config.getFiller().getEnabled()) {
             menu.addFiller(ItemBuilder.of(config.getFiller().getItem()).toItemStack(player));

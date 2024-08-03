@@ -39,7 +39,7 @@ public class PoolMenu {
         var mmc = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
 
 
-        var menu = new AuroraMenu(player, mc.getTitle(), 54, false, Placeholder.of("{name}", config.getName()));
+        var menu = new AuroraMenu(player, mc.getTitle(), mc.getRows() * 9, false, Placeholder.of("{name}", config.getName()));
 
         if (config.getMenu().getFiller().getEnabled()) {
             menu.addFiller(ItemBuilder.of(mc.getFiller().getItem()).toItemStack(player));

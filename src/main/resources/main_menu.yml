@@ -3,6 +3,8 @@ config-version: 0
 
 title: "Quests"
 
+menu-rows: 6
+
 filler:
   enabled: true
   item:

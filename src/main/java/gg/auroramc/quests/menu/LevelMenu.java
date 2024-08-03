@@ -33,7 +33,7 @@ public class LevelMenu {
         var cm = cf.getMenu();
         var mmc = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
 
-        var menu = new AuroraMenu(player, cm.getTitle(), 54, false, Placeholder.of("{name}", pool.getConfig().getName()));
+        var menu = new AuroraMenu(player, cm.getTitle(), cm.getRows() * 9, false, Placeholder.of("{name}", pool.getConfig().getName()));
 
         if (cm.getFiller().getEnabled()) {
             menu.addFiller(ItemBuilder.of(cm.getFiller().getItem()).toItemStack(player));
