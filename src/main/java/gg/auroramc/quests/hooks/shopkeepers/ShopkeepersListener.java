@@ -16,7 +16,7 @@ public class ShopkeepersListener implements Listener {
         var shopkeeper = e.getShopkeeper();
         var player = e.getPlayer();
 
-        AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.INTERACT_SHOPKEEPER, 1, Map.of("type", shopkeeper.getIdString()));
+        AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.INTERACT_SHOPKEEPER, 1, Map.of("type", String.valueOf(shopkeeper.getId())));
     }
 
     @EventHandler(ignoreCancelled = true)
