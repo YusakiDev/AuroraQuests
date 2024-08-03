@@ -30,6 +30,7 @@ permissions:
       - aurora.quests.admin.reload
       - aurora.quests.admin.reroll
       - aurora.quests.admin.open
+      - aurora.quests.admin.reroll
 
 libraries:
   - org.quartz-scheduler:quartz:2.3.2

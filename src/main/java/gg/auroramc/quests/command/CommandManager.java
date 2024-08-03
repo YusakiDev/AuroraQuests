@@ -34,6 +34,7 @@ public class CommandManager {
             commandManager.getCommandCompletions().registerCompletion("pools", c -> {
                 var poolCompletions = new ArrayList<>(plugin.getConfigManager().getQuestPools().keySet());
                 poolCompletions.add("none");
+                poolCompletions.add("all");
                 return poolCompletions;
             });
 

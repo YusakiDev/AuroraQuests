@@ -190,6 +190,7 @@ public class QuestPool {
     }
 
     public void reRollQuests(Player player, boolean sendNotification) {
+        if(isGlobal()) return;
         // difficulty -> quest
         var pickedQuests = new HashMap<String, List<Quest>>();
         var difficulties = config.getDifficulties();

@@ -43,7 +43,7 @@ public class QuestsCommand extends BaseCommand {
     @CommandCompletion("@players @pools true|false")
     @CommandPermission("aurora.collections.admin.open")
     public void onOpenMenu(CommandSender sender, @Flags("other") Player target, @Default("none") String poolId, @Default("false") Boolean silent) {
-        if (poolId.equals("none")) {
+        if (poolId.equals("none") || poolId.equals("all")) {
             new MainMenu(target).open();
         } else {
             var pool = plugin.getQuestManager().getQuestPool(poolId);
@@ -56,6 +56,26 @@ public class QuestsCommand extends BaseCommand {
 
         if (!silent) {
             Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getMenuOpened(), Placeholder.of("{player}", target.getName()));
+        }
+    }
+
+    @Subcommand("reroll")
+    @Description("Rerolls quests for another player in a specific pool")
+    @CommandCompletion("@players @pools true|false")
+    @CommandPermission("aurora.collections.admin.reroll")
+    public void onReroll(CommandSender sender, @Flags("other") Player target, @Default("all") String poolId, @Default("false") Boolean silent) {
+        if (poolId.equals("none") || poolId.equals("all")) {
+            plugin.getQuestManager().getQuestPools().forEach((pool) -> pool.reRollQuests(target, !silent));
+        } else {
+            var pool = plugin.getQuestManager().getQuestPool(poolId);
+            if(pool != null) {
+                pool.reRollQuests(target, !silent);
+                if(!silent) {
+                    Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getReRolledSource(), Placeholder.of("{player}", target.getName()), Placeholder.of("{pool}", pool.getConfig().getName()));
+                }
+            } else {
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound());
+            }
         }
     }
 }
