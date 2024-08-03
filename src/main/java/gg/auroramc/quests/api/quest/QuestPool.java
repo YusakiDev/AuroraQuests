@@ -219,7 +219,7 @@ public class QuestPool {
                 pickedQuests.put(difficulty.getKey(), Collections.emptyList());
                 continue;
             }
-            pickedQuests.put(difficulty.getKey(), quests.subList(0, Math.max(difficulty.getValue(), quests.size())));
+            pickedQuests.put(difficulty.getKey(), quests.subList(0, Math.min(difficulty.getValue(), quests.size())));
         }
 
         var data = getQuestData(player);
