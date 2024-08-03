@@ -73,6 +73,7 @@ public class AuroraQuests extends JavaPlugin {
         configManager.reload();
         commandManager.reload();
         questManager.reload();
+        Bukkit.getOnlinePlayers().forEach(player -> questManager.rollQuestsIfNecessary(player));
     }
 
     @Override
