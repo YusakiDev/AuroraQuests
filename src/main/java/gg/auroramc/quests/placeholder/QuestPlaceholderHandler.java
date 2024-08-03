@@ -30,15 +30,23 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
             if (pool == null) return null;
             return String.valueOf(pool.getPlayerLevel(player));
         } else if (full.endsWith("level")) {
-            var pool = manager.getQuestPool(full.substring(0, full.length() - 7));
+            var pool = manager.getQuestPool(full.substring(0, full.length() - 6));
             if (pool == null) return null;
             return AuroraAPI.formatNumber(pool.getPlayerLevel(player));
+        } else if (full.endsWith("current_count")) {
+            var pool = manager.getQuestPool(full.substring(0, full.length() - 14));
+            if (pool == null) return null;
+            return AuroraAPI.formatNumber(pool.getPlayerQuests(player).size());
+        } else if (full.endsWith("current_completed")) {
+            var pool = manager.getQuestPool(full.substring(0, full.length() - 18));
+            if (pool == null) return null;
+            return AuroraAPI.formatNumber(pool.getPlayerQuests(player).stream().filter(q -> q.isCompleted(player)).count());
         } else if (full.endsWith("count_raw")) {
             var pool = manager.getQuestPool(full.substring(0, full.length() - 10));
             if (pool == null) return null;
             return String.valueOf(pool.getCompletedQuestCount(player));
         } else if (full.endsWith("count")) {
-            var pool = manager.getQuestPool(full.substring(0, full.length() - 7));
+            var pool = manager.getQuestPool(full.substring(0, full.length() - 6));
             if (pool == null) return null;
             return AuroraAPI.formatNumber(pool.getCompletedQuestCount(player));
         }
@@ -58,6 +66,8 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
             list.add(pool.getId() + "_level_raw");
             list.add(pool.getId() + "_count");
             list.add(pool.getId() + "_count_raw");
+            list.add(pool.getId() + "_current_count");
+            list.add(pool.getId() + "_current_completed");
         }
 
         return list;
