@@ -47,6 +47,7 @@ public class QuestManager {
     }
 
     public void progress(Player player, String taskType, double amount, Map<String, Object> params) {
+        if (!player.hasPermission("aurora.quests.use")) return;
         if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
             return;
 
@@ -62,6 +63,7 @@ public class QuestManager {
     }
 
     public void progress(Player player, Set<String> taskTypes, double amount, Map<String, Object> params) {
+        if (!player.hasPermission("aurora.quests.use")) return;
         if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
             return;
 
