@@ -141,7 +141,9 @@ public class Quest {
         var data = user.getData(QuestData.class);
         data.completeQuest(holder.getId(), getId());
         data.incrementCompletedCount(holder.getId());
-        AuroraAPI.getLeaderboards().updateUser(user, "quests_" + holder.getId());
+        if (!holder.isGlobal() || AuroraQuests.getInstance().getConfigManager().getConfig().getLeaderboards().getIncludeGlobal()) {
+            AuroraAPI.getLeaderboards().updateUser(user, "quests_" + holder.getId());
+        }
         Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(player, holder, this));
         reward(player);
     }

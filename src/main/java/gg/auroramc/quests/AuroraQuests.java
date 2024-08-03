@@ -38,6 +38,9 @@ public class AuroraQuests extends JavaPlugin {
         configManager.reload();
 
         for (var pool : configManager.getQuestPools().values()) {
+            if (pool.getType().equals("global") && !configManager.getConfig().getLeaderboards().getIncludeGlobal()) {
+                continue;
+            }
             AuroraAPI.getLeaderboards().registerBoard(
                     "quests_" + pool.getId(),
                     (user) -> (double) user.getData(QuestData.class).getCompletedCount(pool.getId()),
