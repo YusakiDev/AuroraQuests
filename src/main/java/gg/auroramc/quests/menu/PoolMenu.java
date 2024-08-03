@@ -135,7 +135,7 @@ public class PoolMenu {
 
             menu.addItem(ItemBuilder.of(mmc.getItems().get("previous-page").merge(mc.getItems().get("previous-page")))
                     .placeholder(placeholders).build(player), (e) -> {
-                if (page > 1) {
+                if (page > 0) {
                     page--;
                     createMenu().open();
                 }

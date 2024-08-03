@@ -41,7 +41,7 @@ items:
       - "&7Click to go to the next page."
   current-page:
     material: nether_star
-    name: "&fCurrent Page &7(&f{current}&7/&f{total}&7)"
+    name: "&fCurrent Page &7(&f{current}&7/&f{max}&7)"
     slot: 49
     lore:
       - "&7You are currently on this page."

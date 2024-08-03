@@ -141,7 +141,7 @@ public class LevelMenu {
 
             menu.addItem(ItemBuilder.of(mmc.getItems().get("previous-page").merge(cm.getItems().get("previous-page")))
                     .placeholder(pl).build(player), (e) -> {
-                if (page > 1) {
+                if (page > 0) {
                     page--;
                     createMenu().open();
                 }
