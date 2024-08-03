@@ -81,8 +81,30 @@ public class LevelMenu {
                     ? mmc.getItems().get("completed-level").merge(cm.getItems().get("completed-level"))
                     : mmc.getItems().get("locked-level").merge(cm.getItems().get("locked-level"));
 
-            var lore = new ArrayList<String>();
+
             var rewards = pool.getMatcherManager().getBestMatcher(level).computeRewards(level);
+
+            var currentProgress = Math.min(pool.getCompletedQuestCount(player), requirement);
+            var bar = mmc.getProgressBar();
+            var pcs = bar.getLength();
+            var completedPercent = Math.min((double) currentProgress / requirement, 1);
+            var completedPcs = ((Double) Math.floor(pcs * completedPercent)).intValue();
+            var remainingPcs = pcs - completedPcs;
+
+            var lore = new ArrayList<String>();
+
+            List<Placeholder<?>> rPlaceholders = List.of(
+                    Placeholder.of("{player}", player.getName()),
+                    Placeholder.of("{pool}", pool.getConfig().getName()),
+                    Placeholder.of("{pool_id}", pool.getId()),
+                    Placeholder.of("{level}", AuroraAPI.formatNumber(rLevel)),
+                    Placeholder.of("{level_roman}", RomanNumber.toRoman(rLevel)),
+                    Placeholder.of("{level_raw}", rLevel),
+                    Placeholder.of("{current}", AuroraAPI.formatNumber(currentProgress)),
+                    Placeholder.of("{required}", AuroraAPI.formatNumber(requirement)),
+                    Placeholder.of("{progressbar}", bar.getFilledCharacter().repeat(completedPcs) + bar.getUnfilledCharacter().repeat(remainingPcs) + "&r"),
+                    Placeholder.of("{progress_percent}", Math.round(completedPercent * 100))
+            );
 
             for (var line : itemConfig.getLore()) {
                 if (line.equals("component:rewards")) {
@@ -92,30 +114,12 @@ public class LevelMenu {
                         lore.add(display.getTitle());
                     }
                     for (var reward : rewards) {
-                        lore.add(display.getLine().replace("{reward}", reward.getDisplay(player, placeholders)));
+                        lore.add(display.getLine().replace("{reward}", reward.getDisplay(player, rPlaceholders)));
                     }
                 } else {
                     lore.add(line);
                 }
             }
-
-            var currentProgress = Math.min(pool.getCompletedQuestCount(player), requirement);
-            var bar = mmc.getProgressBar();
-            var pcs = bar.getLength();
-            var completedPercent = Math.min((double) currentProgress / requirement, 1);
-            var completedPcs = ((Double) Math.floor(pcs * completedPercent)).intValue();
-            var remainingPcs = pcs - completedPcs;
-
-            List<Placeholder<?>> rPlaceholders = List.of(
-                    Placeholder.of("{name}", pool.getConfig().getName()),
-                    Placeholder.of("{level}", AuroraAPI.formatNumber(rLevel)),
-                    Placeholder.of("{level_roman}", RomanNumber.toRoman(rLevel)),
-                    Placeholder.of("{current}", AuroraAPI.formatNumber(currentProgress)),
-                    Placeholder.of("{required}", AuroraAPI.formatNumber(requirement)),
-                    Placeholder.of("{progressbar}", bar.getFilledCharacter().repeat(completedPcs) + bar.getUnfilledCharacter().repeat(remainingPcs) + "&r"),
-                    Placeholder.of("{level_raw}", rLevel),
-                    Placeholder.of("{progress_percent}", Math.round(completedPercent * 100))
-            );
 
             var builder = ItemBuilder.of(itemConfig).slot(slot)
                     .loreCompute(() -> lore.stream().map(l -> Text.component(player, l, rPlaceholders)).toList())
