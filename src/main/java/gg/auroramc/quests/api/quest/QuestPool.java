@@ -82,7 +82,7 @@ public class QuestPool {
         if (isGlobal()) return quests.values().stream().toList();
         var data = getQuestData(player);
         var rolledQuests = data.getPoolRollData(config.getId());
-        return rolledQuests.quests().stream().map(this::getQuest).toList();
+        return rolledQuests.quests().stream().map(this::getQuest).filter(Objects::nonNull).toList();
     }
 
     public int getPlayerLevel(Player player) {
