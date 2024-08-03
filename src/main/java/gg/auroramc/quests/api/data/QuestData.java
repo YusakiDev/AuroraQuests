@@ -25,6 +25,7 @@ public class QuestData extends UserDataHolder {
 
     public void setRolledQuests(String poolId, List<String> quests) {
         rolledQuests.put(poolId, new PoolRollData(System.currentTimeMillis(), quests));
+        completedQuests.computeIfAbsent(poolId, k -> Sets.newConcurrentHashSet()).clear();
         dirty.set(true);
     }
 
