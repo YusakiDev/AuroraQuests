@@ -23,11 +23,12 @@ public class PlayerListener implements Listener {
         var player = event.getUser().getPlayer();
         if (player == null) return;
 
-        if(event.isAsynchronous()) roll(player);
+        if (event.isAsynchronous()) roll(player);
         else CompletableFuture.runAsync(() -> roll(player));
     }
 
     private void roll(Player player) {
+        plugin.getQuestManager().tryStartGlobalQuests(player);
         var pools = plugin.getQuestManager().rollQuestsIfNecessary(player);
 
         if (pools.isEmpty()) return;

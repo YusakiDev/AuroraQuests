@@ -23,7 +23,6 @@ public class TaskType {
     public static final String SMITH_TRIM = "SMITH_TRIM";
     public static final String TAME = "TAME";
     public static final String GAIN_AURASKILLS_XP = "GAIN_AURASKILLS_XP";
-    public static final String GAIN_AURASKILLS_LEVEL = "GAIN_AURASKILLS_LEVEL";
     public static final String GAIN_AURORA_LEVEL = "GAIN_AURORA_LEVEL";
     public static final String GAIN_AURORA_XP = "GAIN_AURORA_XP";
     public static final String INTERACT_NPC = "INTERACT_NPC";
