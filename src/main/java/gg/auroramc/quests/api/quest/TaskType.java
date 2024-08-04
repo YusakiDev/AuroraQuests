@@ -26,7 +26,6 @@ public class TaskType {
     public static final String GAIN_AURORALEVEL = "GAIN_AURORA_LEVEL";
     public static final String GAIN_AURORALEVELS_XP = "GAIN_AURORA_XP";
     public static final String INTERACT_NPC = "INTERACT_NPC";
-    public static final String CUSTOM_FISH = "CUSTOM_FISH";
     public static final String SELL_WORTH = "SELL_WORTH";
     public static final String BUY_WORTH = "BUY_WORTH";
     public static final String KILL_MYTHIC_MOB = "KILL_MYTHIC_MOB";

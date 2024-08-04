@@ -20,7 +20,7 @@ public class CustomFishingListener implements Listener {
         if (e.getEntity() instanceof Item item) {
             int quantity = item.getItemStack().getAmount();
             AuroraQuests.getInstance().getQuestManager()
-                    .progress(e.getPlayer(), TaskType.CUSTOM_FISH, quantity, Map.of("type", AuroraAPI.getItemManager().resolveId(item.getItemStack())));
+                    .progress(e.getPlayer(), TaskType.FISH, quantity, Map.of("type", AuroraAPI.getItemManager().resolveId(item.getItemStack())));
         }
     }
 }
