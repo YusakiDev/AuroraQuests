@@ -18,7 +18,7 @@ public class MythicMobListener implements Listener {
 
         var mobName = e.getMob().getType().getInternalName();
         AuroraQuests.getInstance().getQuestManager()
-                .progress(player, TaskType.KILL_MYTHIC_MOB, 1, Map.of("type", new TypeId("mythicmobs", mobName)));
+                .progress(player, TaskType.KILL_MOB, 1, Map.of("type", new TypeId("mythicmobs", mobName)));
 
     }
 }
