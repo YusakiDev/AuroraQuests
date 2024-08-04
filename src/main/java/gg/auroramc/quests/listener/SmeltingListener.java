@@ -1,99 +1,64 @@
 package gg.auroramc.quests.listener;
 
-import com.google.common.math.IntMath;
 import gg.auroramc.aurora.api.AuroraAPI;
-import gg.auroramc.aurora.api.util.Version;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
-import org.bukkit.Material;
+import gg.auroramc.quests.util.InventoryUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.math.RoundingMode;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class SmeltingListener implements Listener {
-
-    public boolean isOffHandSwap(ClickType clickType) {
-        return clickType == ClickType.SWAP_OFFHAND;
+    private boolean isSmeltingResultExtraction(final InventoryClickEvent event, final InventoryType inventoryType) {
+        return (inventoryType == InventoryType.FURNACE
+                || inventoryType == InventoryType.SMOKER
+                || inventoryType == InventoryType.BLAST_FURNACE)
+                && event.getWhoClicked() instanceof Player
+                && event.getRawSlot() == 2
+                && !InventoryUtils.isEmptySlot(event.getCurrentItem());
     }
 
-    public boolean isOffHandEmpty(Player player) {
-        return player.getInventory().getItemInOffHand().getAmount() == 0;
-    }
-
-    public int getAvailableSpace(Player player, ItemStack newItemStack) {
-        int availableSpace = 0;
-        PlayerInventory inventory = player.getInventory();
-        HashMap<Integer, ? extends ItemStack> itemStacksWithSameMaterial = inventory.all(newItemStack.getType());
-        for (ItemStack existingItemStack : itemStacksWithSameMaterial.values()) {
-            if (newItemStack.isSimilar(existingItemStack)) {
-                availableSpace += (newItemStack.getMaxStackSize() - existingItemStack.getAmount());
-            }
+    private int calculateTakeAmount(final InventoryClickEvent event) {
+        final ItemStack result = event.getCurrentItem();
+        final PlayerInventory inventory = event.getWhoClicked().getInventory();
+        switch (event.getClick()) {
+            case SHIFT_LEFT:
+            case SHIFT_RIGHT:
+                return Math.min(InventoryUtils.calculateSpaceForItem(inventory, result), result.getAmount());
+            case CONTROL_DROP:
+                return InventoryUtils.calculateSpaceForItem(inventory, result);
+            case NUMBER_KEY:
+                return InventoryUtils.calculateSwapCraftAmount(result, inventory.getItem(event.getHotbarButton()));
+            case SWAP_OFFHAND:
+                return InventoryUtils.calculateSwapCraftAmount(result, inventory.getItemInOffHand());
+            case DROP:
+                return 1;
+            case RIGHT:
+                if (InventoryUtils.isEmptySlot(event.getCursor())) {
+                    return (result.getAmount() + 1) / 2;
+                }
+            case LEFT:
+                return InventoryUtils.calculateSimpleCraftAmount(result, event.getCursor());
+            default:
+                return 0;
         }
-
-        for (ItemStack existingItemStack : inventory.getStorageContents()) {
-            if (existingItemStack == null) {
-                availableSpace += newItemStack.getMaxStackSize();
-            }
-        }
-
-        return availableSpace;
     }
-
-    private final Set<String> modes = Set.of("smoker", "blast_furnace", "furnace");
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getInventory() instanceof FurnaceInventory) || event.getRawSlot() != 2
-                || (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
-                || event.getAction() == InventoryAction.NOTHING
-                || event.getAction() == InventoryAction.COLLECT_TO_CURSOR && event.getClick() == ClickType.DOUBLE_CLICK && event.getCursor().getType() != Material.AIR && ((event.getCursor().getAmount() + event.getCurrentItem().getAmount() > event.getCursor().getMaxStackSize()) || event.getCursor().getType() != event.getCurrentItem().getType()) // does not apply to crafting tables lol
-                || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD && event.getClick() == ClickType.NUMBER_KEY
-                || (Version.isAtLeastVersion(20, 6) && event.getAction() == InventoryAction.HOTBAR_SWAP && event.getClick() == ClickType.NUMBER_KEY)
-                || event.getAction() == InventoryAction.DROP_ONE_SLOT && event.getClick() == ClickType.DROP && event.getCursor().getType() != Material.AIR
-                || event.getAction() == InventoryAction.DROP_ALL_SLOT && event.getClick() == ClickType.CONTROL_DROP && event.getCursor().getType() != Material.AIR
-                || event.getAction() == InventoryAction.UNKNOWN && event.getClick() == ClickType.UNKNOWN // for better ViaVersion support
-                || !(event.getWhoClicked() instanceof Player player)
-                || isOffHandSwap(event.getClick()) && !isOffHandEmpty(player)) {
-            return;
-        }
-
-        ItemStack item = event.getCurrentItem();
-
-        int eventAmount;
-        if (event.getAction() == InventoryAction.DROP_ONE_SLOT) {
-            eventAmount = 1;
-        } else if (event.getAction() == InventoryAction.PICKUP_HALF) {
-            eventAmount = IntMath.divide(item.getAmount(), 2, RoundingMode.CEILING);
-        } else {
-            eventAmount = item.getAmount();
-            if (event.isShiftClick() && event.getClick() != ClickType.CONTROL_DROP) {
-                eventAmount = Math.min(eventAmount, getAvailableSpace(player, item));
-                if (eventAmount == 0) {
-                    return;
-                }
-            }
-        }
-
-
-        final InventoryType inventoryType = event.getInventory().getType();
-
-        var id = AuroraAPI.getItemManager().resolveId(item);
-
-        if (modes.contains(inventoryType.name().toLowerCase())) {
-            AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.SMELT, eventAmount, Map.of("type", id));
+    public void onSmelting(InventoryClickEvent event) {
+        InventoryType inventoryType = event.getInventory().getType();
+        if (event.getWhoClicked() instanceof Player player && isSmeltingResultExtraction(event, inventoryType)) {
+            int taken = calculateTakeAmount(event);
+            ItemStack item = event.getCurrentItem();
+            var id = AuroraAPI.getItemManager().resolveId(item);
+            AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.SMELT, taken, Map.of("type", id));
         }
     }
 }

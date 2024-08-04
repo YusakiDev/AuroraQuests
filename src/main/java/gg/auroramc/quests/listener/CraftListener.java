@@ -1,88 +1,50 @@
 package gg.auroramc.quests.listener;
 
 import gg.auroramc.aurora.api.AuroraAPI;
-import gg.auroramc.aurora.api.util.Version;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
-import org.bukkit.Material;
+import gg.auroramc.quests.util.InventoryUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class CraftListener implements Listener {
-    public boolean isOffHandSwap(ClickType clickType) {
-        return clickType == ClickType.SWAP_OFFHAND;
-    }
-
-    public boolean isOffHandEmpty(Player player) {
-        return player.getInventory().getItemInOffHand().getAmount() == 0;
-    }
-
-    public int getAvailableSpace(Player player, ItemStack newItemStack) {
-        int availableSpace = 0;
-        PlayerInventory inventory = player.getInventory();
-        HashMap<Integer, ? extends ItemStack> itemStacksWithSameMaterial = inventory.all(newItemStack.getType());
-        for (ItemStack existingItemStack : itemStacksWithSameMaterial.values()) {
-            if (newItemStack.isSimilar(existingItemStack)) {
-                availableSpace += (newItemStack.getMaxStackSize() - existingItemStack.getAmount());
-            }
+    private static int calculateCraftAmount(final CraftItemEvent event) {
+        final ItemStack result = event.getRecipe().getResult();
+        final PlayerInventory inventory = event.getWhoClicked().getInventory();
+        final ItemStack[] ingredients = event.getInventory().getMatrix();
+        switch (event.getClick()) {
+            case SHIFT_LEFT:
+            case SHIFT_RIGHT:
+                return InventoryUtils.calculateShiftCraftAmount(result, inventory, ingredients);
+            case CONTROL_DROP:
+                return InventoryUtils.calculateMaximumCraftAmount(result, ingredients);
+            case NUMBER_KEY:
+                return InventoryUtils.calculateSwapCraftAmount(result, inventory.getItem(event.getHotbarButton()));
+            case SWAP_OFFHAND:
+                return InventoryUtils.calculateSwapCraftAmount(result, inventory.getItemInOffHand());
+            case DROP:
+                return InventoryUtils.calculateDropCraftAmount(result, event.getCursor());
+            case LEFT:
+            case RIGHT:
+                return InventoryUtils.calculateSimpleCraftAmount(result, event.getCursor());
+            default:
+                return 0;
         }
-
-        for (ItemStack existingItemStack : inventory.getStorageContents()) {
-            if (existingItemStack == null) {
-                availableSpace += newItemStack.getMaxStackSize();
-            }
-        }
-
-        return availableSpace;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftItem(CraftItemEvent event) {
-        //noinspection DuplicatedCode
-        if ((event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
-                || event.getAction() == InventoryAction.NOTHING
-                || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD && event.getClick() == ClickType.NUMBER_KEY
-                || (Version.isAtLeastVersion(20, 6) && event.getAction() == InventoryAction.HOTBAR_SWAP && event.getClick() == ClickType.NUMBER_KEY)
-                || event.getAction() == InventoryAction.DROP_ONE_SLOT && event.getClick() == ClickType.DROP && event.getCursor().getType() != Material.AIR
-                || event.getAction() == InventoryAction.DROP_ALL_SLOT && event.getClick() == ClickType.CONTROL_DROP && event.getCursor().getType() != Material.AIR
-                || event.getAction() == InventoryAction.UNKNOWN && event.getClick() == ClickType.UNKNOWN // for better ViaVersion support
-                || !(event.getWhoClicked() instanceof Player player)
-                || isOffHandSwap(event.getClick()) && !isOffHandEmpty(player)) {
-            return;
+        if (event.getWhoClicked() instanceof final Player player) {
+            var amount = calculateCraftAmount(event);
+            var item = event.getRecipe().getResult();
+            AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.CRAFT, amount, Map.of("type", AuroraAPI.getItemManager().resolveId(item)));
         }
-
-
-        ItemStack item = event.getCurrentItem();
-        int eventAmount = item.getAmount();
-
-        if (event.isShiftClick() && event.getClick() != ClickType.CONTROL_DROP) {
-            int maxAmount = event.getInventory().getMaxStackSize();
-            ItemStack[] matrix = event.getInventory().getMatrix();
-            for (ItemStack itemStack : matrix) {
-                if (itemStack != null && itemStack.getType() != Material.AIR) {
-                    int itemStackAmount = itemStack.getAmount();
-                    if (itemStackAmount < maxAmount && itemStackAmount > 0) {
-                        maxAmount = itemStackAmount;
-                    }
-                }
-            }
-            eventAmount *= maxAmount;
-            eventAmount = Math.min(eventAmount, getAvailableSpace(player, item));
-            if (eventAmount == 0) {
-                return;
-            }
-        }
-
-        AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.CRAFT, eventAmount, Map.of("type", AuroraAPI.getItemManager().resolveId(item)));
     }
 }
