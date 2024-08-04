@@ -14,7 +14,7 @@ public class AuraSkillsListener implements Listener {
     public void onSkillXpGain(XpGainEvent e) {
         var player = e.getPlayer();
         var xp = e.getAmount();
-        var skill = e.getSkill().name();
+        var skill = e.getSkill().getId().toString();
 
         AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.GAIN_AURASKILLS_XP, xp, Map.of("type", skill));
     }
