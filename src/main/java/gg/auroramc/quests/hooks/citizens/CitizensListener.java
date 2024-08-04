@@ -1,5 +1,6 @@
 package gg.auroramc.quests.hooks.citizens;
 
+import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -14,7 +15,9 @@ public class CitizensListener implements Listener {
         var player = e.getClicker();
         var npc = e.getNPC();
 
+        var id = new TypeId("citizens", String.valueOf(npc.getId()));
+
         AuroraQuests.getInstance().getQuestManager()
-                .progress(player, TaskType.INTERACT_NPC, 1, Map.of("type", String.valueOf(npc.getId())));
+                .progress(player, TaskType.INTERACT_NPC, 1, Map.of("type", id));
     }
 }
