@@ -10,11 +10,11 @@ import org.bukkit.event.Listener;
 public class AuroraLevelsListener implements Listener {
     @EventHandler
     public void onLevelUp(PlayerLevelUpEvent e) {
-        AuroraQuests.getInstance().getQuestManager().progress(e.getPlayer(), TaskType.GAIN_AURORALEVEL, 1, null);
+        AuroraQuests.getInstance().getQuestManager().progress(e.getPlayer(), TaskType.GAIN_AURORA_LEVEL, 1, null);
     }
 
     @EventHandler
     public void onPlayerXpGain(PlayerXpGainEvent e) {
-        AuroraQuests.getInstance().getQuestManager().progress(e.getPlayer(), TaskType.GAIN_AURORALEVELS_XP, e.getXp(), null);
+        AuroraQuests.getInstance().getQuestManager().progress(e.getPlayer(), TaskType.GAIN_AURORA_XP, e.getXp(), null);
     }
 }
