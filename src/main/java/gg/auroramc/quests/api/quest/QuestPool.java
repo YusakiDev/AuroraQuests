@@ -100,14 +100,10 @@ public class QuestPool {
         return 0;
     }
 
-    public void reward(Player player, int level) {
-        if (!hasLeveling()) return;
-
-        var mc = AuroraQuests.getInstance().getConfigManager().getConfig();
+    public List<Placeholder<?>> getLevelPlaceholders(Player player, int level) {
         var prevLevel = Math.max(0, level - 1);
-        var rewards = matcherManager.getBestMatcher(level).computeRewards(level);
 
-        List<Placeholder<?>> placeholders = List.of(
+        return List.of(
                 Placeholder.of("{player}", player.getName()),
                 Placeholder.of("{level_raw}", level),
                 Placeholder.of("{level}", AuroraAPI.formatNumber(level)),
@@ -118,6 +114,15 @@ public class QuestPool {
                 Placeholder.of("{pool}", config.getName()),
                 Placeholder.of("{pool_id}", getId())
         );
+    }
+
+    public void reward(Player player, int level) {
+        if (!hasLeveling()) return;
+
+        var mc = AuroraQuests.getInstance().getConfigManager().getConfig();
+        var rewards = matcherManager.getBestMatcher(level).computeRewards(level);
+
+        List<Placeholder<?>> placeholders = getLevelPlaceholders(player, level);
 
         if (mc.getLevelUpMessage().getEnabled()) {
             var text = Component.text();

@@ -2,10 +2,7 @@ package gg.auroramc.quests.api.quest;
 
 import com.google.common.collect.Maps;
 import gg.auroramc.aurora.api.AuroraAPI;
-import gg.auroramc.aurora.api.reward.CommandReward;
-import gg.auroramc.aurora.api.reward.ItemReward;
-import gg.auroramc.aurora.api.reward.MoneyReward;
-import gg.auroramc.aurora.api.reward.RewardFactory;
+import gg.auroramc.aurora.api.reward.*;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.task.LevelledTaskEvaluator;
@@ -22,6 +19,8 @@ import java.util.*;
 public class QuestManager {
     @Getter
     private final RewardFactory rewardFactory = new RewardFactory();
+    @Getter
+    private final RewardAutoCorrector rewardAutoCorrector = new RewardAutoCorrector();
 
     private final AuroraQuests plugin;
     private final Map<String, QuestPool> pools = Maps.newConcurrentMap();

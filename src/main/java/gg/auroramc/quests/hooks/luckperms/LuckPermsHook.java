@@ -11,7 +11,11 @@ import org.bukkit.Bukkit;
 public class LuckPermsHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
-        plugin.getQuestManager().getRewardFactory().registerRewardType(NamespacedId.fromDefault("permission"), PermissionReward.class);
+        plugin.getQuestManager().getRewardFactory()
+                .registerRewardType(NamespacedId.fromDefault("permission"), PermissionReward.class);
+        
+        plugin.getQuestManager().getRewardAutoCorrector()
+                .registerCorrector(NamespacedId.fromDefault("permission"), new PermissionCorrector());
 
         var lp = LuckPermsProvider.get();
 

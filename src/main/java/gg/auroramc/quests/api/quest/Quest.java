@@ -150,13 +150,16 @@ public class Quest {
 
     public List<Placeholder<?>> getPlaceholders(Player player) {
         var gc = AuroraQuests.getInstance().getConfigManager().getConfig();
-        List<Placeholder<?>> placeholders = new ArrayList<>();
+        List<Placeholder<?>> placeholders = new ArrayList<>(8 + tasks.size() + rewards.size());
 
         placeholders.add(Placeholder.of("{name}", config.getName()));
         placeholders.add(Placeholder.of("{difficulty}", gc.getDifficulties().get(config.getDifficulty())));
+        placeholders.add(Placeholder.of("{difficulty_id}", config.getDifficulty()));
         placeholders.add(Placeholder.of("{quest_id}", config.getId()));
+        placeholders.add(Placeholder.of("{quest}", config.getName()));
         placeholders.add(Placeholder.of("{pool_id}", holder.getId()));
-        placeholders.add(Placeholder.of("{pool_name}", holder.getConfig().getName()));
+        placeholders.add(Placeholder.of("{pool}", holder.getConfig().getName()));
+        placeholders.add(Placeholder.of("{player}", player.getName()));
 
         for (var task : tasks.values()) {
             placeholders.add(Placeholder.of("{task_" + task.id() + "}", task.getDisplay(player)));
@@ -172,14 +175,7 @@ public class Quest {
     private void reward(Player player) {
         var gConfig = AuroraQuests.getInstance().getConfigManager().getConfig();
 
-        List<Placeholder<?>> placeholders = List.of(
-                Placeholder.of("{quest}", config.getName()),
-                Placeholder.of("{quest_id}", config.getId()),
-                Placeholder.of("{pool}", holder.getConfig().getName()),
-                Placeholder.of("{pool_id}", holder.getConfig().getId()),
-                Placeholder.of("{player}", player.getName()),
-                Placeholder.of("{difficulty_id}", config.getDifficulty())
-        );
+        List<Placeholder<?>> placeholders = getPlaceholders(player);
 
         if (gConfig.getQuestCompleteMessage().getEnabled()) {
 
