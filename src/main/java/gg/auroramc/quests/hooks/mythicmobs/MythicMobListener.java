@@ -1,5 +1,6 @@
 package gg.auroramc.quests.hooks.mythicmobs;
 
+import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
@@ -17,17 +18,24 @@ public class MythicMobListener implements Listener {
         if (!(e.getKiller() instanceof Player player)) return;
 
         var mobName = e.getMob().getType().getInternalName();
+        var drops = e.getDrops();
+        var manager = AuroraQuests.getInstance().getQuestManager();
 
         if (e.getMob().getLevel() > 0) {
-            AuroraQuests.getInstance().getQuestManager()
-                    .progress(player, TaskType.KILL_LEVELLED_MOB, 1, Map.of(
-                            "type", new TypeId("mythicmobs", mobName),
-                            "level", e.getMob().getLevel()
-                    ));
+            manager.progress(player, TaskType.KILL_LEVELLED_MOB, 1, Map.of(
+                    "type", new TypeId("mythicmobs", mobName),
+                    "level", e.getMob().getLevel()
+            ));
         }
 
-        AuroraQuests.getInstance().getQuestManager()
-                .progress(player, TaskType.KILL_MOB, 1, Map.of("type", new TypeId("mythicmobs", mobName)));
+        manager.progress(player, TaskType.KILL_MOB, 1, Map.of(
+                "type", new TypeId("mythicmobs", mobName)
+        ));
+
+        for (var drop : drops) {
+            var typeId = AuroraAPI.getItemManager().resolveId(drop);
+            manager.progress(player, TaskType.ENTITY_LOOT, drop.getAmount(), Map.of("type", typeId));
+        }
 
     }
 }

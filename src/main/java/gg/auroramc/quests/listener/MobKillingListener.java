@@ -18,11 +18,18 @@ public class MobKillingListener implements Listener {
         LivingEntity entity = event.getEntity();
         Player player = entity.getKiller();
         if (player == null) return;
+        if (entity instanceof Player) return;
         if (player.hasMetadata("NPC")) return;
 
         var id = AuroraAPI.getEntityManager().resolveId(entity);
         if (id.namespace().equals("mythicmobs")) return;
+        var manager = AuroraQuests.getInstance().getQuestManager();
 
-        AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.KILL_MOB, 1, Map.of("type", id));
+        manager.progress(player, TaskType.KILL_MOB, 1, Map.of("type", id));
+
+        for (var drop : event.getDrops()) {
+            var typeId = AuroraAPI.getItemManager().resolveId(drop);
+            manager.progress(player, TaskType.ENTITY_LOOT, drop.getAmount(), Map.of("type", typeId));
+        }
     }
 }
