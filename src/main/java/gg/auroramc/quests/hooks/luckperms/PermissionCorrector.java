@@ -39,7 +39,7 @@ public class PermissionCorrector implements RewardCorrector {
             var level = pool.getPlayerLevel(player);
 
             for (int i = 1; i < level + 1; i++) {
-                var matcher = pool.getMatcherManager().getBestMatcher(level);
+                var matcher = pool.getMatcherManager().getBestMatcher(i);
                 if (matcher == null) continue;
                 var placeholders = pool.getLevelPlaceholders(player, i);
                 for (var reward : matcher.computeRewards(i)) {
