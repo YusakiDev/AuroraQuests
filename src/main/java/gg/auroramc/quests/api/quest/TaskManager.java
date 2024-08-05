@@ -1,6 +1,7 @@
 package gg.auroramc.quests.api.quest;
 
 import com.google.common.collect.Maps;
+import gg.auroramc.quests.api.quest.task.TypedTaskEvaluator;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import org.bukkit.entity.Player;
 

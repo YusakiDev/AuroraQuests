@@ -8,6 +8,7 @@ import gg.auroramc.aurora.api.reward.MoneyReward;
 import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.quest.task.LevelledTaskEvaluator;
 import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import lombok.Getter;
@@ -30,6 +31,10 @@ public class QuestManager {
         rewardFactory.registerRewardType(NamespacedId.fromDefault("command"), CommandReward.class);
         rewardFactory.registerRewardType(NamespacedId.fromDefault("money"), MoneyReward.class);
         rewardFactory.registerRewardType(NamespacedId.fromDefault("item"), ItemReward.class);
+
+        TaskManager.registerEvaluator(TaskType.ENCHANT, new LevelledTaskEvaluator());
+        TaskManager.registerEvaluator(TaskType.KILL_LEVELLED_MOB, new LevelledTaskEvaluator());
+
         try {
             StdSchedulerFactory.getDefaultScheduler().start();
         } catch (SchedulerException e) {

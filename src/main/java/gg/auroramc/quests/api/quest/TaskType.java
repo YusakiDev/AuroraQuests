@@ -16,6 +16,7 @@ public class TaskType {
     public static final String BLOCK_LOOT = "BLOCK_LOOT";
     public static final String ENCHANT = "ENCHANT";
     public static final String KILL_MOB = "KILL_MOB";
+    public static final String KILL_LEVELLED_MOB = "KILL_LEVELLED_MOB";
     public static final String KILL_PLAYER = "KILL_PLAYER";
     public static final String SHEAR = "SHEAR";
     public static final String SMELT = "SMELT";

@@ -20,7 +20,10 @@ public class EnchantListener implements Listener {
                             player,
                             TaskType.ENCHANT,
                             1,
-                            Map.of("type", TypeId.fromDefault(ench.getKey().getKey().getKey() + ":" + ench.getValue())));
+                            Map.of(
+                                    "type", TypeId.fromDefault(ench.getKey().getKey().getKey()),
+                                    "level", ench.getValue().doubleValue()
+                            ));
         }
     }
 }

@@ -1,6 +1,7 @@
-package gg.auroramc.quests.api.quest;
+package gg.auroramc.quests.api.quest.task;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.quests.api.quest.TaskEvaluator;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;

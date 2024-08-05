@@ -1,8 +1,7 @@
-package gg.auroramc.quests.api.quest;
+package gg.auroramc.quests.api.quest.task;
 
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.quests.config.quest.TaskConfig;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
