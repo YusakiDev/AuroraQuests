@@ -15,12 +15,14 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class QuestManager {
     @Getter
     private final RewardFactory rewardFactory = new RewardFactory();
     @Getter
     private final RewardAutoCorrector rewardAutoCorrector = new RewardAutoCorrector();
+    private final Map<UUID, Object> playerLocks = Maps.newConcurrentMap();
 
     private final AuroraQuests plugin;
     private final Map<String, QuestPool> pools = Maps.newConcurrentMap();
@@ -51,6 +53,14 @@ public class QuestManager {
         }
     }
 
+    private Object getPlayerLock(Player player) {
+        return playerLocks.computeIfAbsent(player.getUniqueId(), (key) -> new Object());
+    }
+
+    public void handlePlayerQuit(UUID playerId) {
+        playerLocks.remove(playerId);
+    }
+
     public void progress(Player player, String taskType, double amount, Map<String, Object> params) {
         if (!player.hasPermission("aurora.quests.use")) return;
         if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
@@ -62,27 +72,14 @@ public class QuestManager {
             if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return;
         }
 
-        for (var pool : pools.values()) {
-            for (var quest : pool.getPlayerQuests(player)) {
-                quest.progress(player, taskType, amount, params);
-            }
-        }
+        CompletableFuture.runAsync(() -> actuallyProgress(player, taskType, amount, params));
     }
 
-    public void progress(Player player, Set<String> taskTypes, double amount, Map<String, Object> params) {
-        if (!player.hasPermission("aurora.quests.use")) return;
-        if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
-            return;
-        var user = AuroraAPI.getUserManager().getUser(player);
-        if (!user.isLoaded()) return;
-
-        if (HookManager.isEnabled(WorldGuardHook.class)) {
-            if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return;
-        }
-
-        for (var pool : pools.values()) {
-            for (var quest : pool.getPlayerQuests(player)) {
-                for (var taskType : taskTypes) {
+    private void actuallyProgress(Player player, String taskType, double amount, Map<String, Object> params) {
+        synchronized (getPlayerLock(player)) {
+            for (var pool : pools.values()) {
+                if (!pool.hasTaskType(taskType)) continue;
+                for (var quest : pool.getNotCompletedPlayerQuests(player)) {
                     quest.progress(player, taskType, amount, params);
                 }
             }

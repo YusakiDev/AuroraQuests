@@ -1,6 +1,7 @@
 package gg.auroramc.quests.api.quest;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.levels.MatcherManager;
 import gg.auroramc.aurora.api.message.Chat;
@@ -26,6 +27,7 @@ public class QuestPool {
     private MatcherManager matcherManager;
     private QuestRollerScheduler questRoller;
     private final Map<String, Quest> quests = Maps.newHashMap();
+    private Set<String> taskTypes = Sets.newHashSet();
 
     public QuestPool(PoolConfig config, RewardFactory rewardFactory) {
         this.config = config;
@@ -36,7 +38,9 @@ public class QuestPool {
         }
 
         for (var q : config.getQuests().entrySet()) {
-            quests.put(q.getKey(), new Quest(this, q.getValue(), rewardFactory));
+            var quest = new Quest(this, q.getValue(), rewardFactory);
+            quests.put(q.getKey(), quest);
+            this.taskTypes.addAll(quest.getTaskTypes());
         }
 
         if (isTimedRandom()) {
@@ -48,6 +52,10 @@ public class QuestPool {
         }
 
         AuroraQuests.logger().debug("Loaded difficulties for pool " + config.getId() + ": " + String.join(", ", config.getDifficulties().keySet()));
+    }
+
+    public boolean hasTaskType(String taskType) {
+        return taskTypes.contains(taskType);
     }
 
     private boolean isResetFrequencyValid() {
@@ -83,6 +91,10 @@ public class QuestPool {
         var data = getQuestData(player);
         var rolledQuests = data.getPoolRollData(config.getId());
         return rolledQuests.quests().stream().map(this::getQuest).filter(Objects::nonNull).toList();
+    }
+
+    public List<Quest> getNotCompletedPlayerQuests(Player player) {
+        return getPlayerQuests(player).stream().filter(q -> !q.isCompleted(player)).toList();
     }
 
     public int getPlayerLevel(Player player) {
@@ -195,7 +207,7 @@ public class QuestPool {
     }
 
     public void reRollQuests(Player player, boolean sendNotification) {
-        if(isGlobal()) return;
+        if (isGlobal()) return;
         // difficulty -> quest
         var pickedQuests = new HashMap<String, List<Quest>>();
         var difficulties = config.getDifficulties();
