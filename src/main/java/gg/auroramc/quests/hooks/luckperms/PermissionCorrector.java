@@ -35,7 +35,7 @@ public class PermissionCorrector implements RewardCorrector {
             }
 
             // Correct quest pool leveling
-            if (!pool.hasLeveling()) return;
+            if (!pool.hasLeveling()) continue;
             var level = pool.getPlayerLevel(player);
 
             for (int i = 1; i < level + 1; i++) {

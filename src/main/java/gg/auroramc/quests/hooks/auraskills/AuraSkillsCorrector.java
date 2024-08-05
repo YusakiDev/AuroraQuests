@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import dev.aurelium.auraskills.api.AuraSkillsApi;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.stat.StatModifier;
-import gg.auroramc.aurora.api.reward.PermissionReward;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
 import gg.auroramc.quests.AuroraQuests;
 import org.bukkit.Bukkit;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 
 public class AuraSkillsCorrector implements RewardCorrector {
-
 
     @Override
     public void correctRewards(Player player) {
@@ -41,7 +39,7 @@ public class AuraSkillsCorrector implements RewardCorrector {
             }
 
             // Correct quest pool leveling
-            if (!pool.hasLeveling()) return;
+            if (!pool.hasLeveling()) continue;
             var level = pool.getPlayerLevel(player);
 
             for (int i = 1; i < level + 1; i++) {

@@ -41,7 +41,7 @@ public class QuestsCommand extends BaseCommand {
     @Subcommand("open")
     @Description("Opens the quest menu for another player in a specific pool")
     @CommandCompletion("@players @pools true|false")
-    @CommandPermission("aurora.collections.admin.open")
+    @CommandPermission("aurora.quests.admin.open")
     public void onOpenMenu(CommandSender sender, @Flags("other") Player target, @Default("none") String poolId, @Default("false") Boolean silent) {
         if (poolId.equals("none") || poolId.equals("all")) {
             new MainMenu(target).open();
@@ -62,7 +62,7 @@ public class QuestsCommand extends BaseCommand {
     @Subcommand("reroll")
     @Description("Rerolls quests for another player in a specific pool")
     @CommandCompletion("@players @pools true|false")
-    @CommandPermission("aurora.collections.admin.reroll")
+    @CommandPermission("aurora.quests.admin.reroll")
     public void onReroll(CommandSender sender, @Flags("other") Player target, @Default("all") String poolId, @Default("false") Boolean silent) {
         if (poolId.equals("none") || poolId.equals("all")) {
             plugin.getQuestManager().getQuestPools().forEach((pool) -> pool.reRollQuests(target, !silent));
