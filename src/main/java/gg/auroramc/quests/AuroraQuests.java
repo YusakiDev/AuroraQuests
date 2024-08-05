@@ -97,6 +97,7 @@ public class AuroraQuests extends JavaPlugin {
         var pm = Bukkit.getPluginManager();
         pm.registerEvents(new BlockShearingListener(), this);
         pm.registerEvents(new BreedingEggListener(), this);
+        pm.registerEvents(new BreedingListener(), this);
         pm.registerEvents(new BrewingListener(), this);
         pm.registerEvents(new BuildingListener(), this);
         pm.registerEvents(new CommandListener(), this);

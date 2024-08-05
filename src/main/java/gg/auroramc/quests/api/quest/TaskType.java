@@ -20,8 +20,6 @@ public class TaskType {
     public static final String KILL_PLAYER = "KILL_PLAYER";
     public static final String SHEAR = "SHEAR";
     public static final String SMELT = "SMELT";
-    public static final String SMITH_TRANSFORM = "SMITH_TRANSFORM";
-    public static final String SMITH_TRIM = "SMITH_TRIM";
     public static final String TAME = "TAME";
     public static final String GAIN_AURASKILLS_XP = "GAIN_AURASKILLS_XP";
     public static final String GAIN_AURORA_LEVEL = "GAIN_AURORA_LEVEL";
