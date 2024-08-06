@@ -29,7 +29,7 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
     }
 
     public String getDisplay(Player player) {
-        var gc = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig().getTaskStatuses();
+        var gc = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig().getTaskStatuses();
         var data = AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class);
         var required = config.getArgs().getInt("amount", 1);
         var current = isCompleted(player) ? required : data.getProgression(pool.getId(), holder.getId(), id);

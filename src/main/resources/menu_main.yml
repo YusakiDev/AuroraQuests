@@ -1,0 +1,18 @@
+# Don't touch this
+config-version: 0
+
+title: "Quests"
+
+menu-rows: 6
+
+filler:
+  enabled: true
+  item:
+    material: black_stained_glass_pane
+    name: " "
+
+# You can override the default items here
+items: {}
+
+# Define your custom menu items here
+custom-items: { }

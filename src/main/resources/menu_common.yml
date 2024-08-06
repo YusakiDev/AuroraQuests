@@ -1,16 +1,6 @@
 # Don't touch this
 config-version: 0
 
-title: "Quests"
-
-menu-rows: 6
-
-filler:
-  enabled: true
-  item:
-    material: black_stained_glass_pane
-    name: " "
-
 task-statuses:
   completed: "&a&l✔&r"
   not-completed: "&c&l✖&r"
@@ -25,7 +15,7 @@ progress-bar:
   filled-character: "&a&l■"
   unfilled-character: "&7&l■"
 
-# These items will be used en every menu where it makes sense, not just here
+# You can override these items in other menu configurations
 items:
   previous-page:
     material: arrow
@@ -113,7 +103,3 @@ items:
       - ""
       - "&c&lɴᴏᴛ ᴄᴏᴍᴘʟᴇᴛᴇᴅ"
     material: RED_STAINED_GLASS_PANE
-
-
-# Define your custom menu items here
-custom-items: { }

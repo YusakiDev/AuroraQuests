@@ -1,10 +1,13 @@
 package gg.auroramc.quests.menu;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.config.CommonMenuConfig;
+import gg.auroramc.quests.config.MainMenuConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,8 +28,13 @@ public class MainMenu {
         createMenu().open();
     }
 
+    private ItemConfig merge(CommonMenuConfig cmf, MainMenuConfig mc, String key) {
+        return cmf.getItems().get(key).merge(mc.getItems().get(key));
+    }
+
     private AuroraMenu createMenu() {
         var config = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
+        var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
 
         var menu = new AuroraMenu(player, config.getTitle(), config.getMenuRows() * 9, false);
 
@@ -36,7 +44,7 @@ public class MainMenu {
             menu.addFiller(ItemBuilder.filler(Material.AIR));
         }
 
-        menu.addItem(ItemBuilder.close(config.getItems().get("close")).build(player), (e) -> {
+        menu.addItem(ItemBuilder.close(merge(cmf, config, "close")).build(player), (e) -> {
             player.closeInventory();
         });
 
@@ -93,20 +101,20 @@ public class MainMenu {
         if (maxPage > 1) {
             // Add pagination items
             List<Placeholder<?>> placeholders = List.of(
-                    Placeholder.of("{curent}", page),
+                    Placeholder.of("{current}", page),
                     Placeholder.of("{total}", maxPage)
             );
 
-            menu.addItem(ItemBuilder.of(config.getItems().get("previous-page")).placeholder(placeholders).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(merge(cmf, config, "previous-page")).placeholder(placeholders).build(player), (e) -> {
                 if (page > 1) {
                     page--;
                     createMenu().open();
                 }
             });
 
-            menu.addItem(ItemBuilder.of(config.getItems().get("current-page")).placeholder(placeholders).build(player));
+            menu.addItem(ItemBuilder.of(merge(cmf, config, "current-page")).placeholder(placeholders).build(player));
 
-            menu.addItem(ItemBuilder.of(config.getItems().get("next-page")).placeholder(placeholders).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(merge(cmf, config, "next-page")).placeholder(placeholders).build(player), (e) -> {
                 if (page < maxPage) {
                     page++;
                     createMenu().open();

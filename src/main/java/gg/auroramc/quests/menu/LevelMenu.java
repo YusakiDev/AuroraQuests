@@ -31,7 +31,7 @@ public class LevelMenu {
     private AuroraMenu createMenu() {
         var cf = pool.getConfig().getLeveling();
         var cm = cf.getMenu();
-        var mmc = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
+        var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
 
         var menu = new AuroraMenu(player, cm.getTitle(), cm.getRows() * 9, false, Placeholder.of("{name}", pool.getConfig().getName()));
 
@@ -42,13 +42,13 @@ public class LevelMenu {
         }
 
         if (cm.getHasBackButton()) {
-            menu.addItem(ItemBuilder.back(mmc.getItems().get("back").merge(cm.getItems().get("back"))).build(player), (e) -> {
+            menu.addItem(ItemBuilder.back(cmf.getItems().get("back").merge(cm.getItems().get("back"))).build(player), (e) -> {
                 new PoolMenu(player, pool).open();
             });
         }
 
         if (cm.getHasCloseButton()) {
-            menu.addItem(ItemBuilder.close(mmc.getItems().get("close").merge(cm.getItems().get("close"))).build(player), (e) -> {
+            menu.addItem(ItemBuilder.close(cmf.getItems().get("close").merge(cm.getItems().get("close"))).build(player), (e) -> {
                 player.closeInventory();
             });
         }
@@ -78,14 +78,14 @@ public class LevelMenu {
             var rLevel = cf.getRequirements().indexOf(requirement) + 1;
             var completed = level >= rLevel;
             var itemConfig = completed
-                    ? mmc.getItems().get("completed-level").merge(cm.getItems().get("completed-level"))
-                    : mmc.getItems().get("locked-level").merge(cm.getItems().get("locked-level"));
+                    ? cmf.getItems().get("completed-level").merge(cm.getItems().get("completed-level"))
+                    : cmf.getItems().get("locked-level").merge(cm.getItems().get("locked-level"));
 
 
             var rewards = pool.getMatcherManager().getBestMatcher(level).computeRewards(level);
 
             var currentProgress = Math.min(pool.getCompletedQuestCount(player), requirement);
-            var bar = mmc.getProgressBar();
+            var bar = cmf.getProgressBar();
             var pcs = bar.getLength();
             var completedPercent = Math.min((double) currentProgress / requirement, 1);
             var completedPcs = ((Double) Math.floor(pcs * completedPercent)).intValue();
@@ -108,7 +108,7 @@ public class LevelMenu {
 
             for (var line : itemConfig.getLore()) {
                 if (line.equals("component:rewards")) {
-                    var display = mmc.getDisplayComponents().get("rewards");
+                    var display = cmf.getDisplayComponents().get("rewards");
 
                     if (!rewards.isEmpty()) {
                         lore.add(display.getTitle());
@@ -139,7 +139,7 @@ public class LevelMenu {
 
             List<Placeholder<?>> pl = List.of(Placeholder.of("{current}", page + 1), Placeholder.of("{max}", pageCount + 1));
 
-            menu.addItem(ItemBuilder.of(mmc.getItems().get("previous-page").merge(cm.getItems().get("previous-page")))
+            menu.addItem(ItemBuilder.of(cmf.getItems().get("previous-page").merge(cm.getItems().get("previous-page")))
                     .placeholder(pl).build(player), (e) -> {
                 if (page > 0) {
                     page--;
@@ -147,10 +147,10 @@ public class LevelMenu {
                 }
             });
 
-            menu.addItem(ItemBuilder.of(mmc.getItems().get("current-page").merge(cm.getItems().get("current-page")))
+            menu.addItem(ItemBuilder.of(cmf.getItems().get("current-page").merge(cm.getItems().get("current-page")))
                     .placeholder(pl).build(player));
 
-            menu.addItem(ItemBuilder.of(mmc.getItems().get("next-page").merge(cm.getItems().get("next-page")))
+            menu.addItem(ItemBuilder.of(cmf.getItems().get("next-page").merge(cm.getItems().get("next-page")))
                     .placeholder(pl).build(player), (e) -> {
                 if (page < pageCount) {
                     page++;

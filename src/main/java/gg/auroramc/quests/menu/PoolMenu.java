@@ -36,7 +36,7 @@ public class PoolMenu {
     private AuroraMenu createMenu() {
         var config = pool.getConfig();
         var mc = config.getMenu();
-        var mmc = AuroraQuests.getInstance().getConfigManager().getMainMenuConfig();
+        var cmf = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
 
 
         var menu = new AuroraMenu(player, mc.getTitle(), mc.getRows() * 9, false, Placeholder.of("{name}", config.getName()));
@@ -88,7 +88,7 @@ public class PoolMenu {
 
         // Close and back buttons
         if (mc.getHasCloseButton()) {
-            var closeConfig = mmc.getItems().get("close").merge(mc.getItems().get("close"));
+            var closeConfig = cmf.getItems().get("close").merge(mc.getItems().get("close"));
 
             menu.addItem(ItemBuilder.close(closeConfig).build(player), (e) -> {
                 player.closeInventory();
@@ -96,7 +96,7 @@ public class PoolMenu {
         }
 
         if (mc.getHasBackButton()) {
-            var backConfig = mmc.getItems().get("back").merge(mc.getItems().get("back"));
+            var backConfig = cmf.getItems().get("back").merge(mc.getItems().get("back"));
 
             menu.addItem(ItemBuilder.back(backConfig).build(player), (e) -> {
                 new MainMenu(player).open();
@@ -133,7 +133,7 @@ public class PoolMenu {
             var pageCount = getTotalPageCount(mc.getDisplayArea().size());
             List<Placeholder<?>> placeholders = List.of(Placeholder.of("{current}", page + 1), Placeholder.of("{max}", pageCount + 1));
 
-            menu.addItem(ItemBuilder.of(mmc.getItems().get("previous-page").merge(mc.getItems().get("previous-page")))
+            menu.addItem(ItemBuilder.of(cmf.getItems().get("previous-page").merge(mc.getItems().get("previous-page")))
                     .placeholder(placeholders).build(player), (e) -> {
                 if (page > 0) {
                     page--;
@@ -141,10 +141,10 @@ public class PoolMenu {
                 }
             });
 
-            menu.addItem(ItemBuilder.of(mmc.getItems().get("current-page").merge(mc.getItems().get("current-page")))
+            menu.addItem(ItemBuilder.of(cmf.getItems().get("current-page").merge(mc.getItems().get("current-page")))
                     .placeholder(placeholders).build(player));
 
-            menu.addItem(ItemBuilder.of(mmc.getItems().get("next-page").merge(mc.getItems().get("next-page")))
+            menu.addItem(ItemBuilder.of(cmf.getItems().get("next-page").merge(mc.getItems().get("next-page")))
                     .placeholder(placeholders).build(player), (e) -> {
                 if (page < pageCount) {
                     page++;
@@ -156,7 +156,7 @@ public class PoolMenu {
         // Switch between completed/locked quests
         if (pool.isGlobal()) {
             if (isCompletedQuests) {
-                var item = ItemBuilder.of(mmc.getItems().get("switch-to-active").merge(mc.getItems().get("switch-to-active")))
+                var item = ItemBuilder.of(cmf.getItems().get("switch-to-active").merge(mc.getItems().get("switch-to-active")))
                         .placeholder(Placeholder.of("{name}", config.getName())).build(player);
 
                 menu.addItem(item, (e) -> {
@@ -165,7 +165,7 @@ public class PoolMenu {
                     createMenu().open();
                 });
             } else {
-                var item = ItemBuilder.of(mmc.getItems().get("switch-to-completed").merge(mc.getItems().get("switch-to-completed")))
+                var item = ItemBuilder.of(cmf.getItems().get("switch-to-completed").merge(mc.getItems().get("switch-to-completed")))
                         .placeholder(Placeholder.of("{name}", config.getName()))
                         .placeholder(totalCompletedPlaceholder)
                         .build(player);
@@ -181,7 +181,7 @@ public class PoolMenu {
 
         // Leveling button
         if (pool.hasLeveling()) {
-            var item = ItemBuilder.of(mmc.getItems().get("switch-to-levels").merge(mc.getItems().get("switch-to-levels")))
+            var item = ItemBuilder.of(cmf.getItems().get("switch-to-levels").merge(mc.getItems().get("switch-to-levels")))
                     .placeholder(Placeholder.of("{name}", config.getName()))
                     .placeholder(totalCompletedPlaceholder)
                     .placeholder(levelPlaceholder)

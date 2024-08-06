@@ -13,18 +13,8 @@ public class MainMenuConfig extends AuroraConfig {
     private String title;
     private Integer menuRows = 6;
     private FillerConfig filler;
-    private Map<String, Config.DisplayComponent> displayComponents;
     private Map<String, ItemConfig> items;
     private Map<String, ItemConfig> customItems;
-    private TaskStatuses taskStatuses;
-    private ProgressBar progressBar;
-
-    @Getter
-    public static final class ProgressBar {
-        private Integer length = 20;
-        private String filledCharacter;
-        private String unfilledCharacter;
-    }
 
     public MainMenuConfig(AuroraQuests plugin) {
         super(getFile(plugin));
@@ -36,19 +26,13 @@ public class MainMenuConfig extends AuroraConfig {
         private ItemConfig item;
     }
 
-    @Getter
-    public static class TaskStatuses {
-        private String completed = "";
-        private String notCompleted = "";
-    }
-
     public static File getFile(AuroraQuests plugin) {
-        return new File(plugin.getDataFolder(), "main_menu.yml");
+        return new File(plugin.getDataFolder(), "menu_main.yml");
     }
 
     public static void saveDefault(AuroraQuests plugin) {
         if (!getFile(plugin).exists()) {
-            plugin.saveResource("main_menu.yml", false);
+            plugin.saveResource("menu_main.yml", false);
         }
     }
 }

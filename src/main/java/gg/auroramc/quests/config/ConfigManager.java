@@ -24,6 +24,7 @@ public class ConfigManager {
     private Config config;
     private MessageConfig messageConfig;
     private MainMenuConfig mainMenuConfig;
+    private CommonMenuConfig commonMenuConfig;
     private final Map<String, PoolConfig> questPools = Maps.newConcurrentMap();
 
     public ConfigManager(AuroraQuests plugin) {
@@ -40,6 +41,10 @@ public class ConfigManager {
         MessageConfig.saveDefault(plugin, config.getLanguage());
         messageConfig = new MessageConfig(plugin, config.getLanguage());
         messageConfig.load();
+
+        CommonMenuConfig.saveDefault(plugin);
+        commonMenuConfig = new CommonMenuConfig(plugin);
+        commonMenuConfig.load();
 
         MainMenuConfig.saveDefault(plugin);
         mainMenuConfig = new MainMenuConfig(plugin);
