@@ -21,7 +21,13 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
         var manager = AuroraQuests.getInstance().getQuestManager();
         var full = String.join("_", args);
 
-        if (full.endsWith("level_roman")) {
+        if (full.endsWith("total_completed_raw")) {
+            var sum = manager.getQuestPools().stream().mapToLong(p -> p.getCompletedQuestCount(player)).sum();
+            return String.valueOf(sum);
+        } else if(full.endsWith("total_completed")) {
+            var sum = manager.getQuestPools().stream().mapToLong(p -> p.getCompletedQuestCount(player)).sum();
+            return AuroraAPI.formatNumber(sum);
+        } else if (full.endsWith("level_roman")) {
             var pool = manager.getQuestPool(full.substring(0, full.length() - 12));
             if (pool == null) return null;
             return RomanNumber.toRoman(pool.getPlayerLevel(player));
@@ -58,7 +64,10 @@ public class QuestPlaceholderHandler implements PlaceholderHandler {
     public List<String> getPatterns() {
         var manager = AuroraQuests.getInstance().getQuestManager();
 
-        var list = new ArrayList<String>();
+        var list = new ArrayList<String>(manager.getQuestPools().size() * 7 + 2);
+
+        list.add("total_completed_raw");
+        list.add("total_completed");
 
         for (var pool : manager.getQuestPools()) {
             list.add(pool.getId() + "_level");
