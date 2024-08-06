@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.api.event.skill.XpGainEvent;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -24,9 +25,10 @@ public class AuraSkillsListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onExtraDrop(LootDropEvent e) {
         var item = e.getItem();
+        if (item.getType() == Material.AIR) return;
         var manager = AuroraQuests.getInstance().getQuestManager();
         var typeId = AuroraAPI.getItemManager().resolveId(item);
-        
+
         Map<String, Object> params = Map.of("type", typeId);
 
         switch (e.getCause()) {

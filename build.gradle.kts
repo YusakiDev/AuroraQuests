@@ -39,7 +39,7 @@ dependencies {
     compileOnly("gg.auroramc:AuroraLevels:1.3.0")
     compileOnly("gg.auroramc:AuroraCollections:1.0.0-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("dev.aurelium:auraskills-api-bukkit:2.0.7")
+    compileOnly("dev.aurelium:auraskills-api-bukkit:2.2.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
