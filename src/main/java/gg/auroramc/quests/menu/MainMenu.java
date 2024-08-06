@@ -49,7 +49,9 @@ public class MainMenu {
         });
 
         var pools = AuroraQuests.getInstance().getQuestManager().getQuestPools();
-        var maybeInt = pools.stream().filter(pool -> pool.getConfig().getMenuItem().getShowInMainMenu())
+        var maybeInt = pools.stream()
+                .filter(pool -> pool.getConfig().getMenuItem().getShowInMainMenu())
+                .filter(pool -> pool.isUnlocked(player) || pool.getConfig().getUnlockRequirements().isAlwaysShowInMenu())
                 .mapToInt(pool -> pool.getConfig().getMenuItem().getPage()).max();
 
         if (maybeInt.isPresent()) {
@@ -61,6 +63,7 @@ public class MainMenu {
 
 
         for (var pool : pools) {
+            if (!pool.isUnlocked(player) && !pool.getConfig().getUnlockRequirements().isAlwaysShowInMenu()) continue;
             var mi = pool.getConfig().getMenuItem();
             if (!mi.getShowInMainMenu()) continue;
             if (mi.getPage() != page) continue;
@@ -85,12 +88,21 @@ public class MainMenu {
                         AuroraAPI.formatNumber(Math.max(Bukkit.getOnlinePlayers().size(), AuroraAPI.getLeaderboards().getBoardSize(boardName)))));
             }
 
+            var lore = new ArrayList<>(mi.getItem().getLore());
+
+            if (!pool.isUnlocked(player)) {
+                lore.addAll(mi.getLockedLore());
+            }
+
             menu.addItem(ItemBuilder.of(mi.getItem())
+                    .setLore(lore)
                     .placeholder(Placeholder.of("{name}", pool.getConfig().getName()))
                     .placeholder(Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount(player))))
                     .placeholder(placeholders)
                     .build(player), (e) -> {
-                new PoolMenu(player, pool).open();
+                if (pool.isUnlocked(player)) {
+                    new PoolMenu(player, pool).open();
+                }
             });
         }
 

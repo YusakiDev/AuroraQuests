@@ -3,6 +3,7 @@ package gg.auroramc.quests.api.quest;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.levels.MatcherManager;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
@@ -52,6 +53,55 @@ public class QuestPool {
         }
 
         AuroraQuests.logger().debug("Loaded difficulties for pool " + config.getId() + ": " + String.join(", ", config.getDifficulties().keySet()));
+    }
+
+    private boolean canUnlock(Player player) {
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+
+        if (config.getUnlockRequirements() == null) return true;
+
+        if (config.getUnlockRequirements().getQuests() != null) {
+            for (var questId : config.getUnlockRequirements().getQuests()) {
+                var typeId = TypeId.fromString(questId);
+                var pool = typeId.namespace().equals("minecraft") ? getId() : typeId.namespace();
+                if (!data.hasCompletedQuest(pool, typeId.id())) {
+                    return false;
+                }
+            }
+        }
+
+        if (config.getUnlockRequirements().getPermissions() != null) {
+            for (var perm : config.getUnlockRequirements().getPermissions()) {
+                if (!player.hasPermission(perm)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean hasStartRequirements() {
+        return config.getUnlockRequirements() != null && ((config.getUnlockRequirements().getQuests() != null && !config.getUnlockRequirements().getQuests().isEmpty()) ||
+                (config.getUnlockRequirements().getPermissions() != null && !config.getUnlockRequirements().getPermissions().isEmpty()));
+    }
+
+    public boolean isUnlocked(Player player) {
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        return !hasStartRequirements() || data.isPoolUnlocked(getId());
+    }
+
+    public void tryUnlock(Player player) {
+        if (isUnlocked(player)) return;
+        var data = getQuestData(player);
+
+        if (canUnlock(player)) {
+            data.unlockPool(getId());
+            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getPoolUnlocked();
+            Chat.sendMessage(player, msg, Placeholder.of("{pool}", config.getName()));
+            tryStartGlobalQuests(player);
+            reRollQuests(player, false);
+        }
     }
 
     public boolean hasTaskType(String taskType) {
@@ -177,6 +227,7 @@ public class QuestPool {
 
     public void tryStartGlobalQuests(Player player) {
         if (!isGlobal()) return;
+        if (!isUnlocked(player)) return;
         for (var quest : quests.values()) {
             quest.tryStart(player);
         }
@@ -186,6 +237,7 @@ public class QuestPool {
         AuroraQuests.logger().debug("Checking if player " + player.getName() + " needs to reroll quests for pool " + config.getId());
         if (!isTimedRandom()) return false;
         if (!questRoller.isValid()) return false;
+        if (!isUnlocked(player)) return false;
         AuroraQuests.logger().debug("Pool is timed random and quest roller is valid");
 
         try {

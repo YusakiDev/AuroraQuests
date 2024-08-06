@@ -23,6 +23,7 @@ public class PoolConfig extends AuroraConfig {
     private PoolMenuItem menuItem;
     private PoolMenu menu;
     private Leveling leveling;
+    private StartRequirementConfig unlockRequirements;
 
     @Setter
     @IgnoreField
@@ -37,6 +38,7 @@ public class PoolConfig extends AuroraConfig {
         private Boolean showInMainMenu;
         private Integer page;
         private ItemConfig item;
+        private List<String> lockedLore;
     }
 
     @Getter

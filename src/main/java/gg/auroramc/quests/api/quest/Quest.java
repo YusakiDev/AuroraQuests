@@ -57,7 +57,9 @@ public class Quest {
     public void progress(Player player, String taskType, double count, Map<String, Object> params) {
         if (!taskTypes.contains(taskType)) return;
         if (isCompleted(player)) return;
-        if (!canStart(player)) return;
+        if (!holder.isUnlocked(player)) return;
+        if (!isUnlocked(player)) return;
+
         for (var task : tasks.values()) {
             if (task.getTaskType().equals(taskType)) {
                 task.progress(player, count, params);
@@ -111,16 +113,15 @@ public class Quest {
 
     public boolean isUnlocked(Player player) {
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
-        return config.getStartRequirements() == null || data.isQuestStartUnlocked(holder.getId(), getId());
+        return data.isQuestStartUnlocked(holder.getId(), getId()) || !hasStartRequirements();
     }
 
     public void tryStart(Player player) {
         if (!holder.isGlobal()) return;
-        if (!hasStartRequirements()) return;
+        if (isUnlocked(player)) return;
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
-        if (data.isQuestStartUnlocked(holder.getId(), getId())) return;
 
-        if (canStart(player) && config.getStartRequirements() != null) {
+        if (config.getStartRequirements() != null && canStart(player)) {
             data.setQuestStartUnlock(holder.getId(), getId());
             var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
             Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));

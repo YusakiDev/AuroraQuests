@@ -9,11 +9,14 @@ import gg.auroramc.quests.config.ConfigManager;
 import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.listener.*;
 import gg.auroramc.quests.placeholder.QuestPlaceholderHandler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 @Getter
 public class AuroraQuests extends JavaPlugin {
@@ -28,6 +31,7 @@ public class AuroraQuests extends JavaPlugin {
     private ConfigManager configManager;
     private CommandManager commandManager;
     private QuestManager questManager;
+    private ScheduledTask unlockTask;
 
     @Override
     public void onLoad() {
@@ -70,26 +74,34 @@ public class AuroraQuests extends JavaPlugin {
         questManager.reload();
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+        reloadUnlockTask();
     }
 
     public void reload() {
         configManager.reload();
         commandManager.reload();
         questManager.reload();
+        reloadUnlockTask();
         Bukkit.getOnlinePlayers().forEach(player -> {
-            questManager.rollQuestsIfNecessary(player);
+            questManager.tryUnlockQuestPools(player);
             questManager.tryStartGlobalQuests(player);
+            questManager.rollQuestsIfNecessary(player);
         });
     }
 
     @Override
     public void onDisable() {
         commandManager.unregisterCommands();
+
         try {
             l.info("Shutting down scheduler...");
             StdSchedulerFactory.getDefaultScheduler().shutdown(true);
         } catch (SchedulerException e) {
             l.severe("Failed to shutdown scheduler: " + e.getMessage());
+        }
+
+        if (unlockTask != null && !unlockTask.isCancelled()) {
+            unlockTask.cancel();
         }
     }
 
@@ -114,5 +126,24 @@ public class AuroraQuests extends JavaPlugin {
         pm.registerEvents(new ShearingListener(), this);
         pm.registerEvents(new SmeltingListener(), this);
         pm.registerEvents(new TamingListener(), this);
+    }
+
+    private void reloadUnlockTask() {
+        var cf = configManager.getConfig().getUnlockTask();
+
+        if (!cf.getEnabled()) {
+            if (unlockTask != null && !unlockTask.isCancelled()) {
+                unlockTask.cancel();
+                unlockTask = null;
+            }
+            return;
+        }
+
+        unlockTask = Bukkit.getAsyncScheduler().runAtFixedRate(this, (task) -> {
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                questManager.tryUnlockQuestPools(player);
+                questManager.tryStartGlobalQuests(player);
+            });
+        }, cf.getInterval(), cf.getInterval(), TimeUnit.SECONDS);
     }
 }

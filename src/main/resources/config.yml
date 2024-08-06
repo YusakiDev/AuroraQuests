@@ -5,6 +5,12 @@ debug: false
 language: en
 prevent-creative-mode: true
 
+# Timer to try to unlock global quests and quest pools if for some reason the event driven method doesn't work
+unlock-task:
+  enabled: false
+  # Interval in seconds
+  interval: 5
+
 command-aliases:
   quests: [ "quests", "quest" ]
 

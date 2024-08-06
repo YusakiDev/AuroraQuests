@@ -26,6 +26,7 @@ public class MessageConfig extends AuroraConfig {
     private String reRolledSource = "&aQuests for {player} for pool {pool} have been re-rolled!";
     private String globalQuestUnlocked = "&aYou have unlocked the {quest} quest in {pool}!";
     private String poolNotFound = "&cThere isn't any quest line with this id: {pool}!";
+    private String poolUnlocked = "&aYou have unlocked a new quest pool: {pool}!";
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));

@@ -18,9 +18,19 @@ public class QuestData extends UserDataHolder {
     private final Map<String, Set<String>> completedQuests = Maps.newConcurrentMap();
     private final Map<String, Long> completedCount = Maps.newConcurrentMap();
     private final Map<String, Set<String>> questUnlocks = Maps.newConcurrentMap();
+    private final Set<String> poolUnlocks = Sets.newConcurrentHashSet();
 
     public PoolRollData getPoolRollData(String poolId) {
         return rolledQuests.get(poolId);
+    }
+
+    public void unlockPool(String poolId) {
+        poolUnlocks.add(poolId);
+        dirty.set(true);
+    }
+
+    public boolean isPoolUnlocked(String poolId) {
+        return poolUnlocks.contains(poolId);
     }
 
     public void setRolledQuests(String poolId, List<String> quests) {
@@ -104,7 +114,7 @@ public class QuestData extends UserDataHolder {
             for (var questEntry : poolEntry.getValue().entrySet()) {
                 var questSection = poolSection.createSection(questEntry.getKey());
                 for (var taskEntry : questEntry.getValue().entrySet()) {
-                    if(taskEntry.getValue() > 0) {
+                    if (taskEntry.getValue() > 0) {
                         questSection.set(taskEntry.getKey(), taskEntry.getValue());
                     }
                 }
@@ -117,6 +127,9 @@ public class QuestData extends UserDataHolder {
                 data.set("progression." + poolEntry.getKey() + "." + questEntry + ".unlocked", true);
             }
         }
+
+        // Pool unlocks
+        data.set("pool_unlocks", poolUnlocks.stream().toList());
 
         // Completed quests
         for (var poolEntry : completedQuests.entrySet()) {
@@ -174,5 +187,7 @@ public class QuestData extends UserDataHolder {
                 completedCount.put(key, completedCountSection.getLong(key));
             }
         }
+
+        poolUnlocks.addAll(data.getStringList("pool_unlocks"));
     }
 }

@@ -41,7 +41,9 @@ public class PlayerListener implements Listener {
     }
 
     private void roll(Player player) {
+        plugin.getQuestManager().tryUnlockQuestPools(player);
         plugin.getQuestManager().tryStartGlobalQuests(player);
+
         var pools = plugin.getQuestManager().rollQuestsIfNecessary(player);
 
         if (pools.isEmpty()) return;

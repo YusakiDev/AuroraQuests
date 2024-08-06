@@ -24,6 +24,7 @@ public class Config extends AuroraConfig {
     private LevelUpMessage questCompleteMessage;
     private CommandAliasConfig commandAliases;
     private List<String> sortOrder;
+    private UnlockTaskConfig unlockTask = new UnlockTaskConfig();
 
     @IgnoreField
     private Map<String, Integer> sortOderMap;
@@ -53,6 +54,12 @@ public class Config extends AuroraConfig {
     public static final class DisplayComponent {
         private String title;
         private String line;
+    }
+
+    @Getter
+    public static final class UnlockTaskConfig {
+        private Boolean enabled = false;
+        private Integer interval = 5;
     }
 
     @Getter

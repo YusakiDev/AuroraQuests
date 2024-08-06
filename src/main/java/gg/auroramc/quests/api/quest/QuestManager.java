@@ -79,6 +79,7 @@ public class QuestManager {
         synchronized (getPlayerLock(player)) {
             for (var pool : pools.values()) {
                 if (!pool.hasTaskType(taskType)) continue;
+                if (!pool.isUnlocked(player)) continue;
                 for (var quest : pool.getNotCompletedPlayerQuests(player)) {
                     quest.progress(player, taskType, amount, params);
                 }
@@ -111,6 +112,12 @@ public class QuestManager {
             if (pool.isGlobal()) {
                 pool.tryStartGlobalQuests(player);
             }
+        }
+    }
+
+    public void tryUnlockQuestPools(Player player) {
+        for (var pool : pools.values()) {
+            pool.tryUnlock(player);
         }
     }
 }

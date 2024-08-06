@@ -11,6 +11,9 @@ difficulties:
 menu-item:
   show-in-main-menu: true
   page: 1
+  locked-lore:
+    - ""
+    - "&cThis quest pool is locked!"
   item:
     material: WRITABLE_BOOK
     slot: 11
