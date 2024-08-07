@@ -31,6 +31,7 @@ repositories {
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://jitpack.io/")
     maven("https://repo.projectshard.dev/repository/releases/")
+    maven("https://repo.oraxen.com/releases")
 }
 
 dependencies {
@@ -49,6 +50,7 @@ dependencies {
     compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.2.11")
     compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.22.3")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.1")
+    compileOnly("io.th0rgal:oraxen:1.179.0")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
