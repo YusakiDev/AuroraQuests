@@ -17,6 +17,8 @@ softdepend:
   - "EconomyShopGUI"
   - "EconomyShopGUI-Premium"
   - "AuroraLevels"
+  - "Oraxen"
+  - "ShopGUIPlus"
 
 website: https://auroramc.gg
 

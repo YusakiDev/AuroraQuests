@@ -27,7 +27,9 @@ public class TaskType {
     public static final String GAIN_AURORA_XP = "GAIN_AURORA_XP";
     public static final String INTERACT_NPC = "INTERACT_NPC";
     public static final String SELL_WORTH = "SELL_WORTH";
+    public static final String SELL = "SELL";
     public static final String BUY_WORTH = "BUY_WORTH";
+    public static final String BUY = "BUY";
     public static final String INTERACT_SHOPKEEPER = "INTERACT_SHOPKEEPER";
     public static final String TRADE_SHOPKEEPER = "TRADE_SHOPKEEPER";
     public static final String ENTER_REGION = "ENTER_REGION";
