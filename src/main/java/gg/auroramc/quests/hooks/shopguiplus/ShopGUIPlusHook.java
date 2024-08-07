@@ -16,7 +16,7 @@ import java.util.Map;
 public class ShopGUIPlusHook implements Hook, Listener {
     @Override
     public void hook(AuroraQuests plugin) {
-        AuroraQuests.logger().info("Hooked into ShopGUIPlus for BUY_WORTH and SELL_WORTH task progression.");
+        AuroraQuests.logger().info("Hooked into ShopGUIPlus for BUY_WORTH, BUY and SELL_WORTH, SELL task progression.");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
