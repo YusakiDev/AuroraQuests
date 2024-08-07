@@ -7,6 +7,7 @@ import gg.auroramc.quests.hooks.customfishing.CustomFishingHook;
 import gg.auroramc.quests.hooks.luckperms.LuckPermsHook;
 import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
 import gg.auroramc.quests.hooks.oraxen.OraxenHook;
+import gg.auroramc.quests.hooks.shopguiplus.ShopGUIPlusHook;
 import gg.auroramc.quests.hooks.shopkeepers.ShopkeepersHook;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public enum Hooks {
     CITIZENS(CitizensHook.class, "Citizens"),
     SHOPKEEPERS(ShopkeepersHook.class, "Shopkeepers"),
     ORAXEN(OraxenHook.class, "Oraxen"),
+    SHOP_GUI_PLUS(ShopGUIPlusHook.class, "ShopGUIPlus"),
     ECONOMY_SHOP_GUI(CitizensHook.class, Set.of("EconomyShopGUI", "EconomyShopGUI-Premium")),
     LUCK_PERMS(LuckPermsHook.class, "LuckPerms");
 
