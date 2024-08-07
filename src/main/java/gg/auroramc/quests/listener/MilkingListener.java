@@ -17,7 +17,7 @@ import java.util.Map;
 public class MilkingListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMilk(PlayerInteractEntityEvent event) {
-        if (!(event.getRightClicked() instanceof Cow && event.getRightClicked() instanceof Goat) || (event.getPlayer().getInventory().getItemInMainHand()).getType() != Material.BUCKET) {
+        if (!(event.getRightClicked() instanceof Cow || event.getRightClicked() instanceof Goat) || (event.getPlayer().getInventory().getItemInMainHand()).getType() != Material.BUCKET) {
             return;
         }
 
