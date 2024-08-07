@@ -19,6 +19,7 @@ softdepend:
   - "AuroraLevels"
   - "Oraxen"
   - "ShopGUIPlus"
+  - "MythicLib"
 
 website: https://auroramc.gg
 

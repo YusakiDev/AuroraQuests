@@ -5,6 +5,7 @@ import gg.auroramc.quests.hooks.auroralevels.AuroraLevelsHook;
 import gg.auroramc.quests.hooks.citizens.CitizensHook;
 import gg.auroramc.quests.hooks.customfishing.CustomFishingHook;
 import gg.auroramc.quests.hooks.luckperms.LuckPermsHook;
+import gg.auroramc.quests.hooks.mmolib.MMOLibHook;
 import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
 import gg.auroramc.quests.hooks.oraxen.OraxenHook;
 import gg.auroramc.quests.hooks.shopguiplus.ShopGUIPlusHook;
@@ -25,6 +26,7 @@ public enum Hooks {
     CITIZENS(CitizensHook.class, "Citizens"),
     SHOPKEEPERS(ShopkeepersHook.class, "Shopkeepers"),
     ORAXEN(OraxenHook.class, "Oraxen"),
+    MMOLIB(MMOLibHook.class, "MythicLib"),
     SHOP_GUI_PLUS(ShopGUIPlusHook.class, "ShopGUIPlus"),
     ECONOMY_SHOP_GUI(CitizensHook.class, Set.of("EconomyShopGUI", "EconomyShopGUI-Premium")),
     LUCK_PERMS(LuckPermsHook.class, "LuckPerms");
@@ -43,8 +45,8 @@ public enum Hooks {
     }
 
     public boolean canHook() {
-        for(String plugin : plugins) {
-            if(Bukkit.getPluginManager().getPlugin(plugin) != null) {
+        for (String plugin : plugins) {
+            if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
                 return true;
             }
         }

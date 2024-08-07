@@ -32,13 +32,13 @@ repositories {
     maven("https://jitpack.io/")
     maven("https://repo.projectshard.dev/repository/releases/")
     maven("https://repo.oraxen.com/releases")
+    maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:1.5.5")
-    compileOnly("gg.auroramc:AuroraLevels:1.3.0")
-    compileOnly("gg.auroramc:AuroraCollections:1.0.0-SNAPSHOT")
+    compileOnly("gg.auroramc:Aurora:1.5.9")
+    compileOnly("gg.auroramc:AuroraLevels:1.5.1")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.2.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
@@ -52,6 +52,7 @@ dependencies {
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.1")
     compileOnly("io.th0rgal:oraxen:1.179.0")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
