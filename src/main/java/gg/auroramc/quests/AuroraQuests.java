@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -81,12 +82,15 @@ public class AuroraQuests extends JavaPlugin {
         configManager.reload();
         commandManager.reload();
         questManager.reload();
+
         reloadUnlockTask();
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            questManager.tryUnlockQuestPools(player);
-            questManager.tryStartGlobalQuests(player);
-            questManager.rollQuestsIfNecessary(player);
-        });
+        CompletableFuture.runAsync(() ->
+                Bukkit.getOnlinePlayers().forEach(player -> {
+                    questManager.tryUnlockQuestPools(player);
+                    questManager.tryStartGlobalQuests(player);
+                    questManager.rollQuestsIfNecessary(player);
+                    questManager.getRewardAutoCorrector().correctRewards(player);
+                }));
     }
 
     @Override
