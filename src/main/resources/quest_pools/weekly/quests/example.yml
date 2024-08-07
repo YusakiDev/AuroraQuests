@@ -44,9 +44,6 @@ tasks:
       regions:
         type: blacklist
         value: [ "spawn" ]
-      biomes:
-        type: whitelist
-        value: [ "minecraft:plains", "minecraft:forest" ]
       min-y-level: 0
       max-y-level: 64
       hand:
