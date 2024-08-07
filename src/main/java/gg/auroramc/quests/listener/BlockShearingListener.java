@@ -1,5 +1,6 @@
 package gg.auroramc.quests.listener;
 
+import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
@@ -21,6 +22,11 @@ public class BlockShearingListener implements Listener {
         }
 
         Block block = event.getBlock();
+
+        for (var drop : event.getDrops()) {
+            AuroraQuests.getInstance().getQuestManager()
+                    .progress(player, TaskType.BLOCK_SHEAR_LOOT, drop.getAmount(), Map.of("type", AuroraAPI.getItemManager().resolveId(drop)));
+        }
 
         AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.BLOCK_SHEAR, 1, Map.of("type", TypeId.from(block.getType())));
     }

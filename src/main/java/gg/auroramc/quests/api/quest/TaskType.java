@@ -3,6 +3,7 @@ package gg.auroramc.quests.api.quest;
 public class TaskType {
     public static final String FISH = "FISH";
     public static final String BLOCK_SHEAR = "BLOCK_SHEAR";
+    public static final String BLOCK_SHEAR_LOOT = "BLOCK_SHEAR_LOOT";
     public static final String BREED = "BREED";
     public static final String BREW = "BREW";
     public static final String BUILD = "BUILD";
@@ -20,6 +21,7 @@ public class TaskType {
     public static final String KILL_LEVELLED_MOB = "KILL_LEVELLED_MOB";
     public static final String KILL_PLAYER = "KILL_PLAYER";
     public static final String SHEAR = "SHEAR";
+    public static final String SHEAR_LOOT = "SHEAR_LOOT";
     public static final String SMELT = "SMELT";
     public static final String TAME = "TAME";
     public static final String GAIN_AURASKILLS_XP = "GAIN_AURASKILLS_XP";
