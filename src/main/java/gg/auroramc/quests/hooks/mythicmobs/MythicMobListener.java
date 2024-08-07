@@ -24,7 +24,7 @@ public class MythicMobListener implements Listener {
         if (e.getMob().getLevel() > 0) {
             manager.progress(player, TaskType.KILL_LEVELLED_MOB, 1, Map.of(
                     "type", new TypeId("mythicmobs", mobName),
-                    "level", e.getMob().getLevel()
+                    "level", Math.floor(e.getMob().getLevel())
             ));
         }
 

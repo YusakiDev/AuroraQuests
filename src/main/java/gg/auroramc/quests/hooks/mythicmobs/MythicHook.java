@@ -18,6 +18,6 @@ public class MythicHook implements Hook {
         plugin.getQuestManager().getRewardAutoCorrector()
                 .registerCorrector(NamespacedId.fromDefault("mythic_stat"), new MythicStatCorrector());
 
-        AuroraQuests.logger().info("Hooked into MythicMobs for KILL_MYTHIC_MOB task type");
+        AuroraQuests.logger().info("Hooked into MythicMobs for KILL_MOB and KILL_LEVELLED_MOB task type with namespace mythicmobs.");
     }
 }
