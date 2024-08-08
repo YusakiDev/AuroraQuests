@@ -8,6 +8,6 @@ public class CustomFishingHook implements Hook {
     @Override
     public void hook(AuroraQuests plugin) {
         Bukkit.getPluginManager().registerEvents(new CustomFishingListener(), plugin);
-        AuroraQuests.logger().info("Hooked into CustomFishing for CUSTOM_FISH task type");
+        AuroraQuests.logger().info("Hooked into CustomFishing for FISH task type with namespace custom_fishing!");
     }
 }

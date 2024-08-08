@@ -72,10 +72,12 @@ public class AuroraQuests extends JavaPlugin {
 
         HookManager.enableHooks(this);
 
-        questManager.reload();
-
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
-        reloadUnlockTask();
+
+        Bukkit.getGlobalRegionScheduler().run(this, (task) -> {
+            questManager.reload();
+            reloadUnlockTask();
+        });
     }
 
     public void reload() {
