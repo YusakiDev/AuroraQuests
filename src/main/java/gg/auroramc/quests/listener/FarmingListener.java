@@ -1,11 +1,14 @@
 package gg.auroramc.quests.listener;
 
+import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.events.region.RegionBlockBreakEvent;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -48,17 +51,27 @@ public class FarmingListener implements Listener {
     @EventHandler
     public void onBlockBreak(RegionBlockBreakEvent e) {
         if (!e.isNatural()) return;
-        var player = e.getPlayerWhoBroke();
-        var type = e.getBlock().getType();
 
-        if (blockCrops.contains(type)) {
-            AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.FARM, 1, Map.of("type", TypeId.from(type)));
+        handleBreak(e.getPlayerWhoBroke(), e.getBlock());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockBreak2(BlockBreakEvent e) {
+        // We don't care if region manager is enabled
+        if (AuroraAPI.getRegionManager() != null) return;
+        if (e.getBlock().hasMetadata("aurora_placed")) return;
+
+        handleBreak(e.getPlayer(), e.getBlock());
+    }
+
+    private void handleBreak(Player player, Block block) {
+        if (blockCrops.contains(block.getType())) {
+            AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.FARM, 1, Map.of("type", TypeId.from(block.getType())));
             return;
         }
 
-
-        if (specialCrops.contains(type)) {
-            for (var drop : e.getBlock().getDrops(player.getInventory().getItemInMainHand())) {
+        if (specialCrops.contains(block.getType())) {
+            for (var drop : block.getDrops(player.getInventory().getItemInMainHand())) {
                 AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.FARM, drop.getAmount(), Map.of("type", TypeId.from(drop.getType())));
             }
         }

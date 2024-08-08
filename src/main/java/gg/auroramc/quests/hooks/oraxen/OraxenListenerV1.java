@@ -31,7 +31,9 @@ public class OraxenListenerV1 implements Listener {
         if (id == null) return;
         if (block == null) return;
 
-        if (AuroraAPI.getRegionManager().isPlacedBlock(block)) return;
+        if (AuroraAPI.getRegionManager() != null) {
+            if (AuroraAPI.getRegionManager().isPlacedBlock(block)) return;
+        }
 
         AuroraQuests.getInstance().getQuestManager()
                 .progress(player, TaskType.BLOCK_BREAK, 1, Map.of("type", new TypeId("oraxen", id)));
