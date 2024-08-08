@@ -13,6 +13,7 @@ public class MainMenuConfig extends AuroraConfig {
     private String title;
     private Integer menuRows = 6;
     private FillerConfig filler;
+    private Boolean hasCloseButton = true;
     private Map<String, ItemConfig> items;
     private Map<String, ItemConfig> customItems;
 

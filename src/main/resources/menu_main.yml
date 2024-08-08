@@ -4,6 +4,7 @@ config-version: 0
 title: "Quests"
 
 menu-rows: 6
+has-close-button: true
 
 filler:
   enabled: true

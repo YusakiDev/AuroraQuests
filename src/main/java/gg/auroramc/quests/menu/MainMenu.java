@@ -44,9 +44,11 @@ public class MainMenu {
             menu.addFiller(ItemBuilder.filler(Material.AIR));
         }
 
-        menu.addItem(ItemBuilder.close(merge(cmf, config, "close")).build(player), (e) -> {
-            player.closeInventory();
-        });
+        if (config.getHasCloseButton()) {
+            menu.addItem(ItemBuilder.close(merge(cmf, config, "close")).build(player), (e) -> {
+                player.closeInventory();
+            });
+        }
 
         var pools = AuroraQuests.getInstance().getQuestManager().getQuestPools();
         var maybeInt = pools.stream()
