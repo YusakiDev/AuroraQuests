@@ -48,7 +48,7 @@ public class QuestsCommand extends BaseCommand {
         } else {
             var pool = plugin.getQuestManager().getQuestPool(poolId);
             if (pool == null) {
-                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound());
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
                 return;
             }
             if (pool.isUnlocked(target)) {
@@ -76,7 +76,7 @@ public class QuestsCommand extends BaseCommand {
                     Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getReRolledSource(), Placeholder.of("{player}", target.getName()), Placeholder.of("{pool}", pool.getConfig().getName()));
                 }
             } else {
-                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound());
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
             }
         }
     }
