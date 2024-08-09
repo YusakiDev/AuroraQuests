@@ -13,6 +13,7 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -81,6 +82,18 @@ public class QuestRollerScheduler {
         } else {
             // If there are no previous executions, assume reroll is needed
             return true;
+        }
+    }
+
+    public Duration getDurationUntilNextRoll() {
+        ZonedDateTime now = ZonedDateTime.now();
+        Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(now);
+
+        if (nextExecution.isPresent()) {
+            ZonedDateTime nextExecutionTime = nextExecution.get();
+            return Duration.between(now, nextExecutionTime);
+        } else {
+            return Duration.ZERO;
         }
     }
 
