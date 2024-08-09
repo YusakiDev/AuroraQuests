@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class QuestRollerScheduler {
     private final QuestPool pool;
@@ -30,6 +31,7 @@ public class QuestRollerScheduler {
     private ExecutionTime executionTime;
     @Getter
     private volatile boolean valid = false;
+    private AtomicReference<ZonedDateTime> nextExecutionTime = new AtomicReference<>(null);
 
     public QuestRollerScheduler(QuestPool pool) {
         this.pool = pool;
@@ -86,12 +88,27 @@ public class QuestRollerScheduler {
     }
 
     public Duration getDurationUntilNextRoll() {
+        var next = nextExecutionTime.get();
+        if (next != null) {
+            ZonedDateTime now = ZonedDateTime.now();
+            var duration = Duration.between(now, next);
+            if (duration.isNegative()) {
+                return Duration.ZERO;
+            }
+            return duration;
+        }
+
         ZonedDateTime now = ZonedDateTime.now();
         Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(now);
 
         if (nextExecution.isPresent()) {
             ZonedDateTime nextExecutionTime = nextExecution.get();
-            return Duration.between(now, nextExecutionTime);
+            this.nextExecutionTime.set(nextExecutionTime);
+            var duration = Duration.between(now, nextExecutionTime);
+            if (duration.isNegative()) {
+                return Duration.ZERO;
+            }
+            return duration;
         } else {
             return Duration.ZERO;
         }
@@ -102,6 +119,7 @@ public class QuestRollerScheduler {
         @Override
         public void execute(JobExecutionContext context) {
             Bukkit.getAsyncScheduler().runDelayed(AuroraQuests.getInstance(), (task) -> {
+                nextExecutionTime.set(null);
                 var players = new ArrayList<>(Bukkit.getOnlinePlayers());
 
                 for (var player : players) {
