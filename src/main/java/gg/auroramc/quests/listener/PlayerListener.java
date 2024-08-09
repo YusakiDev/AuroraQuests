@@ -45,10 +45,10 @@ public class PlayerListener implements Listener {
 
         var pools = plugin.getQuestManager().rollQuestsIfNecessary(player);
 
-        if (pools.isEmpty()) return;
-
-        var msg = plugin.getConfigManager().getMessageConfig().getReRolledTarget();
-        Chat.sendMessage(player, msg, Placeholder.of("{pool}", String.join(", ", pools.stream().map(p -> p.getConfig().getName()).toList())));
+        if (!pools.isEmpty()) {
+            var msg = plugin.getConfigManager().getMessageConfig().getReRolledTarget();
+            Chat.sendMessage(player, msg, Placeholder.of("{pool}", String.join(", ", pools.stream().map(p -> p.getConfig().getName()).toList())));
+        }
 
         plugin.getQuestManager().getRewardAutoCorrector().correctRewards(player);
 
