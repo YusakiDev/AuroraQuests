@@ -13,6 +13,7 @@ import java.util.Map;
 @Getter
 public class Config extends AuroraConfig {
     private Boolean debug = false;
+    private Boolean purgeInvalidDataOnLogin = false;
     private String language = "en";
     private Map<String, String> difficulties;
     private Boolean preventCreativeMode = false;

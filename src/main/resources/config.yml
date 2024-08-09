@@ -5,6 +5,9 @@ debug: false
 language: en
 prevent-creative-mode: true
 
+# Only enable this if you are heavily modifying your quest pools/quests data in production (WHICH YOU SHOULDN'T)
+purge-invalid-data-on-login: false
+
 # Timer to try to unlock global quests and quest pools if for some reason the event driven method doesn't work
 unlock-task:
   enabled: false

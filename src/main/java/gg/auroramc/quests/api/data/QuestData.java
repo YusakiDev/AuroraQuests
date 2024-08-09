@@ -4,13 +4,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import gg.auroramc.aurora.api.user.UserDataHolder;
 import gg.auroramc.aurora.api.util.NamespacedId;
+import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.api.quest.QuestPool;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class QuestData extends UserDataHolder {
     private final Map<String, PoolRollData> rolledQuests = Maps.newConcurrentMap();
@@ -189,5 +190,34 @@ public class QuestData extends UserDataHolder {
         }
 
         poolUnlocks.addAll(data.getStringList("pool_unlocks"));
+    }
+
+    public void purgeInvalidData(Collection<QuestPool> questPools) {
+        var poolIds = questPools.stream().map(QuestPool::getId).collect(Collectors.toSet());
+
+        completedCount.keySet().removeIf(poolId -> !poolIds.contains(poolId));
+        progression.keySet().removeIf(poolId -> !poolIds.contains(poolId));
+        questUnlocks.keySet().removeIf(poolId -> !poolIds.contains(poolId));
+        rolledQuests.keySet().removeIf(poolId -> !poolIds.contains(poolId));
+        completedQuests.keySet().removeIf(poolId -> !poolIds.contains(poolId));
+        poolUnlocks.removeIf(poolId -> !poolIds.contains(poolId));
+
+        for (var pool : questPools) {
+            var questIds = pool.getQuests().stream().map(Quest::getId).collect(Collectors.toSet());
+
+            if (progression.containsKey(pool.getId())) {
+                progression.get(pool.getId()).keySet().removeIf(id -> !questIds.contains(id));
+            }
+
+            if (questUnlocks.containsKey(pool.getId())) {
+                questUnlocks.get(pool.getId()).removeIf(id -> !questIds.contains(id));
+            }
+
+            if (completedQuests.containsKey(pool.getId())) {
+                completedQuests.get(pool.getId()).removeIf(id -> !questIds.contains(id));
+            }
+        }
+
+        dirty.set(true);
     }
 }
