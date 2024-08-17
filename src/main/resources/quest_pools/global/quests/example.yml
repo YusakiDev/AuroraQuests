@@ -74,7 +74,7 @@ rewards:
 
 # If this is a timed random quest, it won't pick it if the requirements are not met
 #start-requirements:
-#  # If true Quest can be started only by /quest unlock
+#  # If true, the quest will be locked and can only be unlocked using /quest unlock
 #  need-command-to-start: true
 #  # Should the quest be shown in the menu even if the player doesn't meet the requirements
 #  # Only works for global quests
