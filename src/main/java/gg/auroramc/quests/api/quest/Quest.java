@@ -7,13 +7,14 @@ import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.reward.Reward;
-import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.reward.RewardExecutor;
+import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.event.QuestCompletedEvent;
 import gg.auroramc.quests.api.event.QuestPoolLevelUpEvent;
 import gg.auroramc.quests.config.quest.QuestConfig;
+import gg.auroramc.quests.config.quest.StartRequirementConfig;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -106,9 +107,9 @@ public class Quest {
         return true;
     }
 
-    private boolean hasStartRequirements() {
+    public boolean hasStartRequirements() {
         return config.getStartRequirements() != null && ((config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
-                (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty()));
+                (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty()) || config.getStartRequirements().isNeedCommandToStart());
     }
 
     public boolean isUnlocked(Player player) {
@@ -117,9 +118,20 @@ public class Quest {
     }
 
     public void tryStart(Player player) {
+        tryStart(player, false);
+    }
+
+    /**
+     * Try to start the quest if player meets requirements
+     *
+     * @param player            for which quest will be started
+     * @param executedByCommand If method was executed by unlock command (check if quest has {@link StartRequirementConfig#isNeedCommandToStart()})
+     */
+    public void tryStart(Player player, boolean executedByCommand) {
         if (!holder.isGlobal()) return;
         if (isUnlocked(player)) return;
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        if (!executedByCommand && config.getStartRequirements().isNeedCommandToStart()) return;
 
         if (config.getStartRequirements() != null && canStart(player)) {
             data.setQuestStartUnlock(holder.getId(), getId());

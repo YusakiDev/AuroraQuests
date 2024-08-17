@@ -28,6 +28,10 @@ public class MessageConfig extends AuroraConfig {
     private String poolNotFound = "&cThere isn't any quest line with this id: {pool}!";
     private String poolUnlocked = "&aYou have unlocked a new quest pool: {pool}!";
     private String unknownCommand = "&cUnknown Command, please type /help";
+    private String questNotFound = "&cThere isn't any quest with id {quest} in pool {pool}!";
+    private String questNeedCommand = "&cQuest {quest} does not have starting requirements 'need-command-to-start: true'!";
+    private String questUnlocked = "&aQuest {quest} unlocked for {player}.";
+    private String alreadyCompleted = "&cPlayer {player} has already completed/unlocked quest {quest}.";
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));

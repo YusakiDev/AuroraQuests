@@ -6,6 +6,7 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.menu.MainMenu;
 import gg.auroramc.quests.menu.PoolMenu;
 import org.bukkit.command.CommandSender;
@@ -62,7 +63,7 @@ public class QuestsCommand extends BaseCommand {
 
     @Subcommand("reroll")
     @Description("Rerolls quests for another player in a specific pool")
-    @CommandCompletion("@players @pools true|false")
+    @CommandCompletion("@players @pools|none|all true|false")
     @CommandPermission("aurora.quests.admin.reroll")
     public void onReroll(CommandSender sender, @Flags("other") Player target, @Default("all") String poolId, @Default("false") Boolean silent) {
         if (poolId.equals("none") || poolId.equals("all")) {
@@ -78,6 +79,37 @@ public class QuestsCommand extends BaseCommand {
             } else {
                 Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
             }
+        }
+    }
+
+    @Subcommand("unlock")
+    @Description("Unlocks quest for player")
+    @CommandCompletion("@players @pools @quests")
+    @CommandPermission("aurora.quests.admin.unlock")
+    public void onUnlock(CommandSender sender, @Flags("other") Player target, String poolId, String questId) {
+        var pool = plugin.getQuestManager().getQuestPool(poolId);
+        if (pool == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
+            return;
+        }
+
+        if (!pool.isUnlocked(target)) return;
+        Quest quest = pool.getQuest(questId);
+
+        if (quest == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNotFound(), Placeholder.of("{pool}", poolId), Placeholder.of("{quest}", questId));
+            return;
+        }
+
+        if (quest.hasStartRequirements() && quest.getConfig().getStartRequirements().isNeedCommandToStart()) {
+            if (!quest.isUnlocked(target)) {
+                quest.tryStart(target, true);
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestUnlocked(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
+            } else {
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getAlreadyCompleted(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
+            }
+        } else {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNeedCommand(), Placeholder.of("{quest}", questId));
         }
     }
 }

@@ -6,11 +6,12 @@ import co.aikar.commands.PaperCommandManager;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.config.quest.PoolConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class CommandManager {
     private final AuroraQuests plugin;
@@ -30,13 +31,15 @@ public class CommandManager {
             commandManager.usePerIssuerLocale(false);
 
             var aliases = plugin.getConfigManager().getConfig().getCommandAliases();
+            var pools = plugin.getConfigManager().getQuestPools();
 
-            commandManager.getCommandCompletions().registerCompletion("pools", c -> {
-                var poolCompletions = new ArrayList<>(plugin.getConfigManager().getQuestPools().keySet());
-                poolCompletions.add("none");
-                poolCompletions.add("all");
-                return poolCompletions;
-            });
+            commandManager.getCommandCompletions().registerCompletion("pools", c ->
+                    pools.values().stream().map(PoolConfig::getId).collect(Collectors.toList()));
+
+            commandManager.getCommandCompletions().registerCompletion("quests", c ->
+                    pools.values().stream()
+                            .flatMap(pool -> pool.getQuests().keySet().stream())
+                            .collect(Collectors.toList()));
 
             commandManager.getCommandReplacements().addReplacement("questsAlias", a(aliases.getQuests()));
         }
