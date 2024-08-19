@@ -34,6 +34,7 @@ public class MessageConfig extends AuroraConfig {
     private String questNotFound = "&cThere isn't any quest with id {quest} in pool {pool}!";
     private String questUnlocked = "&aQuest {quest} unlocked for {player}.";
     private String questAlreadyUnlocked = "&cPlayer {player} has already unlocked quest {quest}.";
+    private String errorPrefix = "&cError: {message}";
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));
