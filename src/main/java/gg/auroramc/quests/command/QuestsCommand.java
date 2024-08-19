@@ -41,7 +41,7 @@ public class QuestsCommand extends BaseCommand {
 
     @Subcommand("open")
     @Description("Opens the quest menu for another player in a specific pool")
-    @CommandCompletion("@players @pools true|false")
+    @CommandCompletion("@players @pools|none|all true|false")
     @CommandPermission("aurora.quests.admin.open")
     public void onOpenMenu(CommandSender sender, @Flags("other") Player target, @Default("none") String poolId, @Default("false") Boolean silent) {
         if (poolId.equals("none") || poolId.equals("all")) {
@@ -84,16 +84,16 @@ public class QuestsCommand extends BaseCommand {
 
     @Subcommand("unlock")
     @Description("Unlocks quest for player")
-    @CommandCompletion("@players @pools @quests")
+    @CommandCompletion("@players @pools @quests true|false")
     @CommandPermission("aurora.quests.admin.unlock")
-    public void onUnlock(CommandSender sender, @Flags("other") Player target, String poolId, String questId) {
+    public void onQuestUnlock(CommandSender sender, @Flags("other") Player target, String poolId, String questId, @Default("false") Boolean silent) {
         var pool = plugin.getQuestManager().getQuestPool(poolId);
+
         if (pool == null) {
             Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
             return;
         }
 
-        if (!pool.isUnlocked(target)) return;
         Quest quest = pool.getQuest(questId);
 
         if (quest == null) {
@@ -101,15 +101,14 @@ public class QuestsCommand extends BaseCommand {
             return;
         }
 
-        if (quest.hasStartRequirements() && quest.getConfig().getStartRequirements().isNeedCommandToStart()) {
-            if (!quest.isUnlocked(target)) {
-                quest.tryStart(target, true);
+        if (!quest.isUnlocked(target)) {
+            // Will unlock any locked quest, not just the ones that have manual-unlock requirement
+            quest.forceStart(target);
+            if (!silent) {
                 Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestUnlocked(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
-            } else {
-                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getAlreadyCompleted(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
             }
         } else {
-            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNeedCommand(), Placeholder.of("{quest}", questId));
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestAlreadyUnlocked(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
         }
     }
 }

@@ -1,5 +1,5 @@
 # Don't touch this
-config-version: 0
+config-version: 1
 
 reloaded: "&aReloaded configuration!"
 data-not-loaded-yet: "&cData for this player hasn't loaded yet, try again later!"
@@ -18,6 +18,5 @@ pool-not-found: "&cThere isn't any quest line with this id: {pool}!"
 pool-unlocked: "&aYou have unlocked a new quest pool: {pool}!"
 unknown-command: "&cUnknown Command, please type /help"
 quest-not-found: "&cThere isn't any quest with id {quest} in pool {pool}!"
-quest-need-command: "&cQuest {quest} does not have starting requirements 'need-command-to-start: true'!"
 quest-unlocked: "&aQuest {quest} unlocked for {player}."
-already-completed: "&cPlayer {player} has already completed/unlocked quest {quest}."
+quest-already-unlocked: "&cPlayer {player} has already unlocked quest {quest}."

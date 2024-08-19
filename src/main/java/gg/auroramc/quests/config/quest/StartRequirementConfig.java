@@ -7,7 +7,7 @@ import java.util.List;
 @Getter
 public class StartRequirementConfig {
     private boolean alwaysShowInMenu = false;
-    private boolean needCommandToStart = false;
+    private boolean needsManualUnlock = false;
     private List<String> quests;
     private List<String> permissions;
 }

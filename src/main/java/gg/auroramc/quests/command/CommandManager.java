@@ -4,8 +4,11 @@ import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MinecraftMessageKeys;
 import co.aikar.commands.PaperCommandManager;
 import gg.auroramc.aurora.api.message.Chat;
+import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.api.quest.QuestPool;
 import gg.auroramc.quests.config.quest.PoolConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
@@ -38,6 +41,7 @@ public class CommandManager {
 
             commandManager.getCommandCompletions().registerCompletion("quests", c ->
                     pools.values().stream()
+                            .filter(pool -> c.getContextValueByName(String.class, "poolId").equals(pool.getId()))
                             .flatMap(pool -> pool.getQuests().keySet().stream())
                             .collect(Collectors.toList()));
 

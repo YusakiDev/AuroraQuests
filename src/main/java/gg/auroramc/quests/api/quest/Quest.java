@@ -85,6 +85,8 @@ public class Quest {
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
 
         if (config.getStartRequirements() == null) return true;
+        if (config.getStartRequirements().isNeedsManualUnlock() && !data.isQuestStartUnlocked(holder.getId(), getId()))
+            return false;
 
         if (config.getStartRequirements().getQuests() != null) {
             for (var questId : config.getStartRequirements().getQuests()) {
@@ -108,8 +110,9 @@ public class Quest {
     }
 
     public boolean hasStartRequirements() {
-        return config.getStartRequirements() != null && ((config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
-                (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty()) || config.getStartRequirements().isNeedCommandToStart());
+        return config.getStartRequirements() != null &&
+                ((config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
+                        (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty()) || config.getStartRequirements().isNeedsManualUnlock());
     }
 
     public boolean isUnlocked(Player player) {
@@ -118,26 +121,19 @@ public class Quest {
     }
 
     public void tryStart(Player player) {
-        tryStart(player, false);
-    }
-
-    /**
-     * Try to start the quest if player meets requirements
-     *
-     * @param player            for which quest will be started
-     * @param executedByCommand If method was executed by unlock command (check if quest has {@link StartRequirementConfig#isNeedCommandToStart()})
-     */
-    public void tryStart(Player player, boolean executedByCommand) {
         if (!holder.isGlobal()) return;
         if (isUnlocked(player)) return;
-        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
-        if (!executedByCommand && config.getStartRequirements().isNeedCommandToStart()) return;
 
-        if (config.getStartRequirements() != null && canStart(player)) {
-            data.setQuestStartUnlock(holder.getId(), getId());
-            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
-            Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
+        if (canStart(player)) {
+            forceStart(player);
         }
+    }
+
+    public void forceStart(Player player) {
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        data.setQuestStartUnlock(holder.getId(), getId());
+        var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
+        Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
     }
 
     public boolean isCompleted(Player player) {

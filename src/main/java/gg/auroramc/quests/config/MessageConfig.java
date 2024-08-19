@@ -3,11 +3,14 @@ package gg.auroramc.quests.config;
 import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.quests.AuroraQuests;
 import lombok.Getter;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.function.Consumer;
 
 @Getter
 public class MessageConfig extends AuroraConfig {
@@ -29,9 +32,8 @@ public class MessageConfig extends AuroraConfig {
     private String poolUnlocked = "&aYou have unlocked a new quest pool: {pool}!";
     private String unknownCommand = "&cUnknown Command, please type /help";
     private String questNotFound = "&cThere isn't any quest with id {quest} in pool {pool}!";
-    private String questNeedCommand = "&cQuest {quest} does not have starting requirements 'need-command-to-start: true'!";
     private String questUnlocked = "&aQuest {quest} unlocked for {player}.";
-    private String alreadyCompleted = "&cPlayer {player} has already completed/unlocked quest {quest}.";
+    private String questAlreadyUnlocked = "&cPlayer {player} has already unlocked quest {quest}.";
 
     public MessageConfig(AuroraQuests plugin, String language) {
         super(getFile(plugin, language));
@@ -59,5 +61,17 @@ public class MessageConfig extends AuroraConfig {
                 }
             }
         }
+    }
+
+    @Override
+    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+        return List.of(
+                (yaml) -> {
+                    yaml.set("quest-not-found", "&cThere isn't any quest with id {quest} in pool {pool}!");
+                    yaml.set("quest-unlocked", "&aQuest {quest} unlocked for {player}.");
+                    yaml.set("quest-already-unlocked", "&cPlayer {player} has already unlocked quest {quest}.");
+                    yaml.set("config-version", 1);
+                }
+        );
     }
 }
