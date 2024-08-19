@@ -1,5 +1,6 @@
 package gg.auroramc.quests.command;
 
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MinecraftMessageKeys;
 import co.aikar.commands.PaperCommandManager;
@@ -7,7 +8,6 @@ import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.api.quest.QuestPool;
 import gg.auroramc.quests.config.quest.PoolConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -36,12 +36,25 @@ public class CommandManager {
             var aliases = plugin.getConfigManager().getConfig().getCommandAliases();
             var pools = plugin.getConfigManager().getQuestPools();
 
+            commandManager.getCommandContexts().registerContext(QuestPool.class, (c) -> {
+                String poolId = c.getFirstArg();
+                QuestPool pool = this.plugin.getQuestManager().getQuestPool(poolId);
+                if (pool != null)
+                    c.popFirstArg();
+                else
+                    throw new InvalidCommandArgument(Text.fillPlaceholders(c.getPlayer(),
+                            plugin.getConfigManager().getMessageConfig().getPoolNotFound(),
+                            Placeholder.of("{pool}", poolId)));
+
+                return pool;
+            });
+
             commandManager.getCommandCompletions().registerCompletion("pools", c ->
                     pools.values().stream().map(PoolConfig::getId).collect(Collectors.toList()));
 
             commandManager.getCommandCompletions().registerCompletion("quests", c ->
                     pools.values().stream()
-                            .filter(pool -> c.getContextValueByName(String.class, "poolId").equals(pool.getId()))
+                            .filter(pool -> c.getContextValue(QuestPool.class).getId().equals(pool.getId()))
                             .flatMap(pool -> pool.getQuests().keySet().stream())
                             .collect(Collectors.toList()));
 
@@ -62,6 +75,7 @@ public class CommandManager {
         commandManager.getLocales().addMessage(Locale.ENGLISH, MessageKeys.ERROR_GENERIC_LOGGED, m(msg.getCommandError()));
         commandManager.getLocales().addMessage(Locale.ENGLISH, MessageKeys.NOT_ALLOWED_ON_CONSOLE, m(msg.getPlayerOnlyCommand()));
         commandManager.getLocales().addMessage(Locale.ENGLISH, MessageKeys.UNKNOWN_COMMAND, m(msg.getUnknownCommand()));
+        commandManager.getLocales().addMessage(Locale.ENGLISH, MessageKeys.ERROR_PREFIX, m(msg.getErrorPrefix()));
 
         if (!this.hasSetup) {
             this.commandManager.registerCommand(new QuestsCommand(plugin));

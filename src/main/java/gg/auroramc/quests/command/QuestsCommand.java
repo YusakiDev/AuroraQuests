@@ -7,6 +7,7 @@ import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.api.quest.QuestPool;
 import gg.auroramc.quests.menu.MainMenu;
 import gg.auroramc.quests.menu.PoolMenu;
 import org.bukkit.command.CommandSender;
@@ -86,18 +87,11 @@ public class QuestsCommand extends BaseCommand {
     @Description("Unlocks quest for player")
     @CommandCompletion("@players @pools @quests true|false")
     @CommandPermission("aurora.quests.admin.unlock")
-    public void onQuestUnlock(CommandSender sender, @Flags("other") Player target, String poolId, String questId, @Default("false") Boolean silent) {
-        var pool = plugin.getQuestManager().getQuestPool(poolId);
-
-        if (pool == null) {
-            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
-            return;
-        }
-
+    public void onQuestUnlock(CommandSender sender, @Flags("other") Player target, QuestPool pool, String questId, @Default("false") Boolean silent) {
         Quest quest = pool.getQuest(questId);
 
         if (quest == null) {
-            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNotFound(), Placeholder.of("{pool}", poolId), Placeholder.of("{quest}", questId));
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNotFound(), Placeholder.of("{pool}", pool.getId()), Placeholder.of("{quest}", questId));
             return;
         }
 
