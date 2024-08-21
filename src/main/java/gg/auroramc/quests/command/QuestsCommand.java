@@ -87,9 +87,14 @@ public class QuestsCommand extends BaseCommand {
     @Description("Unlocks quest for player")
     @CommandCompletion("@players @pools @quests true|false")
     @CommandPermission("aurora.quests.admin.unlock")
-    public void onQuestUnlock(CommandSender sender, @Flags("other") Player target, QuestPool pool, String questId, @Default("false") Boolean silent) {
-        Quest quest = pool.getQuest(questId);
+    public void onQuestUnlock(CommandSender sender, @Flags("other") Player target, String poolId, String questId, @Default("false") Boolean silent) {
+        QuestPool pool = plugin.getQuestManager().getQuestPool(poolId);
+        if (pool == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
+            return;
+        }
 
+        Quest quest = pool.getQuest(questId);
         if (quest == null) {
             Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNotFound(), Placeholder.of("{pool}", pool.getId()), Placeholder.of("{quest}", questId));
             return;

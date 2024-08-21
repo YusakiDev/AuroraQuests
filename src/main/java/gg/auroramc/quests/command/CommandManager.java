@@ -36,25 +36,12 @@ public class CommandManager {
             var aliases = plugin.getConfigManager().getConfig().getCommandAliases();
             var pools = plugin.getConfigManager().getQuestPools();
 
-            commandManager.getCommandContexts().registerContext(QuestPool.class, (c) -> {
-                String poolId = c.getFirstArg();
-                QuestPool pool = this.plugin.getQuestManager().getQuestPool(poolId);
-                if (pool != null)
-                    c.popFirstArg();
-                else
-                    throw new InvalidCommandArgument(Text.fillPlaceholders(c.getPlayer(),
-                            plugin.getConfigManager().getMessageConfig().getPoolNotFound(),
-                            Placeholder.of("{pool}", poolId)));
-
-                return pool;
-            });
-
             commandManager.getCommandCompletions().registerCompletion("pools", c ->
                     pools.values().stream().map(PoolConfig::getId).collect(Collectors.toList()));
 
             commandManager.getCommandCompletions().registerCompletion("quests", c ->
                     pools.values().stream()
-                            .filter(pool -> c.getContextValue(QuestPool.class).getId().equals(pool.getId()))
+                            .filter(pool -> c.getContextValue(String.class).equals(pool.getId()))
                             .flatMap(pool -> pool.getQuests().keySet().stream())
                             .collect(Collectors.toList()));
 
