@@ -1,14 +1,11 @@
 package gg.auroramc.quests.command;
 
-import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MinecraftMessageKeys;
 import co.aikar.commands.PaperCommandManager;
 import gg.auroramc.aurora.api.message.Chat;
-import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.quests.AuroraQuests;
-import gg.auroramc.quests.api.quest.QuestPool;
 import gg.auroramc.quests.config.quest.PoolConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
