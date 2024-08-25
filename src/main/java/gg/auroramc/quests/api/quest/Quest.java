@@ -7,13 +7,14 @@ import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.reward.Reward;
-import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.aurora.api.reward.RewardExecutor;
+import gg.auroramc.aurora.api.reward.RewardFactory;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.event.QuestCompletedEvent;
 import gg.auroramc.quests.api.event.QuestPoolLevelUpEvent;
 import gg.auroramc.quests.config.quest.QuestConfig;
+import gg.auroramc.quests.config.quest.StartRequirementConfig;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -84,6 +85,8 @@ public class Quest {
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
 
         if (config.getStartRequirements() == null) return true;
+        if (config.getStartRequirements().isNeedsManualUnlock() && !data.isQuestStartUnlocked(holder.getId(), getId()))
+            return false;
 
         if (config.getStartRequirements().getQuests() != null) {
             for (var questId : config.getStartRequirements().getQuests()) {
@@ -106,9 +109,10 @@ public class Quest {
         return true;
     }
 
-    private boolean hasStartRequirements() {
-        return config.getStartRequirements() != null && ((config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
-                (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty()));
+    public boolean hasStartRequirements() {
+        return config.getStartRequirements() != null &&
+                ((config.getStartRequirements().getQuests() != null && !config.getStartRequirements().getQuests().isEmpty()) ||
+                        (config.getStartRequirements().getPermissions() != null && !config.getStartRequirements().getPermissions().isEmpty()) || config.getStartRequirements().isNeedsManualUnlock());
     }
 
     public boolean isUnlocked(Player player) {
@@ -119,13 +123,17 @@ public class Quest {
     public void tryStart(Player player) {
         if (!holder.isGlobal()) return;
         if (isUnlocked(player)) return;
-        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
 
-        if (config.getStartRequirements() != null && canStart(player)) {
-            data.setQuestStartUnlock(holder.getId(), getId());
-            var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
-            Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
+        if (canStart(player)) {
+            forceStart(player);
         }
+    }
+
+    public void forceStart(Player player) {
+        var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
+        data.setQuestStartUnlock(holder.getId(), getId());
+        var msg = AuroraQuests.getInstance().getConfigManager().getMessageConfig().getGlobalQuestUnlocked();
+        Chat.sendMessage(player, msg, Placeholder.of("{quest}", config.getName()), Placeholder.of("{pool}", holder.getConfig().getName()));
     }
 
     public boolean isCompleted(Player player) {

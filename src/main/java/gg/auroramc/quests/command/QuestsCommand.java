@@ -6,6 +6,8 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
+import gg.auroramc.quests.api.quest.Quest;
+import gg.auroramc.quests.api.quest.QuestPool;
 import gg.auroramc.quests.menu.MainMenu;
 import gg.auroramc.quests.menu.PoolMenu;
 import org.bukkit.command.CommandSender;
@@ -40,7 +42,7 @@ public class QuestsCommand extends BaseCommand {
 
     @Subcommand("open")
     @Description("Opens the quest menu for another player in a specific pool")
-    @CommandCompletion("@players @pools true|false")
+    @CommandCompletion("@players @pools|none|all true|false")
     @CommandPermission("aurora.quests.admin.open")
     public void onOpenMenu(CommandSender sender, @Flags("other") Player target, @Default("none") String poolId, @Default("false") Boolean silent) {
         if (poolId.equals("none") || poolId.equals("all")) {
@@ -62,7 +64,7 @@ public class QuestsCommand extends BaseCommand {
 
     @Subcommand("reroll")
     @Description("Rerolls quests for another player in a specific pool")
-    @CommandCompletion("@players @pools true|false")
+    @CommandCompletion("@players @pools|none|all true|false")
     @CommandPermission("aurora.quests.admin.reroll")
     public void onReroll(CommandSender sender, @Flags("other") Player target, @Default("all") String poolId, @Default("false") Boolean silent) {
         if (poolId.equals("none") || poolId.equals("all")) {
@@ -78,6 +80,34 @@ public class QuestsCommand extends BaseCommand {
             } else {
                 Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
             }
+        }
+    }
+
+    @Subcommand("unlock")
+    @Description("Unlocks quest for player")
+    @CommandCompletion("@players @pools @quests true|false")
+    @CommandPermission("aurora.quests.admin.unlock")
+    public void onQuestUnlock(CommandSender sender, @Flags("other") Player target, String poolId, String questId, @Default("false") Boolean silent) {
+        QuestPool pool = plugin.getQuestManager().getQuestPool(poolId);
+        if (pool == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
+            return;
+        }
+
+        Quest quest = pool.getQuest(questId);
+        if (quest == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNotFound(), Placeholder.of("{pool}", pool.getId()), Placeholder.of("{quest}", questId));
+            return;
+        }
+
+        if (!quest.isUnlocked(target)) {
+            // Will unlock any locked quest, not just the ones that have manual-unlock requirement
+            quest.forceStart(target);
+            if (!silent) {
+                Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestUnlocked(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
+            }
+        } else {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestAlreadyUnlocked(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
         }
     }
 }

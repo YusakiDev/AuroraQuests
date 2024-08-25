@@ -9,8 +9,12 @@ import net.luckperms.api.event.user.UserDataRecalculateEvent;
 import org.bukkit.Bukkit;
 
 public class LuckPermsHook implements Hook {
+    private AuroraQuests plugin;
+
     @Override
     public void hook(AuroraQuests plugin) {
+        this.plugin = plugin;
+
         plugin.getQuestManager().getRewardFactory()
                 .registerRewardType(NamespacedId.fromDefault("permission"), PermissionReward.class);
 
@@ -19,14 +23,17 @@ public class LuckPermsHook implements Hook {
 
         var lp = LuckPermsProvider.get();
 
-        lp.getEventBus().subscribe(UserDataRecalculateEvent.class, (event) -> {
-            var player = Bukkit.getPlayer(event.getUser().getUniqueId());
-            if (player != null) {
-                plugin.getQuestManager().tryUnlockQuestPools(player);
-                plugin.getQuestManager().tryStartGlobalQuests(player);
-            }
-        });
+        lp.getEventBus().subscribe(UserDataRecalculateEvent.class, this::onDataRecalculate);
 
         AuroraQuests.logger().info("Hooked into LuckPerms for permission rewards and for permission start requirements");
+    }
+
+    // Use synchronized since luckperms events are async and it likes to fire the event multiple times at once
+    private synchronized void onDataRecalculate(UserDataRecalculateEvent event) {
+        var player = Bukkit.getPlayer(event.getUser().getUniqueId());
+        if (player != null) {
+            plugin.getQuestManager().tryUnlockQuestPools(player);
+            plugin.getQuestManager().tryStartGlobalQuests(player);
+        }
     }
 }
