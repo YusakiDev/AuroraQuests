@@ -1,5 +1,5 @@
 # 请勿修改此项
-config-version: 0
+config-version: 1
 
 reloaded: "&a配置重载成功!"
 data-not-loaded-yet: "&c该玩家的数据尚未载入, 请稍后再试!"
@@ -17,3 +17,7 @@ global-quest-unlocked: "&a你解锁了 {pool} 中的 {quest}!"
 pool-not-found: "&c该任务列表中不存在对应 ID 的任务: {pool}!"
 pool-unlocked: "&a你解锁了新的任务列表: {pool}!"
 unknown-command: "&c未知命令, 请输入 /help 获取帮助"
+quest-not-found: "&cThere isn't any quest with id {quest} in pool {pool}!"
+quest-unlocked: "&aQuest {quest} unlocked for {player}."
+quest-already-unlocked: "&cPlayer {player} has already unlocked quest {quest}."
+error-prefix: "&cError: {message}"

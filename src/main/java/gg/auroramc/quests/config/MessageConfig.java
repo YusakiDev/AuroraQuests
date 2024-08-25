@@ -71,6 +71,7 @@ public class MessageConfig extends AuroraConfig {
                     yaml.set("quest-not-found", "&cThere isn't any quest with id {quest} in pool {pool}!");
                     yaml.set("quest-unlocked", "&aQuest {quest} unlocked for {player}.");
                     yaml.set("quest-already-unlocked", "&cPlayer {player} has already unlocked quest {quest}.");
+                    yaml.set("error-prefix", "&cError: {message}");
                     yaml.set("config-version", 1);
                 }
         );
