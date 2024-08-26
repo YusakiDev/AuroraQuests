@@ -27,6 +27,7 @@ public class QuestPool {
     private final PoolConfig config;
     @Getter
     private MatcherManager matcherManager;
+    @Getter
     private QuestRollerScheduler questRoller;
     private final Map<String, Quest> quests = Maps.newHashMap();
     private Set<String> taskTypes = Sets.newHashSet();

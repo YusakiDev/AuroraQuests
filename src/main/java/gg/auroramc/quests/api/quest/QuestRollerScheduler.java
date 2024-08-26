@@ -42,6 +42,7 @@ public class QuestRollerScheduler {
 
             this.job = JobBuilder.newJob(QuestRollJob.class)
                     .withIdentity(pool.getId() + "-QuestRollJob")
+                    .usingJobData("poolId", pool.getId())
                     .build();
 
             this.trigger = TriggerBuilder.newTrigger()
@@ -61,6 +62,10 @@ public class QuestRollerScheduler {
         } catch (SchedulerException e) {
             AuroraQuests.logger().severe("Failed to start scheduler: " + e.getMessage());
         }
+    }
+
+    public void resetNextExecutionTime() {
+        nextExecutionTime.set(null);
     }
 
     public Date getNextRollDate() {
@@ -115,11 +120,14 @@ public class QuestRollerScheduler {
     }
 
 
-    public class QuestRollJob implements Job {
+    public static class QuestRollJob implements Job {
         @Override
         public void execute(JobExecutionContext context) {
+            var pool = AuroraQuests.getInstance().getQuestManager().getQuestPool(context.getJobDetail().getJobDataMap().getString("poolId"));
+            AuroraQuests.logger().debug("Executing quest reroll job for pool " + pool.getId());
+
             Bukkit.getAsyncScheduler().runDelayed(AuroraQuests.getInstance(), (task) -> {
-                nextExecutionTime.set(null);
+                pool.getQuestRoller().resetNextExecutionTime();
                 var players = new ArrayList<>(Bukkit.getOnlinePlayers());
 
                 for (var player : players) {
