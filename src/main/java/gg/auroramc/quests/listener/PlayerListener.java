@@ -60,6 +60,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onQuestComplete(QuestCompletedEvent event) {
+        plugin.getQuestManager().tryUnlockQuestPools(event.getPlayer());
         plugin.getQuestManager().tryStartGlobalQuests(event.getPlayer());
     }
 }
