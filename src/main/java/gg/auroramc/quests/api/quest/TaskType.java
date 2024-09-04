@@ -35,4 +35,5 @@ public class TaskType {
     public static final String INTERACT_SHOPKEEPER = "INTERACT_SHOPKEEPER";
     public static final String TRADE_SHOPKEEPER = "TRADE_SHOPKEEPER";
     public static final String ENTER_REGION = "ENTER_REGION";
+    public static final String TAKE_ITEM = "TAKE_ITEM";
 }

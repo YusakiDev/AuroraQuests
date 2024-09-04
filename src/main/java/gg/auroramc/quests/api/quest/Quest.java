@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Getter
@@ -35,6 +37,7 @@ public class Quest {
     private final Set<String> taskTypes;
     private final Map<String, Task> tasks = Maps.newHashMap();
     private final QuestPool holder;
+    private final AtomicBoolean isTakingItems = new AtomicBoolean(false);
 
     public Quest(QuestPool holder, QuestConfig config, RewardFactory rewardFactory) {
         this.holder = holder;
@@ -53,6 +56,37 @@ public class Quest {
 
     public String getId() {
         return config.getId();
+    }
+
+    public CompletableFuture<Void> tryTakeItems(Player player) {
+        if (!taskTypes.contains(TaskType.TAKE_ITEM)) return CompletableFuture.completedFuture(null);
+        if (isTakingItems.get()) return CompletableFuture.completedFuture(null);
+        if (!holder.isUnlocked(player)) return CompletableFuture.completedFuture(null);
+        if (!isUnlocked(player)) return CompletableFuture.completedFuture(null);
+        if (isCompleted(player)) return CompletableFuture.completedFuture(null);
+
+        isTakingItems.set(true);
+
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        for (var task : tasks.values()) {
+            if (task.getTaskType().equals(TaskType.TAKE_ITEM)) {
+                futures.add(task.tryTakeItems(player));
+            }
+        }
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
+            var level = holder.getPlayerLevel(player);
+            if (canComplete(player)) {
+                complete(player);
+            }
+            var newLevel = holder.getPlayerLevel(player);
+            if (holder.hasLeveling() && newLevel > level) {
+                holder.reward(player, newLevel);
+                Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(player, holder));
+            }
+            isTakingItems.set(false);
+        });
     }
 
     public void progress(Player player, String taskType, double count, Map<String, Object> params) {

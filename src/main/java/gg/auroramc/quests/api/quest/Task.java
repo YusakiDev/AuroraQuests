@@ -1,6 +1,7 @@
 package gg.auroramc.quests.api.quest;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.data.QuestData;
@@ -8,6 +9,7 @@ import gg.auroramc.quests.config.quest.TaskConfig;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
     public void progress(Player player, double count, Map<String, Object> params) {
@@ -15,6 +17,54 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
 
         AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class)
                 .progress(pool.getId(), holder.getId(), id, count);
+    }
+
+    public CompletableFuture<Void> tryTakeItems(Player player) {
+        var future = new CompletableFuture<Void>();
+
+        if (!TaskManager.getEvaluator(config.getTask()).evaluate(player, config, Map.of())) {
+            future.complete(null);
+            return future;
+        }
+
+        var itemId = config.getArgs().getString("item");
+        final var currentAmount = (int) AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class).getProgression(pool.getId(), holder.getId(), id);
+        final var requiredAmount = config.getArgs().getInt("amount", 1);
+        final var remainingAmount = requiredAmount - currentAmount;
+
+        if (itemId == null || remainingAmount <= 0) {
+            future.complete(null);
+            return future;
+        }
+
+        final var typeId = TypeId.fromString(itemId);
+
+        player.getScheduler().run(AuroraQuests.getInstance(), (st) -> {
+            var amountNeeded = remainingAmount;
+
+            for (var invItem : player.getInventory().getContents()) {
+                if (invItem == null) continue;
+
+                if (AuroraAPI.getItemManager().resolveId(invItem).equals(typeId)) {
+                    var amount = invItem.getAmount();
+                    if (amount > amountNeeded) {
+                        invItem.setAmount(amount - amountNeeded);
+                        amountNeeded = 0;
+                        break;
+                    } else {
+                        amountNeeded -= amount;
+                        player.getInventory().remove(invItem);
+                    }
+                }
+            }
+
+            AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class)
+                    .progress(pool.getId(), holder.getId(), id, remainingAmount - amountNeeded);
+
+            future.complete(null);
+        }, () -> future.complete(null));
+
+        return future;
     }
 
     public String getTaskType() {

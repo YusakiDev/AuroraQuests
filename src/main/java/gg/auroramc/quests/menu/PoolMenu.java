@@ -3,10 +3,12 @@ package gg.auroramc.quests.menu;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
+import gg.auroramc.aurora.api.menu.MenuAction;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.api.quest.QuestPool;
+import gg.auroramc.quests.api.quest.TaskType;
 import gg.auroramc.quests.util.RomanNumber;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -125,7 +127,13 @@ public class PoolMenu {
             var builder = ItemBuilder.of(quest.getConfig().getMenuItem()).slot(slot)
                     .placeholder(quest.getPlaceholders(player)).setLore(lore);
 
-            menu.addItem(builder.build(player));
+            if (quest.getTaskTypes().contains(TaskType.TAKE_ITEM) && (quest.isUnlocked(player) || !pool.isGlobal()) && !quest.isCompleted(player)) {
+                menu.addItem(builder.build(player), (e) -> {
+                    quest.tryTakeItems(player).thenAccept((result) -> createMenu().open());
+                });
+            } else {
+                menu.addItem(builder.build(player));
+            }
         }
 
         // Pagination
