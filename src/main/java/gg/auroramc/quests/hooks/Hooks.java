@@ -1,5 +1,6 @@
 package gg.auroramc.quests.hooks;
 
+import gg.auroramc.quests.hooks.adyeshach.AdyeshachHook;
 import gg.auroramc.quests.hooks.auraskills.AuraSkillsHook;
 import gg.auroramc.quests.hooks.auroralevels.AuroraLevelsHook;
 import gg.auroramc.quests.hooks.citizens.CitizensHook;
@@ -32,6 +33,7 @@ public enum Hooks {
     SHOP_GUI_PLUS(ShopGUIPlusHook.class, "ShopGUIPlus"),
     ECONOMY_SHOP_GUI(EconomyShopGuiHook.class, Set.of("EconomyShopGUI", "EconomyShopGUI-Premium")),
     LUCK_PERMS(LuckPermsHook.class, "LuckPerms"),
+    ADYESHACH(AdyeshachHook.class, "Adyeshach"),
     FANCY_NPCS(FancyNPCsHook .class, "FancyNpcs");
 
     private final Class<? extends Hook> clazz;

@@ -34,6 +34,7 @@ repositories {
     maven("https://repo.oraxen.com/releases")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     maven("https://repo.fancyplugins.de/releases")
+    maven("https://repo.tabooproject.org/repository/releases/")
 }
 
 dependencies {
@@ -55,6 +56,7 @@ dependencies {
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly("de.oliver:FancyNpcs:2.2.2")
+    compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
