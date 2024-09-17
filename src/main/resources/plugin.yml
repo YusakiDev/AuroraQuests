@@ -20,6 +20,7 @@ softdepend:
   - "Oraxen"
   - "ShopGUIPlus"
   - "MythicLib"
+  - "FancyNpcs"
 
 website: https://auroramc.gg
 

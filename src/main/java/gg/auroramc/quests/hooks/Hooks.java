@@ -5,6 +5,7 @@ import gg.auroramc.quests.hooks.auroralevels.AuroraLevelsHook;
 import gg.auroramc.quests.hooks.citizens.CitizensHook;
 import gg.auroramc.quests.hooks.customfishing.CustomFishingHook;
 import gg.auroramc.quests.hooks.economyshopgui.EconomyShopGuiHook;
+import gg.auroramc.quests.hooks.fancynpcs.FancyNPCsHook;
 import gg.auroramc.quests.hooks.luckperms.LuckPermsHook;
 import gg.auroramc.quests.hooks.mmolib.MMOLibHook;
 import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
@@ -30,7 +31,8 @@ public enum Hooks {
     MMOLIB(MMOLibHook.class, "MythicLib"),
     SHOP_GUI_PLUS(ShopGUIPlusHook.class, "ShopGUIPlus"),
     ECONOMY_SHOP_GUI(EconomyShopGuiHook.class, Set.of("EconomyShopGUI", "EconomyShopGUI-Premium")),
-    LUCK_PERMS(LuckPermsHook.class, "LuckPerms");
+    LUCK_PERMS(LuckPermsHook.class, "LuckPerms"),
+    FANCY_NPCS(FancyNPCsHook .class, "FancyNpcs");
 
     private final Class<? extends Hook> clazz;
     private final Set<String> plugins;
