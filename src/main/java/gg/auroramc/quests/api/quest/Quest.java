@@ -60,12 +60,12 @@ public class Quest {
 
     public CompletableFuture<Void> tryTakeItems(Player player) {
         if (!taskTypes.contains(TaskType.TAKE_ITEM)) return CompletableFuture.completedFuture(null);
-        if (isTakingItems.get()) return CompletableFuture.completedFuture(null);
+
         if (!holder.isUnlocked(player)) return CompletableFuture.completedFuture(null);
         if (!isUnlocked(player)) return CompletableFuture.completedFuture(null);
         if (isCompleted(player)) return CompletableFuture.completedFuture(null);
 
-        isTakingItems.set(true);
+        if (isTakingItems.getAndSet(true)) return CompletableFuture.completedFuture(null);
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
