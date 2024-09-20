@@ -111,6 +111,28 @@ public class Quest {
         }
     }
 
+    public void setProgress(Player player, String taskType, double count, Map<String, Object> params) {
+        if (!taskTypes.contains(taskType)) return;
+        if (isCompleted(player)) return;
+        if (!holder.isUnlocked(player)) return;
+        if (!isUnlocked(player)) return;
+
+        for (var task : tasks.values()) {
+            if (task.getTaskType().equals(taskType)) {
+                task.setProgress(player, count, params);
+            }
+        }
+        var level = holder.getPlayerLevel(player);
+        if (canComplete(player)) {
+            complete(player);
+        }
+        var newLevel = holder.getPlayerLevel(player);
+        if (holder.hasLeveling() && newLevel > level) {
+            holder.reward(player, newLevel);
+            Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(player, holder));
+        }
+    }
+
     public String getDifficulty() {
         return config.getDifficulty();
     }

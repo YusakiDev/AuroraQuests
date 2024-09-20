@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.2.0"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
@@ -35,6 +35,7 @@ repositories {
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     maven("https://repo.fancyplugins.de/releases")
     maven("https://repo.tabooproject.org/repository/releases/")
+    maven("https://repo.bg-software.com/repository/api/")
 }
 
 dependencies {
@@ -57,6 +58,7 @@ dependencies {
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly("de.oliver:FancyNpcs:2.2.2")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
+    compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2024.3")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 

@@ -19,6 +19,13 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
                 .progress(pool.getId(), holder.getId(), id, count);
     }
 
+    public void setProgress(Player player, double count, Map<String, Object> params) {
+        if (!TaskManager.getEvaluator(config.getTask()).evaluate(player, config, params)) return;
+
+        AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class)
+                .setProgress(pool.getId(), holder.getId(), id, count);
+    }
+
     public CompletableFuture<Void> tryTakeItems(Player player) {
         var future = new CompletableFuture<Void>();
 

@@ -62,6 +62,13 @@ public class QuestData extends UserDataHolder {
         dirty.set(true);
     }
 
+    public void setProgress(String poolId, String questId, String taskId, double count) {
+        progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap())
+                .computeIfAbsent(questId, k -> Maps.newConcurrentMap())
+                .put(taskId, count);
+        dirty.set(true);
+    }
+
     public void completeQuest(String poolId, String questId) {
         completedQuests.computeIfAbsent(poolId, k -> new HashSet<>()).add(questId);
         dirty.set(true);

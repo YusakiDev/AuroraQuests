@@ -64,18 +64,27 @@ public class QuestManager {
         playerLocks.remove(playerId);
     }
 
-    public void progress(Player player, String taskType, double amount, Map<String, Object> params) {
-        if (!player.hasPermission("aurora.quests.use")) return;
+    private boolean failsCheck(Player player) {
+        if (!player.hasPermission("aurora.quests.use")) return true;
         if (plugin.getConfigManager().getConfig().getPreventCreativeMode() && player.getGameMode() == GameMode.CREATIVE)
-            return;
+            return true;
         var user = AuroraAPI.getUserManager().getUser(player);
-        if (!user.isLoaded()) return;
+        if (!user.isLoaded()) return true;
 
         if (HookManager.isEnabled(WorldGuardHook.class)) {
-            if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return;
+            if (HookManager.getHook(WorldGuardHook.class).isBlocked(player)) return true;
         }
+        return false;
+    }
 
+    public void progress(Player player, String taskType, double amount, Map<String, Object> params) {
+        if(failsCheck(player)) return;
         CompletableFuture.runAsync(() -> actuallyProgress(player, taskType, amount, params));
+    }
+
+    public void setProgress(Player player, String taskType, double amount, Map<String, Object> params) {
+        if(failsCheck(player)) return;
+        CompletableFuture.runAsync(() -> actuallySetProgress(player, taskType, amount, params));
     }
 
     private void actuallyProgress(Player player, String taskType, double amount, Map<String, Object> params) {
@@ -85,6 +94,18 @@ public class QuestManager {
                 if (!pool.isUnlocked(player)) continue;
                 for (var quest : pool.getNotCompletedPlayerQuests(player)) {
                     quest.progress(player, taskType, amount, params);
+                }
+            }
+        }
+    }
+
+    private void actuallySetProgress(Player player, String taskType, double amount, Map<String, Object> params) {
+        synchronized (getPlayerLock(player)) {
+            for (var pool : pools.values()) {
+                if (!pool.hasTaskType(taskType)) continue;
+                if (!pool.isUnlocked(player)) continue;
+                for (var quest : pool.getNotCompletedPlayerQuests(player)) {
+                    quest.setProgress(player, taskType, amount, params);
                 }
             }
         }

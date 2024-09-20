@@ -13,6 +13,7 @@ import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
 import gg.auroramc.quests.hooks.oraxen.OraxenHook;
 import gg.auroramc.quests.hooks.shopguiplus.ShopGUIPlusHook;
 import gg.auroramc.quests.hooks.shopkeepers.ShopkeepersHook;
+import gg.auroramc.quests.hooks.superiorskyblock.SuperiorSkyblockHook;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ public enum Hooks {
     ECONOMY_SHOP_GUI(EconomyShopGuiHook.class, Set.of("EconomyShopGUI", "EconomyShopGUI-Premium")),
     LUCK_PERMS(LuckPermsHook.class, "LuckPerms"),
     ADYESHACH(AdyeshachHook.class, "Adyeshach"),
+    SUPERIOR_SKYBLOCK(SuperiorSkyblockHook.class, "SuperiorSkyblock2"),
     FANCY_NPCS(FancyNPCsHook .class, "FancyNpcs");
 
     private final Class<? extends Hook> clazz;
