@@ -60,7 +60,7 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
                         break;
                     } else {
                         amountNeeded -= amount;
-                        player.getInventory().remove(invItem);
+                        invItem.setAmount(0);
                     }
                 }
             }
