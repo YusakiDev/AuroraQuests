@@ -8,14 +8,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.Locale;
 import java.util.Map;
 
 public class NpcListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onInteractNPC(NpcInteractEvent event) {
         var npcID = event.getNpc().getData().getName();
-        var id = new TypeId("fancynpcs", event.getInteractionType().name().toLowerCase(Locale.ROOT) + ":" + npcID);
+        var id = new TypeId("fancynpcs", npcID);
 
         AuroraQuests.getInstance().getQuestManager()
                 .progress(event.getPlayer(), TaskType.INTERACT_NPC, 1, Map.of("type", id));
