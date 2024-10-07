@@ -18,11 +18,5 @@ public class NpcListener implements Listener {
 
         AuroraQuests.getInstance().getQuestManager()
                 .progress(event.getPlayer(), TaskType.INTERACT_NPC, 1, Map.of("type", id));
-
-        if (event.getInteractionType().equals(NpcInteractEvent.InteractionType.RIGHT_CLICK)) {
-            var simpleID = new TypeId("fancynpcs", npcID);
-            AuroraQuests.getInstance().getQuestManager()
-                    .progress(event.getPlayer(), TaskType.INTERACT_NPC, 1, Map.of("type", simpleID));
-        }
     }
 }
