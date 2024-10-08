@@ -1,6 +1,8 @@
 package gg.auroramc.quests.api.quest.task;
 
 import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.menu.Requirement;
+import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.quests.api.quest.TaskEvaluator;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import gg.auroramc.quests.hooks.HookManager;
@@ -8,6 +10,7 @@ import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 
 public class FilteredTaskEvaluator implements TaskEvaluator {
@@ -55,7 +58,7 @@ public class FilteredTaskEvaluator implements TaskEvaluator {
 
         if (filters.getHand() != null) {
             var itemId = AuroraAPI.getItemManager().resolveId(player.getInventory().getItemInMainHand());
-            if(filters.getHand().getItems() != null && !filters.getHand().getItems().isEmpty()) {
+            if (filters.getHand().getItems() != null && !filters.getHand().getItems().isEmpty()) {
                 valid = valid && filters.getHand().getItems().contains(itemId.toString());
             }
         }
@@ -68,6 +71,10 @@ public class FilteredTaskEvaluator implements TaskEvaluator {
                 regionValid = !HookManager.getHook(WorldGuardHook.class).isInAnyRegion(player, location, filters.getRegions().getValue());
             }
             valid = valid && regionValid;
+        }
+
+        if (!filters.getRequirements().isEmpty()) {
+            valid = valid && Requirement.isAllMet(player, filters.getRequirements(), List.of(Placeholder.of("{player}", player.getName())));
         }
 
         return valid;
