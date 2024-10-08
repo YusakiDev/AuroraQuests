@@ -33,7 +33,9 @@ public class MessageConfig extends AuroraConfig {
     private String unknownCommand = "&cUnknown Command, please type /help";
     private String questNotFound = "&cThere isn't any quest with id {quest} in pool {pool}!";
     private String questUnlocked = "&aQuest {quest} unlocked for {player}.";
+    private String questCompleted = "&aQuest {quest} marked completed for {player}.";
     private String questAlreadyUnlocked = "&cPlayer {player} has already unlocked quest {quest}.";
+    private String questAlreadyCompleted = "&cPlayer {player} has already completed quest {quest}.";
     private String errorPrefix = "&cError: {message}";
 
     public MessageConfig(AuroraQuests plugin, String language) {
@@ -73,6 +75,11 @@ public class MessageConfig extends AuroraConfig {
                     yaml.set("quest-already-unlocked", "&cPlayer {player} has already unlocked quest {quest}.");
                     yaml.set("error-prefix", "&cError: {message}");
                     yaml.set("config-version", 1);
+                },
+                (yaml) -> {
+                    yaml.set("quest-completed", "&aQuest {quest} marked completed for {player}.");
+                    yaml.set("quest-already-completed", "&cPlayer {player} has already completed quest {quest}.");
+                    yaml.set("config-version", 2);
                 }
         );
     }

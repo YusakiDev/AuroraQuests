@@ -1,5 +1,5 @@
 # 请勿修改此项
-config-version: 1
+config-version: 2
 
 reloaded: "&a配置重载成功!"
 data-not-loaded-yet: "&c该玩家的数据尚未载入, 请稍后再试!"
@@ -20,4 +20,6 @@ unknown-command: "&c未知命令, 请输入 /help 获取帮助"
 quest-not-found: "&cThere isn't any quest with id {quest} in pool {pool}!"
 quest-unlocked: "&aQuest {quest} unlocked for {player}."
 quest-already-unlocked: "&cPlayer {player} has already unlocked quest {quest}."
+quest-completed: "&aQuest {quest} marked completed for {player}."
+quest-already-completed: "&cPlayer {player} has already completed quest {quest}."
 error-prefix: "&cError: {message}"

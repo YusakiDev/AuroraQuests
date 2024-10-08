@@ -76,14 +76,8 @@ public class Quest {
         }
 
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
-            var level = holder.getPlayerLevel(player);
             if (canComplete(player)) {
                 complete(player);
-            }
-            var newLevel = holder.getPlayerLevel(player);
-            if (holder.hasLeveling() && newLevel > level) {
-                holder.reward(player, newLevel);
-                Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(player, holder));
             }
             isTakingItems.set(false);
         });
@@ -100,14 +94,8 @@ public class Quest {
                 task.progress(player, count, params);
             }
         }
-        var level = holder.getPlayerLevel(player);
         if (canComplete(player)) {
             complete(player);
-        }
-        var newLevel = holder.getPlayerLevel(player);
-        if (holder.hasLeveling() && newLevel > level) {
-            holder.reward(player, newLevel);
-            Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(player, holder));
         }
     }
 
@@ -122,14 +110,8 @@ public class Quest {
                 task.setProgress(player, count, params);
             }
         }
-        var level = holder.getPlayerLevel(player);
         if (canComplete(player)) {
             complete(player);
-        }
-        var newLevel = holder.getPlayerLevel(player);
-        if (holder.hasLeveling() && newLevel > level) {
-            holder.reward(player, newLevel);
-            Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(player, holder));
         }
     }
 
@@ -202,6 +184,8 @@ public class Quest {
     }
 
     public void complete(Player player) {
+        var level = holder.getPlayerLevel(player);
+
         var user = AuroraAPI.getUserManager().getUser(player);
         var data = user.getData(QuestData.class);
         data.completeQuest(holder.getId(), getId());
@@ -211,6 +195,12 @@ public class Quest {
         }
         Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(player, holder, this));
         reward(player);
+
+        var newLevel = holder.getPlayerLevel(player);
+        if (holder.hasLeveling() && newLevel > level) {
+            holder.reward(player, newLevel);
+            Bukkit.getPluginManager().callEvent(new QuestPoolLevelUpEvent(player, holder));
+        }
     }
 
     public List<Placeholder<?>> getPlaceholders(Player player) {
