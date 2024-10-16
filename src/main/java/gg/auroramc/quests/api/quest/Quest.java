@@ -14,7 +14,6 @@ import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.event.QuestCompletedEvent;
 import gg.auroramc.quests.api.event.QuestPoolLevelUpEvent;
 import gg.auroramc.quests.config.quest.QuestConfig;
-import gg.auroramc.quests.config.quest.StartRequirementConfig;
 import gg.auroramc.quests.config.quest.TaskConfig;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -205,7 +204,7 @@ public class Quest {
 
     public List<Placeholder<?>> getPlaceholders(Player player) {
         var gc = AuroraQuests.getInstance().getConfigManager().getConfig();
-        List<Placeholder<?>> placeholders = new ArrayList<>(8 + tasks.size() + rewards.size());
+        List<Placeholder<?>> placeholders = new ArrayList<>(9 + tasks.size() + rewards.size());
 
         placeholders.add(Placeholder.of("{name}", config.getName()));
         placeholders.add(Placeholder.of("{difficulty}", gc.getDifficulties().get(config.getDifficulty())));
@@ -215,6 +214,7 @@ public class Quest {
         placeholders.add(Placeholder.of("{pool_id}", holder.getId()));
         placeholders.add(Placeholder.of("{pool}", holder.getConfig().getName()));
         placeholders.add(Placeholder.of("{player}", player.getName()));
+        placeholders.add(Placeholder.of("{pool_level}", holder.getPlayerLevel(player)));
 
         for (var task : tasks.values()) {
             placeholders.add(Placeholder.of("{task_" + task.id() + "}", task.getDisplay(player)));

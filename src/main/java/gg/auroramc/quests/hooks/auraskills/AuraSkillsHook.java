@@ -13,9 +13,12 @@ public class AuraSkillsHook implements Hook {
         plugin.getQuestManager().getRewardFactory()
                 .registerRewardType(NamespacedId.fromDefault("auraskills_stat"), AuraSkillsStatReward.class);
 
+        plugin.getQuestManager().getRewardFactory()
+                .registerRewardType(NamespacedId.fromDefault("auraskills_xp"), AuraSkillsXpReward.class);
+
         plugin.getQuestManager().getRewardAutoCorrector()
                 .registerCorrector(NamespacedId.fromDefault("auraskills_stat"), new AuraSkillsCorrector());
 
-        AuroraQuests.logger().info("Hooked into AuraSkills for GAIN_AURASKILLS_XP task types and for auraskills_stat rewards");
+        AuroraQuests.logger().info("Hooked into AuraSkills for GAIN_AURASKILLS_XP task types and for auraskills_stat/auraskills_xp rewards");
     }
 }
