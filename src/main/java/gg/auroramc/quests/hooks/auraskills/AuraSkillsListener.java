@@ -2,17 +2,26 @@ package gg.auroramc.quests.hooks.auraskills;
 
 import dev.aurelium.auraskills.api.event.loot.LootDropEvent;
 import dev.aurelium.auraskills.api.event.skill.XpGainEvent;
+import dev.aurelium.auraskills.api.event.user.UserLoadEvent;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class AuraSkillsListener implements Listener {
+    private final AuraSkillsHook hook;
+
+    public AuraSkillsListener(AuraSkillsHook hook) {
+        this.hook = hook;
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onSkillXpGain(XpGainEvent e) {
         var player = e.getPlayer();
@@ -48,5 +57,12 @@ public class AuraSkillsListener implements Listener {
             }
 
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onUserLoad(UserLoadEvent event) {
+        var player = Bukkit.getPlayer(event.getUser().getUuid());
+        if (player == null) return;
+        CompletableFuture.runAsync(() -> hook.getCorrector().correctRewardsWhenLoaded(player, false));
     }
 }

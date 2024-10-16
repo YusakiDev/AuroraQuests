@@ -1,20 +1,34 @@
 package gg.auroramc.quests.hooks.auraskills;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import dev.aurelium.auraskills.api.AuraSkillsApi;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.stat.StatModifier;
 import gg.auroramc.aurora.api.reward.RewardCorrector;
 import gg.auroramc.quests.AuroraQuests;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class AuraSkillsCorrector implements RewardCorrector {
+    private final Set<UUID> toLoad = Sets.newConcurrentHashSet();
 
     @Override
     public void correctRewards(Player player) {
+        if (AuraSkillsApi.get().getUser(player.getUniqueId()).isLoaded()) {
+            correctRewardsWhenLoaded(player, true);
+        } else {
+            toLoad.add(player.getUniqueId());
+        }
+    }
+
+    public void correctRewardsWhenLoaded(Player player, boolean force) {
+        if (!force && !toLoad.contains(player.getUniqueId())) return;
+        toLoad.remove(player.getUniqueId());
+
         var manager = AuroraQuests.getInstance().getQuestManager();
         Map<Stat, Double> statMap = Maps.newHashMap();
 
@@ -54,10 +68,12 @@ public class AuraSkillsCorrector implements RewardCorrector {
             }
         }
 
-        Bukkit.getGlobalRegionScheduler().run(AuroraQuests.getInstance(), (task) -> {
+        player.getScheduler().run(AuroraQuests.getInstance(), (task) -> {
+            var user = AuraSkillsApi.get().getUser(player.getUniqueId());
+            if (!user.isLoaded()) return;
+
             for (var entry : statMap.entrySet()) {
                 var statKey = AuraSkillsStatReward.getAURA_SKILLS_STAT() + entry.getKey().getId().toString();
-                var user = AuraSkillsApi.get().getUser(player.getUniqueId());
 
                 var oldModifier = user.getStatModifier(statKey);
 
@@ -71,6 +87,6 @@ public class AuraSkillsCorrector implements RewardCorrector {
                     user.addStatModifier(new StatModifier(statKey, entry.getKey(), entry.getValue()));
                 }
             }
-        });
+        }, null);
     }
 }
