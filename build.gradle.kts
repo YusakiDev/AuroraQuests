@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.3.3"
+version = "1.3.4"
 
 repositories {
     mavenCentral()
@@ -39,7 +39,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
     compileOnly("gg.auroramc:Aurora:1.6.0")
     compileOnly("gg.auroramc:AuroraLevels:1.5.1")
     compileOnly("net.luckperms:api:5.4")
@@ -61,6 +61,7 @@ dependencies {
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2024.3")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
 
     compileOnly("org.quartz-scheduler:quartz:2.3.2")
     compileOnly("com.cronutils:cron-utils:9.2.0")
@@ -85,6 +86,7 @@ tasks.withType<ShadowJar> {
 
     relocate("co.aikar.commands", "gg.auroramc.quests.libs.acf")
     relocate("co.aikar.locales", "gg.auroramc.quests.libs.locales")
+    relocate("org.bstats", "gg.auroramc.quests.libs.bstats")
 
     exclude("acf-*.properties")
 }

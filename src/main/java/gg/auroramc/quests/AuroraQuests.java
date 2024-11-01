@@ -11,6 +11,7 @@ import gg.auroramc.quests.listener.*;
 import gg.auroramc.quests.placeholder.QuestPlaceholderHandler;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lombok.Getter;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.quartz.SchedulerException;
@@ -78,6 +79,8 @@ public class AuroraQuests extends JavaPlugin {
             questManager.reload();
             reloadUnlockTask();
         });
+
+        new Metrics(this, 23779);
     }
 
     public void reload() {
