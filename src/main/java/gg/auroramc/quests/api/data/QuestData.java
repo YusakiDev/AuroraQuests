@@ -58,7 +58,7 @@ public class QuestData extends UserDataHolder {
     public void progress(String poolId, String questId, String taskId, double count) {
         progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap())
                 .computeIfAbsent(questId, k -> Maps.newConcurrentMap())
-                .merge(taskId, count, Double::sum);
+                .merge(taskId, count, (a, b) -> Math.max(a + b, 0));
         dirty.set(true);
     }
 

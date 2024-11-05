@@ -29,14 +29,12 @@ public class BuildingListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(RegionBlockBreakEvent event) {
-        OfflinePlayer player = event.getPlayerWhoPlaced();
-        Player player1 = event.getPlayerWhoBroke();
-
-
-        final Block block = event.getBlock();
-        if (player == null) return;
-        if (player.getUniqueId().equals(player1.getUniqueId())) {
-            AuroraQuests.getInstance().getQuestManager().progress(player1, TaskType.BUILD, -1, Map.of("type", TypeId.from(block.getType())));
+        Player player = event.getPlayerWhoBroke();
+        if (player.hasMetadata("NPC")) {
+            return;
         }
+        
+        final Block block = event.getBlock();
+        AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.BUILD, -1, Map.of("type", TypeId.from(block.getType())));
     }
 }
