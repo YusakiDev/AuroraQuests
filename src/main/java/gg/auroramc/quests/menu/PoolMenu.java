@@ -129,7 +129,8 @@ public class PoolMenu {
 
             if (quest.getTaskTypes().contains(TaskType.TAKE_ITEM) && (quest.isUnlocked(player) || !pool.isGlobal()) && !quest.isCompleted(player)) {
                 menu.addItem(builder.build(player), (e) -> {
-                    quest.tryTakeItems(player).thenAccept((result) -> createMenu().open());
+                    quest.tryTakeItems(player);
+                    createMenu().open(player);
                 });
             } else {
                 menu.addItem(builder.build(player));

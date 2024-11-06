@@ -18,15 +18,11 @@ import gg.auroramc.quests.config.quest.TaskConfig;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -36,7 +32,6 @@ public class Quest {
     private final Set<String> taskTypes;
     private final Map<String, Task> tasks = Maps.newHashMap();
     private final QuestPool holder;
-    private final AtomicBoolean isTakingItems = new AtomicBoolean(false);
 
     public Quest(QuestPool holder, QuestConfig config, RewardFactory rewardFactory) {
         this.holder = holder;
@@ -57,29 +52,22 @@ public class Quest {
         return config.getId();
     }
 
-    public CompletableFuture<Void> tryTakeItems(Player player) {
-        if (!taskTypes.contains(TaskType.TAKE_ITEM)) return CompletableFuture.completedFuture(null);
+    public void tryTakeItems(Player player) {
+        if (!taskTypes.contains(TaskType.TAKE_ITEM)) return;
 
-        if (!holder.isUnlocked(player)) return CompletableFuture.completedFuture(null);
-        if (!isUnlocked(player)) return CompletableFuture.completedFuture(null);
-        if (isCompleted(player)) return CompletableFuture.completedFuture(null);
-
-        if (isTakingItems.getAndSet(true)) return CompletableFuture.completedFuture(null);
-
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        if (!holder.isUnlocked(player)) return;
+        if (!isUnlocked(player)) return;
+        if (isCompleted(player)) return;
 
         for (var task : tasks.values()) {
             if (task.getTaskType().equals(TaskType.TAKE_ITEM)) {
-                futures.add(task.tryTakeItems(player));
+                task.tryTakeItems(player);
             }
         }
 
-        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
-            if (canComplete(player)) {
-                complete(player);
-            }
-            isTakingItems.set(false);
-        });
+        if (canComplete(player)) {
+            complete(player);
+        }
     }
 
     public void progress(Player player, String taskType, double count, Map<String, Object> params) {
@@ -260,10 +248,18 @@ public class Quest {
 
         if (gConfig.getQuestCompleteSound().getEnabled()) {
             var sound = gConfig.getQuestCompleteSound();
-            player.playSound(player.getLocation(),
-                    Sound.valueOf(sound.getSound().toUpperCase()),
-                    sound.getVolume(),
-                    sound.getPitch());
+            var key = NamespacedKey.fromString(sound.getSound());
+            if (key != null) {
+                var realSound = Registry.SOUNDS.get(key);
+                if (realSound != null) {
+                    player.playSound(player.getLocation(),
+                            realSound,
+                            sound.getVolume(),
+                            sound.getPitch());
+                }
+            } else {
+                AuroraQuests.logger().warning("Invalid sound key: " + sound.getSound());
+            }
         }
 
         RewardExecutor.execute(rewards.values().stream().toList(), player, 1, placeholders);

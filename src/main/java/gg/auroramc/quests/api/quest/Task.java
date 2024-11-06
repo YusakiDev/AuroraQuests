@@ -9,7 +9,6 @@ import gg.auroramc.quests.config.quest.TaskConfig;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
     public void progress(Player player, double count, Map<String, Object> params) {
@@ -26,27 +25,20 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
                 .setProgress(pool.getId(), holder.getId(), id, count);
     }
 
-    public CompletableFuture<Void> tryTakeItems(Player player) {
-        var future = new CompletableFuture<Void>();
-
+    public void tryTakeItems(Player player) {
         if (!TaskManager.getEvaluator(config.getTask()).evaluate(player, config, Map.of())) {
-            future.complete(null);
-            return future;
+            return;
         }
-
         var itemId = config.getArgs().getString("item");
         final var currentAmount = (int) AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class).getProgression(pool.getId(), holder.getId(), id);
         final var requiredAmount = config.getArgs().getInt("amount", 1);
         final var remainingAmount = requiredAmount - currentAmount;
-
         if (itemId == null || remainingAmount <= 0) {
-            future.complete(null);
-            return future;
+            return;
         }
 
         final var typeId = TypeId.fromString(itemId);
-
-        player.getScheduler().run(AuroraQuests.getInstance(), (st) -> {
+        try {
             var amountNeeded = remainingAmount;
 
             for (var invItem : player.getInventory().getContents()) {
@@ -67,11 +59,10 @@ public record Task(QuestPool pool, Quest holder, TaskConfig config, String id) {
 
             AuroraAPI.getUser(player.getUniqueId()).getData(QuestData.class)
                     .progress(pool.getId(), holder.getId(), id, remainingAmount - amountNeeded);
-
-            future.complete(null);
-        }, () -> future.complete(null));
-
-        return future;
+        } catch (Exception e) {
+            AuroraQuests.logger().severe("Failed to take items");
+            e.printStackTrace();
+        }
     }
 
     public String getTaskType() {

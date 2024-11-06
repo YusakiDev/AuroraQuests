@@ -51,7 +51,7 @@ quest-complete-message:
 
 quest-complete-sound:
   enabled: true
-  sound: "ENTITY_PLAYER_LEVELUP"
+  sound: "entity.player.levelup"
   volume: 1
   pitch: 1
 
@@ -69,7 +69,7 @@ level-up-message:
 
 level-up-sound:
   enabled: true
-  sound: "ENTITY_PLAYER_LEVELUP"
+  sound: "entity.player.levelup"
   volume: 1
   pitch: 1
 
