@@ -1,5 +1,5 @@
 # Don't touch this
-config-version: 1
+config-version: 2
 
 debug: false
 language: en
