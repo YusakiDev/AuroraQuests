@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.3.5"
+version = "1.3.6"
 
 repositories {
     mavenCentral()
@@ -52,7 +52,7 @@ dependencies {
     }
     compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.2.26")
     compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.22.3")
-    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.1")
+    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.2")
     compileOnly("io.th0rgal:oraxen:1.179.0")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")

@@ -12,9 +12,13 @@ public class HookManager {
 
     public static void enableHooks(AuroraQuests plugin) {
         for (var hook : hooks.values()) {
-            hook.hook(plugin);
-            if (hook instanceof Listener) {
-                Bukkit.getPluginManager().registerEvents((Listener) hook, plugin);
+            try {
+                hook.hook(plugin);
+                if (hook instanceof Listener) {
+                    Bukkit.getPluginManager().registerEvents((Listener) hook, plugin);
+                }
+            } catch (Exception e) {
+                AuroraQuests.logger().warning("Failed to enable hook " + hook.getClass().getSimpleName() + ": " + e.getMessage());
             }
         }
     }
