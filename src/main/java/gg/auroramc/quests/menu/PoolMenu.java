@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,10 +26,16 @@ public class PoolMenu {
     private final QuestPool pool;
     private int page = 0;
     private boolean isCompletedQuests = false;
+    private final Runnable backAction;
 
-    public PoolMenu(Player player, QuestPool pool) {
+    public PoolMenu(Player player, QuestPool pool, @Nullable Runnable backAction) {
         this.player = player;
         this.pool = pool;
+        this.backAction = backAction;
+    }
+
+    public PoolMenu(Player player, QuestPool pool) {
+        this(player, pool, null);
     }
 
     public void open() {
@@ -101,7 +108,11 @@ public class PoolMenu {
             var backConfig = cmf.getItems().get("back").merge(mc.getItems().get("back"));
 
             menu.addItem(ItemBuilder.back(backConfig).build(player), (e) -> {
-                new MainMenu(player).open();
+                if (backAction != null) {
+                    backAction.run();
+                } else {
+                    new MainMenu(player).open();
+                }
             });
         }
 
@@ -200,7 +211,11 @@ public class PoolMenu {
                     .build(player);
 
             menu.addItem(item, (e) -> {
-                new LevelMenu(player, pool).open();
+                if (backAction != null) {
+                    new LevelMenu(player, pool, () -> new PoolMenu(player, pool, backAction).open()).open();
+                } else {
+                    new LevelMenu(player, pool, null).open();
+                }
             });
         }
 

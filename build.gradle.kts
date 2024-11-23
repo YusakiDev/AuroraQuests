@@ -18,9 +18,12 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.3.6"
+version = "1.3.7"
 
 repositories {
+    flatDir {
+        dirs("libs")
+    }
     mavenCentral()
     mavenLocal()
     maven("https://papermc.io/repo/repository/maven-public/")
@@ -56,6 +59,7 @@ dependencies {
     compileOnly("io.th0rgal:oraxen:1.179.0")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
+    compileOnly(name = "MythicDungeons-2.0.0-SNAPSHOT", group = "net.playavalon", version = "2.0.0-SNAPSHOT")
     compileOnly("de.oliver:FancyNpcs:2.2.2")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2024.3")

@@ -10,18 +10,22 @@ import gg.auroramc.quests.api.quest.QuestPool;
 import gg.auroramc.quests.util.RomanNumber;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class LevelMenu {
     private final Player player;
     private final QuestPool pool;
     private int page = 0;
+    private final Runnable backAction;
 
-    public LevelMenu(Player player, QuestPool pool) {
+    public LevelMenu(Player player, QuestPool pool, @Nullable Runnable backAction) {
         this.player = player;
         this.pool = pool;
+        this.backAction = Objects.requireNonNullElseGet(backAction, () -> () -> new PoolMenu(player, pool).open());
     }
 
     public void open() {
@@ -43,7 +47,7 @@ public class LevelMenu {
 
         if (cm.getHasBackButton()) {
             menu.addItem(ItemBuilder.back(cmf.getItems().get("back").merge(cm.getItems().get("back"))).build(player), (e) -> {
-                new PoolMenu(player, pool).open();
+                backAction.run();
             });
         }
 

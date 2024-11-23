@@ -6,6 +6,7 @@ import gg.auroramc.aurora.api.reward.*;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.event.QuestsLoadedEvent;
+import gg.auroramc.quests.api.quest.task.DifficultyTaskEvaluator;
 import gg.auroramc.quests.api.quest.task.LevelledTaskEvaluator;
 import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
@@ -37,6 +38,7 @@ public class QuestManager {
 
         TaskManager.registerEvaluator(TaskType.ENCHANT, new LevelledTaskEvaluator());
         TaskManager.registerEvaluator(TaskType.KILL_LEVELLED_MOB, new LevelledTaskEvaluator());
+        TaskManager.registerEvaluator(TaskType.COMPLETE_DUNGEON, new DifficultyTaskEvaluator());
 
         try {
             StdSchedulerFactory.getDefaultScheduler().start();
@@ -78,12 +80,12 @@ public class QuestManager {
     }
 
     public void progress(Player player, String taskType, double amount, Map<String, Object> params) {
-        if(failsCheck(player)) return;
+        if (failsCheck(player)) return;
         CompletableFuture.runAsync(() -> actuallyProgress(player, taskType, amount, params));
     }
 
     public void setProgress(Player player, String taskType, double amount, Map<String, Object> params) {
-        if(failsCheck(player)) return;
+        if (failsCheck(player)) return;
         CompletableFuture.runAsync(() -> actuallySetProgress(player, taskType, amount, params));
     }
 

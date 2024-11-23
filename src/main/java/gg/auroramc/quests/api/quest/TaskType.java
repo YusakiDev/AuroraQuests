@@ -40,4 +40,5 @@ public class TaskType {
     public static final String REACH_ISLAND_WORTH = "REACH_ISLAND_WORTH";
     public static final String REACH_ISLAND_LEVEL = "REACH_ISLAND_LEVEL";
     public static final String UPGRADE_ISLAND = "UPGRADE_ISLAND";
+    public static final String COMPLETE_DUNGEON = "COMPLETE_DUNGEON";
 }

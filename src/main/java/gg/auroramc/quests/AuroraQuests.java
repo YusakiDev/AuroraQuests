@@ -2,12 +2,14 @@ package gg.auroramc.quests;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
+import gg.auroramc.aurora.api.command.CommandDispatcher;
 import gg.auroramc.quests.api.data.QuestData;
 import gg.auroramc.quests.api.quest.QuestManager;
 import gg.auroramc.quests.command.CommandManager;
 import gg.auroramc.quests.config.ConfigManager;
 import gg.auroramc.quests.hooks.HookManager;
 import gg.auroramc.quests.listener.*;
+import gg.auroramc.quests.menu.PoolMenu;
 import gg.auroramc.quests.placeholder.QuestPlaceholderHandler;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lombok.Getter;
@@ -78,6 +80,18 @@ public class AuroraQuests extends JavaPlugin {
         Bukkit.getGlobalRegionScheduler().run(this, (task) -> {
             questManager.reload();
             reloadUnlockTask();
+        });
+
+        CommandDispatcher.registerActionHandler("quest-pool", (player, input) -> {
+            var split = input.split("---");
+            var poolId = split[0].trim();
+            var pool = questManager.getQuestPool(poolId);
+            if (pool == null) return;
+            if (split.length > 1) {
+                new PoolMenu(player, pool, () -> CommandDispatcher.dispatch(player, split[1].trim())).open();
+            } else {
+                new PoolMenu(player, pool).open();
+            }
         });
 
         new Metrics(this, 23779);

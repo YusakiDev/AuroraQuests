@@ -9,6 +9,7 @@ import gg.auroramc.quests.hooks.economyshopgui.EconomyShopGuiHook;
 import gg.auroramc.quests.hooks.fancynpcs.FancyNPCsHook;
 import gg.auroramc.quests.hooks.luckperms.LuckPermsHook;
 import gg.auroramc.quests.hooks.mmolib.MMOLibHook;
+import gg.auroramc.quests.hooks.mythicdungeons.DungeonsHook;
 import gg.auroramc.quests.hooks.mythicmobs.MythicHook;
 import gg.auroramc.quests.hooks.oraxen.OraxenHook;
 import gg.auroramc.quests.hooks.shopguiplus.ShopGUIPlusHook;
@@ -26,6 +27,7 @@ public enum Hooks {
     AURA_SKILLS(AuraSkillsHook.class, "AuraSkills"),
     CUSTOM_FISHING(CustomFishingHook.class, "CustomFishing"),
     MYTHIC_MOBS(MythicHook.class, "MythicMobs"),
+    MYTHIC_DUNGEONS(DungeonsHook.class, "MythicDungeons"),
     WORLD_GUARD(WorldGuardHook.class, "WorldGuard"),
     CITIZENS(CitizensHook.class, "Citizens"),
     SHOPKEEPERS(ShopkeepersHook.class, "Shopkeepers"),
