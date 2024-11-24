@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.event.user.UserLoadEvent;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.TaskType;
+import gg.auroramc.quests.listener.FarmingListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -39,6 +40,12 @@ public class AuraSkillsListener implements Listener {
         var typeId = AuroraAPI.getItemManager().resolveId(item);
 
         Map<String, Object> params = Map.of("type", typeId);
+
+        // mushrooms are probably triggered by foraging luck would be from foraging luck
+        if(FarmingListener.specialCrops.contains(item.getType()) && typeId.namespace().equals("minecraft")) {
+            manager.progress(e.getPlayer(), TaskType.FARM, item.getAmount(), params);
+            return;
+        }
 
         switch (e.getCause()) {
             case FARMING_LUCK, FARMING_OTHER_LOOT ->
