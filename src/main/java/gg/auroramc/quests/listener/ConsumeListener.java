@@ -24,6 +24,6 @@ public class ConsumeListener implements Listener {
         ItemStack item = event.getItem();
 
         AuroraQuests.getInstance().getQuestManager()
-                .progress(player, TaskType.CONSUME, item.getAmount(), Map.of("type", AuroraAPI.getItemManager().resolveId(item)));
+                .progress(player, TaskType.CONSUME, 1, Map.of("type", AuroraAPI.getItemManager().resolveId(item)));
     }
 }
