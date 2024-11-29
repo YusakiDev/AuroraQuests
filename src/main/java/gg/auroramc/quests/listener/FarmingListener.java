@@ -48,7 +48,7 @@ public class FarmingListener implements Listener {
     @EventHandler
     public void onBlockDrop(BlockDropItemEvent event) {
         if (crops.contains(event.getBlockState().getType())) {
-            if (event.getBlock().getBlockData() instanceof Ageable ageable) {
+            if (event.getBlockState().getBlockData() instanceof Ageable ageable) {
                 if (ageable.getAge() != ageable.getMaximumAge()) return;
                 for (var drop : event.getItems()) {
                     var item = drop.getItemStack();
