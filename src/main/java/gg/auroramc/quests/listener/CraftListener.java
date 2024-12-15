@@ -42,8 +42,9 @@ public class CraftListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftItem(CraftItemEvent event) {
         if (event.getWhoClicked() instanceof final Player player) {
-            var amount = calculateCraftAmount(event);
             var item = event.getRecipe().getResult();
+            if (item.isEmpty()) return;
+            var amount = calculateCraftAmount(event);
             AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.CRAFT, amount, Map.of("type", AuroraAPI.getItemManager().resolveId(item)));
         }
     }
