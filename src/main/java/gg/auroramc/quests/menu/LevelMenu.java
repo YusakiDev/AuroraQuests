@@ -86,7 +86,7 @@ public class LevelMenu {
                     : cmf.getItems().get("locked-level").merge(cm.getItems().get("locked-level"));
 
 
-            var rewards = pool.getMatcherManager().getBestMatcher(level).computeRewards(level);
+            var rewards = pool.getMatcherManager().getBestMatcher(rLevel).computeRewards(level);
 
             var currentProgress = Math.min(pool.getCompletedQuestCount(player), requirement);
             var bar = cmf.getProgressBar();
