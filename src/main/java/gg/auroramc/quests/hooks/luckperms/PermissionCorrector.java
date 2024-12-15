@@ -9,6 +9,7 @@ import net.luckperms.api.node.NodeEqualityPredicate;
 import net.luckperms.api.util.Tristate;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PermissionCorrector implements RewardCorrector {
@@ -16,6 +17,8 @@ public class PermissionCorrector implements RewardCorrector {
     public void correctRewards(Player player) {
         var plugin = AuroraQuests.getInstance();
         var manager = plugin.getQuestManager();
+
+        List<Node> nodesToAdd = new ArrayList<>();
 
         for (var pool : manager.getQuestPools()) {
             // Correct global quests
@@ -28,7 +31,7 @@ public class PermissionCorrector implements RewardCorrector {
                             if (permissionReward.getPermissions() == null || permissionReward.getPermissions().isEmpty())
                                 continue;
                             var nodes = permissionReward.buildNodes(player, quest.getPlaceholders(player));
-                            updatePermissionNodes(player, nodes);
+                            nodesToAdd.addAll(nodes);
                         }
                     }
                 }
@@ -49,24 +52,40 @@ public class PermissionCorrector implements RewardCorrector {
 
                         var nodes = permissionReward.buildNodes(player, placeholders);
 
-                        updatePermissionNodes(player, nodes);
+                        nodesToAdd.addAll(nodes);
 
                     }
                 }
             }
         }
+
+        if (nodesToAdd.isEmpty()) return;
+
+        updatePermissionNodes(player, nodesToAdd);
     }
 
     private void updatePermissionNodes(Player player, List<Node> nodes) {
-        LuckPermsProvider.get().getUserManager().modifyUser(player.getUniqueId(), user -> {
-            for (var node : nodes) {
-                var hasPermission = user.data().contains(node, NodeEqualityPredicate.EXACT);
+        var user = LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId());
+        if (user == null) {
+            AuroraQuests.logger().severe("User " + player.getName() + " is not loaded in LuckPerms, failed to correct permission rewards!");
+            return;
+        }
 
-                if (hasPermission.equals(Tristate.UNDEFINED)) {
-                    AuroraQuests.logger().debug("Permission " + node.getKey() + " is undefined for player " + player.getName());
-                    user.data().add(node);
-                }
+        int addedNodes = 0;
+
+        for (var node : nodes) {
+            var hasPermission = user.data().contains(node, NodeEqualityPredicate.EXACT);
+
+            if (hasPermission.equals(Tristate.UNDEFINED)) {
+                AuroraQuests.logger().debug("Permission " + node.getKey() + " is undefined for player " + player.getName());
+                user.data().add(node);
+                addedNodes++;
             }
-        });
+        }
+
+        if (addedNodes > 0) {
+            LuckPermsProvider.get().getUserManager().saveUser(user);
+            AuroraQuests.logger().debug("Added " + addedNodes + " permission nodes to player " + player.getName());
+        }
     }
 }
