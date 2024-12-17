@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.3.11"
+version = "1.3.12"
 
 repositories {
     flatDir {

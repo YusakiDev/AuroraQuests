@@ -142,7 +142,7 @@ public class Quest {
 
     public boolean isUnlocked(Player player) {
         var data = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class);
-        return data.isQuestStartUnlocked(holder.getId(), getId()) || !hasStartRequirements();
+        return !holder.isGlobal() || data.isQuestStartUnlocked(holder.getId(), getId()) || !hasStartRequirements();
     }
 
     public void tryStart(Player player) {
