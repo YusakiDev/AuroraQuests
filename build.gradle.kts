@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.3.12"
+version = "1.3.13"
 
 repositories {
     flatDir {
@@ -87,6 +87,10 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<ShadowJar> {
     archiveFileName.set("AuroraQuests-${project.version}.jar")
+
+    manifest {
+        attributes["paperweight-mappings-namespace"] = "mojang"
+    }
 
     relocate("co.aikar.commands", "gg.auroramc.quests.libs.acf")
     relocate("co.aikar.locales", "gg.auroramc.quests.libs.locales")
