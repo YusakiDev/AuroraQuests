@@ -94,7 +94,7 @@ public class ConfigManager {
             return;
         }
 
-        try(var directories = Files.walk(questsDir, 1)) {
+        try (var directories = Files.walk(questsDir, 1)) {
             directories.filter(Files::isDirectory).filter(p -> !p.equals(questsDir)).forEach(dir -> {
                 var poolFile = new File(dir.toFile(), "config.yml");
                 if (!poolFile.exists()) {
@@ -110,7 +110,7 @@ public class ConfigManager {
                     return;
                 }
 
-                try (Stream<Path> paths = Files.list(qDir)) {
+                try (Stream<Path> paths = Files.walk(qDir, 5)) {
                     paths.filter(Files::isRegularFile)
                             .filter(path -> path.toString().endsWith(".yml"))
                             .forEach(path -> {
@@ -119,8 +119,12 @@ public class ConfigManager {
                                 questConfig.load();
                                 questConfig.setPoolConfig(poolConfig);
                                 questConfig.setId(questId);
-                                poolConfig.getQuests().put(questConfig.getId(), questConfig);
-                                AuroraQuests.logger().debug("Loaded quest: " + questId + " from pool: " + poolConfig.getId());
+                                if (poolConfig.getQuests().containsKey(questConfig.getId())) {
+                                    AuroraQuests.logger().severe("Duplicate quest id: " + questId + " in pool: " + poolConfig.getId() + " skipping... File names most be unique inside the pools quests folder.");
+                                } else {
+                                    poolConfig.getQuests().put(questConfig.getId(), questConfig);
+                                    AuroraQuests.logger().debug("Loaded quest: " + questId + " from pool: " + poolConfig.getId());
+                                }
                             });
                 } catch (IOException e) {
                     AuroraQuests.logger().severe("Failed to load quests for pool: " + poolConfig.getId() + " error: " + e.getMessage());
