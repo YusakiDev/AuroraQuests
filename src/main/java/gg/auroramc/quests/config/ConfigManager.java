@@ -114,7 +114,8 @@ public class ConfigManager {
                     paths.filter(Files::isRegularFile)
                             .filter(path -> path.toString().endsWith(".yml"))
                             .forEach(path -> {
-                                var questId = path.toFile().getName().replace(".yml", "");
+                                var relativePath = qDir.relativize(path).toString();
+                                var questId = relativePath.replace(File.separator, "/").replace(".yml", "");
                                 QuestConfig questConfig = new QuestConfig(path.toFile());
                                 questConfig.load();
                                 questConfig.setPoolConfig(poolConfig);
