@@ -25,6 +25,7 @@ public class BuildingListener implements Listener {
         final Block block = event.getBlock();
 
         AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.BUILD, 1, Map.of("type", TypeId.from(block.getType())));
+        AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.BLOCK_PLACE, 1, Map.of("type", TypeId.from(block.getType())));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -33,7 +34,7 @@ public class BuildingListener implements Listener {
         if (player.hasMetadata("NPC")) {
             return;
         }
-        
+
         final Block block = event.getBlock();
         AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.BUILD, -1, Map.of("type", TypeId.from(block.getType())));
     }
