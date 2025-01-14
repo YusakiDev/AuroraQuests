@@ -90,14 +90,14 @@ public class MainMenu {
                         AuroraAPI.formatNumber(Math.max(Bukkit.getOnlinePlayers().size(), AuroraAPI.getLeaderboards().getBoardSize(boardName)))));
             }
 
-            var lore = new ArrayList<>(mi.getItem().getLore());
+            var lore = new ArrayList<String>();
 
             if (!pool.isUnlocked(player)) {
                 lore.addAll(mi.getLockedLore());
             }
 
             menu.addItem(ItemBuilder.of(mi.getItem())
-                    .setLore(lore)
+                    .extraLore(lore)
                     .placeholder(Placeholder.of("{name}", pool.getConfig().getName()))
                     .placeholder(Placeholder.of("{total_completed}", AuroraAPI.formatNumber(pool.getCompletedQuestCount(player))))
                     .placeholder(placeholders)

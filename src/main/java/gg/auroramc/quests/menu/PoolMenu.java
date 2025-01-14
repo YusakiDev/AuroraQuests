@@ -127,16 +127,16 @@ public class PoolMenu {
             }
 
             var quest = quests.get(i);
-            var lore = new ArrayList<>(quest.getConfig().getMenuItem().getLore());
+            var extraLore = new ArrayList<String>();
 
             if (quest.isCompleted(player)) {
-                lore.addAll(quest.getConfig().getCompletedLore());
+                extraLore.addAll(quest.getConfig().getCompletedLore());
             } else if (!quest.isUnlocked(player) && pool.isGlobal()) {
-                lore.addAll(quest.getConfig().getLockedLore());
+                extraLore.addAll(quest.getConfig().getLockedLore());
             }
 
             var builder = ItemBuilder.of(quest.getConfig().getMenuItem()).slot(slot)
-                    .placeholder(quest.getPlaceholders(player)).setLore(lore);
+                    .placeholder(quest.getPlaceholders(player)).extraLore(extraLore);
 
             if (quest.getTaskTypes().contains(TaskType.TAKE_ITEM) && (quest.isUnlocked(player) || !pool.isGlobal()) && !quest.isCompleted(player)) {
                 menu.addItem(builder.build(player), (e) -> {
