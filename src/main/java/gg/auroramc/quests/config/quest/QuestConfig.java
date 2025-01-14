@@ -18,6 +18,7 @@ public class QuestConfig extends AuroraConfig {
     private ItemConfig menuItem;
     private List<String> lockedLore;
     private List<String> completedLore;
+    private List<String> uncompletedLore;
     private Map<String, TaskConfig> tasks;
     private ConfigurationSection rewards;
     private StartRequirementConfig startRequirements;

@@ -131,7 +131,13 @@ public class PoolMenu {
 
             if (quest.isCompleted(player)) {
                 extraLore.addAll(quest.getConfig().getCompletedLore());
-            } else if (!quest.isUnlocked(player) && pool.isGlobal()) {
+            } else {
+                if (quest.getConfig().getUncompletedLore() != null) {
+                    extraLore.addAll(quest.getConfig().getUncompletedLore());
+                }
+            }
+
+            if (!quest.isUnlocked(player) && pool.isGlobal()) {
                 extraLore.addAll(quest.getConfig().getLockedLore());
             }
 
