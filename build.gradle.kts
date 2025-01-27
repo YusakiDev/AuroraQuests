@@ -53,7 +53,7 @@ dependencies {
     compileOnly("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
-    compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.2.26")
+    compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.3.3")
     compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.22.3")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.2")
     compileOnly("io.th0rgal:oraxen:1.179.0")
