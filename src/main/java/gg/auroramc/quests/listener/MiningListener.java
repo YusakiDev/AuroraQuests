@@ -34,7 +34,8 @@ public class MiningListener implements Listener {
 
         for (var drop : e.getItems()) {
             var item = drop.getItemStack();
-            AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.BLOCK_LOOT, item.getAmount(), Map.of("type", TypeId.from(item.getType())));
+            var id = AuroraAPI.getItemManager().resolveId(item);
+            AuroraQuests.getInstance().getQuestManager().progress(player, TaskType.BLOCK_LOOT, item.getAmount(), Map.of("type", id));
         }
     }
 
