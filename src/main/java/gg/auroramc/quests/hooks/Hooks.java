@@ -16,6 +16,7 @@ import gg.auroramc.quests.hooks.shopguiplus.ShopGUIPlusHook;
 import gg.auroramc.quests.hooks.shopkeepers.ShopkeepersHook;
 import gg.auroramc.quests.hooks.superiorskyblock.SuperiorSkyblockHook;
 import gg.auroramc.quests.hooks.worldguard.WorldGuardHook;
+import gg.auroramc.quests.hooks.znpcs.ZnPcsHook;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -38,7 +39,8 @@ public enum Hooks {
     LUCK_PERMS(LuckPermsHook.class, "LuckPerms"),
     ADYESHACH(AdyeshachHook.class, "Adyeshach"),
     SUPERIOR_SKYBLOCK(SuperiorSkyblockHook.class, "SuperiorSkyblock2"),
-    FANCY_NPCS(FancyNPCsHook .class, "FancyNpcs");
+    FANCY_NPCS(FancyNPCsHook .class, "FancyNpcs"),
+    ZNPCS(ZnPcsHook.class, "ServersNPC");
 
     private final Class<? extends Hook> clazz;
     private final Set<String> plugins;
