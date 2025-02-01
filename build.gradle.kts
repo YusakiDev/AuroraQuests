@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.3.15"
+version = "1.3.16"
 
 repositories {
     flatDir {
@@ -60,6 +60,7 @@ dependencies {
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly(name = "MythicDungeons-2.0.0-SNAPSHOT", group = "net.playavalon", version = "2.0.0-SNAPSHOT")
+    compileOnly(name = "znpcs-5.0", group = "io.github.gonalez.znpcs", version = "5.0")
     compileOnly("de.oliver:FancyNpcs:2.2.2")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2024.3")
