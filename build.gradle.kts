@@ -1,4 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import groovy.util.Node
+import groovy.util.NodeList
 import java.net.URI
 import java.util.*
 
@@ -33,7 +35,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://jitpack.io/")
-    maven("https://repo.projectshard.dev/repository/releases/")
+    //maven("https://repo.projectshard.dev/repository/releases/")
     maven("https://repo.oraxen.com/releases")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     maven("https://repo.fancyplugins.de/releases")
@@ -54,13 +56,14 @@ dependencies {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.3.3")
-    compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.22.3")
+    //compileOnly("com.nisovin.shopkeepers:ShopkeepersAPI:2.23.3")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.2")
     compileOnly("io.th0rgal:oraxen:1.179.0")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     compileOnly(name = "MythicDungeons-2.0.0-SNAPSHOT", group = "net.playavalon", version = "2.0.0-SNAPSHOT")
     compileOnly(name = "znpcs-5.0", group = "io.github.gonalez.znpcs", version = "5.0")
+    compileOnly(name = "Shopkeepers-2.23.3", group = "com.nisovin.shopkeepers", version = "2.23.3")
     compileOnly("de.oliver:FancyNpcs:2.2.2")
     compileOnly("ink.ptms.adyeshach:all:2.0.0-snapshot-1")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2024.3")
@@ -137,5 +140,17 @@ publishing {
         version = project.version.toString()
 
         from(components["java"])
+
+        pom.withXml {
+            val dependency = (asNode().get("dependencies") as NodeList).first() as Node
+            (dependency.get("dependency") as NodeList).forEach {
+                val node = it as Node
+                val artifactIdList = node.get("artifactId") as NodeList
+                val artifactId = (artifactIdList.first() as Node).text()
+                if (artifactId in listOf("acf-paper")) {
+                    assert(it.parent().remove(it))
+                }
+            }
+        }
     }
 }
