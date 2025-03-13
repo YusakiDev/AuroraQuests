@@ -15,7 +15,7 @@ and a Developer API, making it the ultimate tool for crafting compelling quests.
 ```xml
 <repository>
     <id>auroramc</id>
-    <url>https://repo.auroramc.gg/repository/maven-public/</url>
+    <url>https://repo.auroramc.gg/releases/</url>
 </repository>
 ```
 
@@ -33,7 +33,7 @@ and a Developer API, making it the ultimate tool for crafting compelling quests.
 ```gradle
 repositories {
     maven {
-        url "https://repo.auroramc.gg/repository/maven-public/"
+        url "https://repo.auroramc.gg/releases/"
     }
 }
 
@@ -45,7 +45,7 @@ dependencies {
 **Kotlin DSL:**
 ```Gradle Kotlin DSL
 repositories { 
-    maven("https://repo.auroramc.gg/repository/maven-public/")
+    maven("https://repo.auroramc.gg/releases/")
 }
 
 dependencies { 
