@@ -137,4 +137,27 @@ public class QuestsCommand extends BaseCommand {
             Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestAlreadyCompleted(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
         }
     }
+
+    @Subcommand("reset")
+    @Description("Reset quest progress a player")
+    @CommandCompletion("@players @pools @quests true|false")
+    @CommandPermission("aurora.quests.admin.reset")
+    public void onQuestReset(CommandSender sender, @Flags("other") Player target, String poolId, String questId, @Default("false") Boolean silent) {
+        QuestPool pool = plugin.getQuestManager().getQuestPool(poolId);
+        if (pool == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getPoolNotFound(), Placeholder.of("{pool}", poolId));
+            return;
+        }
+
+        Quest quest = pool.getQuest(questId);
+        if (quest == null) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestNotFound(), Placeholder.of("{pool}", pool.getId()), Placeholder.of("{quest}", questId));
+            return;
+        }
+
+        quest.reset(target);
+        if (!silent) {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getQuestCompleted(), Placeholder.of("{player}", target.getName()), Placeholder.of("{quest}", questId));
+        }
+    }
 }

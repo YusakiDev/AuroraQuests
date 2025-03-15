@@ -1,5 +1,5 @@
 # Don't touch this
-config-version: 2
+config-version: 3
 
 reloaded: "&aReloaded configuration!"
 data-not-loaded-yet: "&cData for this player hasn't loaded yet, try again later!"
@@ -22,4 +22,5 @@ quest-unlocked: "&aQuest {quest} unlocked for {player}."
 quest-already-unlocked: "&cPlayer {player} has already unlocked quest {quest}."
 quest-completed: "&aQuest {quest} marked completed for {player}."
 quest-already-completed: "&cPlayer {player} has already completed quest {quest}."
+quest-reset: "&aQuest {quest} reset for {player}."
 error-prefix: "&cError: {message}"

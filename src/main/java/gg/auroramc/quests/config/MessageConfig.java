@@ -34,6 +34,7 @@ public class MessageConfig extends AuroraConfig {
     private String questNotFound = "&cThere isn't any quest with id {quest} in pool {pool}!";
     private String questUnlocked = "&aQuest {quest} unlocked for {player}.";
     private String questCompleted = "&aQuest {quest} marked completed for {player}.";
+    private String questReset = "&aQuest {quest} reset for {player}.";
     private String questAlreadyUnlocked = "&cPlayer {player} has already unlocked quest {quest}.";
     private String questAlreadyCompleted = "&cPlayer {player} has already completed quest {quest}.";
     private String errorPrefix = "&cError: {message}";
@@ -80,6 +81,10 @@ public class MessageConfig extends AuroraConfig {
                     yaml.set("quest-completed", "&aQuest {quest} marked completed for {player}.");
                     yaml.set("quest-already-completed", "&cPlayer {player} has already completed quest {quest}.");
                     yaml.set("config-version", 2);
+                },
+                (yaml) -> {
+                    yaml.set("quest-reset", "&aQuest {quest} reset for {player}.");
+                    yaml.set("config-version", 3);
                 }
         );
     }

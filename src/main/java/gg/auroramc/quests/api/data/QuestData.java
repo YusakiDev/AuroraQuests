@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import gg.auroramc.aurora.api.user.UserDataHolder;
 import gg.auroramc.aurora.api.util.NamespacedId;
-import gg.auroramc.quests.AuroraQuests;
 import gg.auroramc.quests.api.quest.Quest;
 import gg.auroramc.quests.api.quest.QuestPool;
 import org.bukkit.configuration.ConfigurationSection;
@@ -71,6 +70,13 @@ public class QuestData extends UserDataHolder {
 
     public void completeQuest(String poolId, String questId) {
         completedQuests.computeIfAbsent(poolId, k -> new HashSet<>()).add(questId);
+        dirty.set(true);
+    }
+
+    public void resetQuestProgress(String poolId, String questId) {
+        var completesQuests = completedQuests.computeIfAbsent(poolId, k -> new HashSet<>());
+        completesQuests.remove(questId);
+        progression.computeIfAbsent(poolId, k -> Maps.newConcurrentMap()).remove(questId);
         dirty.set(true);
     }
 

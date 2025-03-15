@@ -170,6 +170,12 @@ public class Quest {
         return tasks.values().stream().allMatch(task -> task.isCompleted(player));
     }
 
+    public void reset(Player player) {
+        var user = AuroraAPI.getUserManager().getUser(player);
+        var data = user.getData(QuestData.class);
+        data.resetQuestProgress(holder.getId(), getId());
+    }
+
     public void complete(Player player) {
         var level = holder.getPlayerLevel(player);
 

@@ -1,5 +1,5 @@
 # 请勿修改此项
-config-version: 2
+config-version: 3
 
 reloaded: "&a配置重载成功!"
 data-not-loaded-yet: "&c该玩家的数据尚未载入, 请稍后再试!"
@@ -22,4 +22,5 @@ quest-unlocked: "&aQuest {quest} unlocked for {player}."
 quest-already-unlocked: "&cPlayer {player} has already unlocked quest {quest}."
 quest-completed: "&aQuest {quest} marked completed for {player}."
 quest-already-completed: "&cPlayer {player} has already completed quest {quest}."
+quest-reset: "&aQuest {quest} reset for {player}."
 error-prefix: "&cError: {message}"
