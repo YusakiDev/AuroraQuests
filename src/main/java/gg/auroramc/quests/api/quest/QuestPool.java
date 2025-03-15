@@ -146,6 +146,13 @@ public class QuestPool {
         return rolledQuests.quests().stream().map(this::getQuest).filter(Objects::nonNull).toList();
     }
 
+    public void resetAllQuestProgress(Player player) {
+        var quests = getPlayerQuests(player);
+        for (var quest : quests) {
+            quest.reset(player);
+        }
+    }
+
     public List<Quest> getNotCompletedPlayerQuests(Player player) {
         return getPlayerQuests(player).stream().filter(q -> !q.isCompleted(player)).toList();
     }
