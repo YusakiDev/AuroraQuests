@@ -198,6 +198,7 @@ public class Quest {
 
     public List<Placeholder<?>> getPlaceholders(Player player) {
         var gc = AuroraQuests.getInstance().getConfigManager().getConfig();
+        var menuConfig = AuroraQuests.getInstance().getConfigManager().getCommonMenuConfig();
         List<Placeholder<?>> placeholders = new ArrayList<>(9 + tasks.size() + rewards.size());
 
         placeholders.add(Placeholder.of("{name}", config.getName()));
@@ -209,6 +210,48 @@ public class Quest {
         placeholders.add(Placeholder.of("{pool}", holder.getConfig().getName()));
         placeholders.add(Placeholder.of("{player}", player.getName()));
         placeholders.add(Placeholder.of("{pool_level}", holder.getPlayerLevel(player)));
+
+        // Add dependency quest placeholders
+        if (config.getStartRequirements() != null && config.getStartRequirements().getQuests() != null) {
+            int index = 0;
+            for (var questId : config.getStartRequirements().getQuests()) {
+                var typeId = TypeId.fromString(questId);
+                var poolId = typeId.namespace().equals("minecraft") ? holder.getId() : typeId.namespace();
+                var id = typeId.id();
+                
+                // Check if quest is completed
+                boolean isCompleted = AuroraAPI.getUserManager().getUser(player).getData(QuestData.class).hasCompletedQuest(poolId, id);
+                
+                // Find the quest pool and quest
+                var questPool = AuroraQuests.getInstance().getQuestManager().getQuestPool(poolId);
+                if (questPool != null) {
+                    var depQuest = questPool.getQuest(id);
+                    String questName = (depQuest != null) ? depQuest.getConfig().getName() : id;
+                    
+                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_name}", questName));
+                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_id}", id));
+                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_pool}", questPool.getConfig().getName()));
+                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_pool_id}", poolId));
+                    
+                    // Add status placeholder using the same format as tasks
+                    String status = isCompleted ? 
+                        menuConfig.getTaskStatuses().getCompleted() : 
+                        menuConfig.getTaskStatuses().getNotCompleted();
+                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_status}", status));
+
+                    // Create a display using the same pattern as task display
+                    String display = "{status} &f" + questName;
+                    placeholders.add(Placeholder.of("{dep_quest_" + index + "}", 
+                        Placeholder.execute(display, 
+                            Placeholder.of("{status}", status))));
+                    
+                    index++;
+                }
+            }
+            placeholders.add(Placeholder.of("{dep_quest_count}", index));
+        } else {
+            placeholders.add(Placeholder.of("{dep_quest_count}", 0));
+        }
 
         for (var task : tasks.values()) {
             placeholders.add(Placeholder.of("{task_" + task.id() + "}", task.getDisplay(player)));
