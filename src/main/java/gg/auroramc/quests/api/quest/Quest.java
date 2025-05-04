@@ -247,9 +247,52 @@ public class Quest {
         } else {
             placeholders.add(Placeholder.of("{dep_quest_count}", 0));
         }
+        
+        // Add permission requirement placeholders
+        if (config.getStartRequirements() != null && config.getStartRequirements().getPermissions() != null) {
+            int index = 0;
+            for (var permissionEntry : config.getStartRequirements().getPermissions()) {
+                // Parse permission and optional display text (format: "permission.node;Display Text")
+                String permission;
+                String displayText;
+                
+                if (permissionEntry.contains(";")) {
+                    String[] parts = permissionEntry.split(";", 2);
+                    permission = parts[0];
+                    displayText = parts[1];
+                } else {
+                    permission = permissionEntry;
+                    displayText = permission;
+                }
+                
+                // Check if player has the permission
+                boolean hasPermission = player.hasPermission(permission);
+                
+                // Add status placeholder using the same format as tasks
+                String status = hasPermission ? 
+                    menuConfig.getTaskStatuses().getCompleted() : 
+                    menuConfig.getTaskStatuses().getNotCompleted();
+                
+                // Create a display using the same pattern as task display
+                String display = "{status} &f" + displayText;
+                
+                placeholders.add(Placeholder.of("{permission_" + index + "}", 
+                    Placeholder.execute(display, Placeholder.of("{status}", status))));
+                
+                // Also add raw permission placeholders
+                placeholders.add(Placeholder.of("{permission_" + index + "_node}", permission));
+                placeholders.add(Placeholder.of("{permission_" + index + "_display}", displayText));
+                placeholders.add(Placeholder.of("{permission_" + index + "_status}", status));                
+                index++;
+            }
+            placeholders.add(Placeholder.of("{permission_count}", index));
+        } else {
+            placeholders.add(Placeholder.of("{permission_count}", 0));
+        }
 
         for (var task : tasks.values()) {
-            placeholders.add(Placeholder.of("{task_" + task.id() + "}", task.getDisplay(player)));
+      
+      placeholders.add(Placeholder.of("{task_" + task.id() + "}", task.getDisplay(player)));
         }
 
         for (var reward : rewards.entrySet()) {
