@@ -228,22 +228,17 @@ public class Quest {
                     var depQuest = questPool.getQuest(id);
                     String questName = (depQuest != null) ? depQuest.getConfig().getName() : id;
                     
-                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_name}", questName));
-                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_id}", id));
-                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_pool}", questPool.getConfig().getName()));
-                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_pool_id}", poolId));
-                    
                     // Add status placeholder using the same format as tasks
                     String status = isCompleted ? 
                         menuConfig.getTaskStatuses().getCompleted() : 
                         menuConfig.getTaskStatuses().getNotCompleted();
-                    placeholders.add(Placeholder.of("{dep_quest_" + index + "_status}", status));
-
+                    
                     // Create a display using the same pattern as task display
                     String display = "{status} &f" + questName;
+                    
+                    // Only keep the most useful placeholders
                     placeholders.add(Placeholder.of("{dep_quest_" + index + "}", 
-                        Placeholder.execute(display, 
-                            Placeholder.of("{status}", status))));
+                        Placeholder.execute(display, Placeholder.of("{status}", status))));
                     
                     index++;
                 }
